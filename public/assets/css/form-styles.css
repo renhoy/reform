@@ -1,0 +1,287 @@
+/* Estilos para formulario de presupuesto */
+/* {"_META_file_path_": "css/form-styles.css"} */
+
+:root {
+  --primary-color: #e8951c;
+  --secondary-color: #109c61;
+  --light-gray: #f5f5f5;
+  --medium-gray: #e0e0e0;
+  --dark-gray: #333;
+  --white: #ffffff;
+  --black: #000000;
+  --border-radius: 8px;
+  --spacing: 1rem;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--light-gray);
+  color: var(--dark-gray);
+  line-height: 1.6;
+}
+
+.company-header {
+  background: white;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.company-logo {
+  max-height: 80px;
+  margin-bottom: 1rem;
+}
+
+.company-info h1 {
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.company-details {
+  color: #666;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+}
+
+.section {
+  background: white;
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.section-header {
+  background: var(--primary-color);
+  color: white;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.section-content {
+  padding: 2rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-group input, .form-group select, .form-group textarea {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.client-type-selector {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.client-type {
+  flex: 1;
+  padding: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.client-type.selected {
+  border-color: var(--primary-color);
+  background: rgba(232, 149, 28, 0.1);
+}
+
+.budget-tree {
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.tree-item {
+  margin-bottom: 1px;
+  display: flex;
+  align-items: center;
+}
+
+.tree-item.chapter {
+  background: var(--primary-color);
+  color: white;
+  padding: 8px 16px;
+  font-weight: bold;
+}
+
+.tree-item.subchapter {
+  background: var(--secondary-color);
+  color: white;
+  padding: 6px 16px;
+  margin-left: 20px;
+}
+
+.tree-item.section {
+  background: #f0f9ff;
+  color: var(--primary-color);
+  padding: 4px 16px;
+  margin-left: 40px;
+  border: 1px solid var(--primary-color);
+}
+
+.tree-item.item {
+  background: #f9f9f9;
+  padding: 8px 16px;
+  margin-left: 60px;
+  border: 1px solid #ddd;
+}
+
+.item-details {
+  display: grid;
+  grid-template-columns: 3fr 1fr 1fr 1fr 1fr 1fr;
+  gap: 1rem;
+  align-items: center;
+  width: 100%;
+}
+
+.item-name {
+  font-weight: 500;
+}
+
+.item-unit, .item-iva, .item-pvp {
+  font-size: 12px;
+  color: #666;
+}
+
+.quantity-input {
+  width: 80px;
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-align: right;
+}
+
+.item-total {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.chapter-total, .subchapter-total, .section-total {
+  margin-left: auto;
+  font-weight: bold;
+}
+
+.totals-section {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-top: 2rem;
+}
+
+.totals-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.totals-row.final {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  border-top: 2px solid var(--primary-color);
+  padding-top: 0.5rem;
+  margin-top: 1rem;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.checkbox-group input[type="checkbox"] {
+  transform: scale(1.2);
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.btn-secondary {
+  background: var(--secondary-color);
+  color: white;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.legal-text {
+  font-size: 12px;
+  color: #666;
+  margin-top: 1rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .client-type-selector {
+    flex-direction: column;
+  }
+  
+  .item-details {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 0.5rem;
+  }
+}

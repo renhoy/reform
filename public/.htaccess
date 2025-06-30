@@ -1,0 +1,16 @@
+# Reescritura de URLs para enrutamiento
+# {"_META_file_path_": "public/.htaccess"}
+
+RewriteEngine On
+RewriteBase /public/
+
+# Permitir acceso directo a assets
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} ^/public/assets/.*$
+RewriteRule ^(.*)$ - [L]
+
+# Redirigir todo lo demás a index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
