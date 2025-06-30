@@ -1,21 +1,19 @@
 <?php
 // {"_META_file_path_": "src/views/templates/header.php"}
-// Cabecera común actualizada con nuevas rutas
+// Header reutilizable
 
-$currentPage = basename($_SERVER['REQUEST_URI']);
+$currentPage = basename($_SERVER['PHP_SELF']);
 ?>
 <div class="header">
     <div class="header-content">
         <div class="logo">Generador de Presupuestos</div>
-        
         <nav class="main-nav">
-            <a href="<?= url('dashboard') ?>" class="nav-item <?= in_array($currentPage, ['', 'dashboard']) ? 'active' : '' ?>">Dashboard</a>
-            <a href="<?= url('tariffs') ?>" class="nav-item <?= strpos($currentPage, 'tariff') !== false ? 'active' : '' ?>">Tarifas</a>
-            <a href="<?= url('budgets') ?>" class="nav-item <?= strpos($currentPage, 'budget') !== false ? 'active' : '' ?>">Presupuestos</a>
+            <a href="dashboard.php" class="nav-item <?= $currentPage === 'dashboard.php' ? 'active' : '' ?>">Dashboard</a>
+            <a href="tariffs.php" class="nav-item <?= $currentPage === 'tariffs.php' ? 'active' : '' ?>">Tarifas</a>
+            <a href="budgets.php" class="nav-item <?= $currentPage === 'budgets.php' ? 'active' : '' ?>">Presupuestos</a>
         </nav>
-        
         <div class="user-menu">
-            <a href="<?= url('logout') ?>" class="logout-btn">Cerrar Sesión</a>
+            <a href="logout.php" class="logout-btn">Cerrar Sesión</a>
         </div>
     </div>
 </div>

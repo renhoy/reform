@@ -1,6 +1,6 @@
 <?php
 // {"_META_file_path_": "src/config/config.php"}
-// Configuración principal sin .htaccess
+// Configuración sin .htaccess
 
 // Configuración de base de datos
 define('DB_HOST', 'localhost');
@@ -9,25 +9,16 @@ define('DB_USER', 'root');
 define('DB_PASS', 'root');
 define('DB_PORT', 8889);
 
-// URLs absolutas
+// Detectar URL base automáticamente
 $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
 $host = $_SERVER['HTTP_HOST'];
-$basePath = dirname($_SERVER['SCRIPT_NAME']);
+$projectPath = dirname($_SERVER['SCRIPT_NAME']);
 
-// Detectar si estamos en public/
-if (strpos($basePath, '/public') !== false) {
-    $projectPath = str_replace('/public', '', $basePath);
-} else {
-    $projectPath = $basePath;
-}
-
-define('BASE_URL', $protocol . '://' . $host . $projectPath . '/public');
-define('UPLOAD_DIR', PUBLIC_PATH . '/assets/uploads/');
-define('ASSETS_URL', BASE_URL . '/assets');
+define('BASE_URL', $protocol . '://' . $host . $projectPath);
+define('ASSETS_URL', BASE_URL . '/public/assets');
 
 // Configuración de sesión
 if (session_status() === PHP_SESSION_NONE) {
-    ini_set('session.cookie_httponly', 1);
     session_start();
 }
 
@@ -45,13 +36,11 @@ function getConnection() {
                 [
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                    PDO::ATTR_EMULATE_PREPARES => false,
-                    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
+                    PDO::ATTR_EMULATE_PREPARES => false
                 ]
             );
         } catch (PDOException $e) {
-            error_log("Database connection error: " . $e->getMessage());
-            die("Error de conexión a la base de datos.");
+            die("Error de conexión a la base de datos: " . $e->getMessage());
         }
     }
     
@@ -60,7 +49,7 @@ function getConnection() {
 
 function requireAuth() {
     if (!isset($_SESSION['user_id'])) {
-        header('Location: ' . BASE_URL . '/login.php');
+        header('Location: ' . url('login'));
         exit;
     }
 }
@@ -80,13 +69,30 @@ function asset($path) {
 }
 
 function url($path = '') {
-    return BASE_URL . '/' . ltrim($path, '/');
+    if (empty($path)) {
+        return BASE_URL . '/public/dashboard.php';
+    }
+    
+    // Rutas simples a archivos PHP
+    $routes = [
+        'dashboard' => '/public/dashboard.php',
+        'tariffs' => '/public/tariffs.php',
+        'budgets' => '/public/budgets.php',
+        'login' => '/public/login.php',
+        'logout' => '/public/logout.php',
+        'upload-tariff' => '/public/upload-tariff.php'
+    ];
+    
+    if (isset($routes[$path])) {
+        return BASE_URL . $routes[$path];
+    }
+    
+    return BASE_URL . '/public/' . ltrim($path, '/');
 }
 
 // Verificar conexión
 try {
-    $testConnection = getConnection();
-    $testConnection->query("SELECT 1");
+    getConnection();
 } catch (Exception $e) {
     die("Error: Base de datos no disponible.");
 }

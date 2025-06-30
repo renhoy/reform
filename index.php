@@ -1,6 +1,6 @@
 <?php
 // {"_META_file_path_": "index.php"}
-// Redirección simple sin .htaccess
+// Redirección simple sin router
 
-header('Location: public/dashboard.php');
+header('Location: public/login.php');
 exit;
