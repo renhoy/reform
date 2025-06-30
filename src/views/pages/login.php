@@ -1,8 +1,6 @@
 <?php
-// {"_META_file_path_": "login.php"}
+// {"_META_file_path_": "src/views/pages/login.php"}
 // Página de login
-
-require_once 'config.php';
 
 if ($_POST) {
     $username = $_POST['username'] ?? '';
@@ -15,7 +13,7 @@ if ($_POST) {
     
     if ($user && password_verify($password, $user['password_hash'])) {
         $_SESSION['user_id'] = $user['id'];
-        header('Location: dashboard.php');
+        header('Location: ' . url('dashboard'));
         exit;
     } else {
         $error = "Usuario o contraseña incorrectos";

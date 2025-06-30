@@ -1,6 +1,6 @@
 <?php
 // {"_META_file_path_": "src/controllers/Router.php"}
-// Sistema de rutas para la aplicación
+// Sistema de rutas mejorado
 
 class Router {
     private $routes = [];
@@ -11,7 +11,11 @@ class Router {
 
     private function loadRoutes() {
         global $routes;
-        $this->routes = $routes;
+        if (isset($routes) && is_array($routes)) {
+            $this->routes = $routes;
+        } else {
+            throw new Exception("Routes configuration not found");
+        }
     }
 
     public function handle($request) {
@@ -63,14 +67,16 @@ class Router {
                 if (method_exists($instance, $method)) {
                     call_user_func_array([$instance, $method], $params);
                 } else {
-                    $this->show404();
+                    throw new Exception("Method {$method} not found in {$controller}");
                 }
             } else {
-                $this->show404();
+                throw new Exception("Controller {$controller} not found");
             }
         } elseif (is_callable($handler)) {
             // Es una función
             call_user_func_array($handler, $params);
+        } else {
+            throw new Exception("Invalid route handler");
         }
     }
 
@@ -81,16 +87,32 @@ class Router {
             // Extraer parámetros como variables
             extract($params);
             
-            // Incluir el archivo de vista
+            // Buffer de salida para plantilla base si existe
+            ob_start();
             include $viewFile;
+            $content = ob_get_clean();
+            
+            // Verificar si hay plantilla base
+            $baseTemplate = SRC_PATH . '/views/templates/base.php';
+            if (file_exists($baseTemplate)) {
+                include $baseTemplate;
+            } else {
+                echo $content;
+            }
         } else {
-            $this->show404();
+            throw new Exception("View file not found: {$viewFile}");
         }
     }
 
     private function show404() {
         http_response_code(404);
-        include SRC_PATH . '/views/templates/404.php';
+        $notFoundFile = SRC_PATH . '/views/templates/404.php';
+        
+        if (file_exists($notFoundFile)) {
+            include $notFoundFile;
+        } else {
+            echo '<h1>404 - Página no encontrada</h1>';
+        }
     }
 
     public function redirect($url) {

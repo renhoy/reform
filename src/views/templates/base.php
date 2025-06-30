@@ -1,12 +1,8 @@
 <?php
 // {"_META_file_path_": "src/views/templates/base.php"}
 // Plantilla base para todas las páginas
-
-requireAuth();
 ?>
 <!DOCTYPE html>
-<!-- {"_META_file_path_": "src/views/templates/base.php"} -->
-<!-- Plantilla base para todas las páginas -->
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -20,7 +16,22 @@ requireAuth();
     <?php endif; ?>
 </head>
 <body>
-    <?php include SRC_PATH . '/views/templates/header.php'; ?>
+    <!-- Header integrado -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">Generador de Presupuestos</div>
+            
+            <nav class="main-nav">
+                <a href="<?= url('dashboard') ?>" class="nav-item">Dashboard</a>
+                <a href="<?= url('tariffs') ?>" class="nav-item">Tarifas</a>
+                <a href="<?= url('budgets') ?>" class="nav-item">Presupuestos</a>
+            </nav>
+            
+            <div class="user-menu">
+                <a href="<?= url('logout') ?>" class="logout-btn">Cerrar Sesión</a>
+            </div>
+        </div>
+    </div>
     
     <main>
         <?= $content ?? '' ?>
