@@ -24,7 +24,7 @@ $styles = ['tariffs-styles'];
     </div>
 
     <div class="actions-bar">
-        <a href="<?= url('tariffs') ?>" class="btn btn-primary">Ver Tarifas</a>
+        <a href="<?= url('tariffs') ?>" class="btn btn-primary">Tarifas</a>
         <a href="<?= url('dashboard') ?>" class="btn btn-secondary">Dashboard</a>
     </div>
 

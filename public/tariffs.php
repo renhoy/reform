@@ -75,10 +75,11 @@ function isComplete($tariff) {
                 </div>
                 
                 <?php foreach ($tariffs as $tariff): ?>
+                    <?php $complete = isComplete($tariff); ?>
                     <div class="table-row">
                         <div class="tariff-info">
                             <div class="tariff-name"><?= htmlspecialchars($tariff['name']) ?></div>
-                            <?php if (!isComplete($tariff)): ?>
+                            <?php if (!$complete): ?>
                                 <span class="incomplete-badge">Incompleta</span>
                             <?php endif; ?>
                         </div>
@@ -86,7 +87,12 @@ function isComplete($tariff) {
                             <?= date('d/m/Y H:i', strtotime($tariff['created_at'])) ?>
                         </div>
                         <div class="tariff-actions">
+                            <?php if ($complete): ?>
+                                <a href="form.php?tariff_id=<?= $tariff['id'] ?>" class="btn btn-primary btn-small">Generar Presupuesto</a>
+                            <?php endif; ?>
                             <a href="edit-tariff.php?id=<?= $tariff['id'] ?>" class="btn btn-secondary btn-small">Editar</a>
+                            <a href="duplicate-tariff.php?id=<?= $tariff['id'] ?>" class="btn btn-info btn-small" 
+                               onclick="return confirm('¿Duplicar esta tarifa?')">Duplicar</a>
                             <a href="delete-tariff.php?id=<?= $tariff['id'] ?>" class="btn btn-danger btn-small" 
                                onclick="return confirm('¿Eliminar esta tarifa?')">Borrar</a>
                         </div>

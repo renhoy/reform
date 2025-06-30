@@ -13,7 +13,7 @@ if ($_POST) {
     
     if ($user && password_verify($password, $user['password_hash'])) {
         $_SESSION['user_id'] = $user['id'];
-        header('Location: ' . url('dashboard'));
+        header('Location: dashboard.php');
         exit;
     } else {
         $error = "Usuario o contraseña incorrectos";

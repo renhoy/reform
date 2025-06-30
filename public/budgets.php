@@ -47,11 +47,6 @@ $budgets = $pdo->query("
             <h1>Presupuestos Generados</h1>
         </div>
 
-        <div class="actions-bar">
-            <a href="tariffs.php" class="btn btn-primary">Ver Tarifas</a>
-            <a href="dashboard.php" class="btn btn-secondary">Dashboard</a>
-        </div>
-
         <?php if (empty($budgets)): ?>
             <div class="empty-state">
                 <h2>No hay presupuestos</h2>

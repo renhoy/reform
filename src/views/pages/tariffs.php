@@ -46,7 +46,6 @@ $styles = ['tariffs-styles'];
 
     <div class="actions-bar">
         <a href="<?= url('tariffs/new') ?>" class="btn btn-primary">Crear Tarifa</a>
-        <a href="<?= url('budgets') ?>" class="btn btn-secondary">Ver Presupuestos</a>
     </div>
 
     <?php if (empty($tariffs)): ?>
