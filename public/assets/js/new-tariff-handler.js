@@ -1,6 +1,5 @@
-// Handler para nueva tarifa con funcionalidades mejoradas
-// {"_META_file_path_": "js/new-tariff-handler.js"}
-//
+// Handler para nueva tarifa con funcionalidades completas
+// {"_META_file_path_": "public/assets/js/new-tariff-handler.js"}
 
 class NewTariffHandler {
     constructor() {
@@ -51,6 +50,123 @@ class NewTariffHandler {
         document.getElementById('exportCsv')?.addEventListener('click', () => this.exportCsv());
         document.getElementById('showJson')?.addEventListener('click', () => this.showJson());
         document.getElementById('deleteTariff')?.addEventListener('click', () => this.deleteTariff());
+        document.getElementById('saveAsTemplate')?.addEventListener('click', () => this.openSaveTemplateModal());
+        document.getElementById('template_select')?.addEventListener('change', (e) => this.loadTemplate(e.target.value));
+        
+        // Modal guardar plantilla
+        this.initializeSaveTemplateModal();
+    }
+
+    initializeSaveTemplateModal() {
+        const modal = document.getElementById('saveTemplateModal');
+        const closeBtn = modal?.querySelector('.close-modal');
+        const form = document.getElementById('saveTemplateForm');
+        
+        closeBtn?.addEventListener('click', () => this.closeSaveTemplateModal());
+        form?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.saveAsTemplate();
+        });
+        
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) this.closeSaveTemplateModal();
+        });
+    }
+
+    openSaveTemplateModal() {
+        document.getElementById('saveTemplateModal').style.display = 'block';
+    }
+
+    closeSaveTemplateModal() {
+        document.getElementById('saveTemplateModal').style.display = 'none';
+        document.getElementById('saveTemplateForm').reset();
+    }
+
+    saveAsTemplate() {
+        const formData = new FormData(document.getElementById('tariffForm'));
+        const templateName = document.getElementById('template_name').value;
+        const templateDescription = document.getElementById('template_description').value;
+        
+        const templateData = {
+            title: formData.get('tariff_name'),
+            description: formData.get('description'),
+            logo_url: formData.get('logo_url'),
+            company_name: formData.get('company_name'),
+            nif: formData.get('company_nif'),
+            address: formData.get('company_address'),
+            contact: formData.get('company_contact'),
+            template: formData.get('template'),
+            primary_color: formData.get('primary_color'),
+            secondary_color: formData.get('secondary_color'),
+            summary_note: formData.get('summary_note'),
+            conditions_note: formData.get('conditions_note'),
+            legal_note: formData.get('legal_note'),
+            json_tariff_data: this.jsonData
+        };
+        
+        fetch('save-template.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: templateName,
+                description: templateDescription,
+                template_data: templateData
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                this.closeSaveTemplateModal();
+                alert('Plantilla guardada correctamente');
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al guardar la plantilla');
+        });
+    }
+
+    loadTemplate(templateId) {
+        if (!templateId) return;
+        
+        fetch(`get-template.php?id=${templateId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.loadTemplateData(JSON.parse(data.template.template_data));
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    loadTemplateData(templateData) {
+        const form = document.getElementById('tariffForm');
+        
+        form.querySelector('#tariff_name').value = templateData.title || '';
+        form.querySelector('#description').value = templateData.description || '';
+        form.querySelector('#company_name').value = templateData.company_name || '';
+        form.querySelector('#company_nif').value = templateData.nif || '';
+        form.querySelector('#company_address').value = templateData.address || '';
+        form.querySelector('#company_contact').value = templateData.contact || '';
+        form.querySelector('#logo_url').value = templateData.logo_url || '';
+        form.querySelector('#template').value = templateData.template || '';
+        form.querySelector('#primary_color').value = templateData.primary_color || '#e8951c';
+        form.querySelector('#secondary_color').value = templateData.secondary_color || '#109c61';
+        form.querySelector('#summary_note').value = templateData.summary_note || '';
+        form.querySelector('#conditions_note').value = templateData.conditions_note || '';
+        form.querySelector('#legal_note').value = templateData.legal_note || '';
+        
+        // Actualizar previews de color
+        document.getElementById('primaryColorPreview').style.background = templateData.primary_color || '#e8951c';
+        document.getElementById('secondaryColorPreview').style.background = templateData.secondary_color || '#109c61';
+        
+        // Cargar datos de tarifa si existen
+        if (templateData.json_tariff_data && templateData.json_tariff_data.length > 0) {
+            this.jsonData = templateData.json_tariff_data;
+            this.showTariffSection();
+        }
     }
 
     initializeColorPickers() {

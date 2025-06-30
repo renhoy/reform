@@ -1,6 +1,6 @@
 <?php
 // {"_META_file_path_": "public/tariffs.php"}
-// Tarifas directo y simple
+// Sistema completo de tarifas
 
 define('ROOT_PATH', dirname(__DIR__));
 define('SRC_PATH', ROOT_PATH . '/src');
@@ -10,9 +10,30 @@ require_once SRC_PATH . '/config/config.php';
 requireAuth();
 
 $pdo = getConnection();
+
+// Procesar cambios de estado/acceso
+if ($_POST) {
+    $tariffId = $_POST['tariff_id'] ?? null;
+    $field = $_POST['field'] ?? null;
+    $value = $_POST['value'] ?? null;
+    
+    if ($tariffId && $field && in_array($field, ['status', 'access'])) {
+        $stmt = $pdo->prepare("UPDATE tariffs SET $field = ? WHERE id = ? AND user_id = ?");
+        $stmt->execute([$value, $tariffId, $_SESSION['user_id']]);
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true]);
+        exit;
+    }
+}
+
+// Obtener tarifas con contadores
 $tariffs = $pdo->query("
-    SELECT * FROM tariffs 
-    ORDER BY created_at DESC
+    SELECT t.*, u.name as author_name,
+           (SELECT COUNT(*) FROM budgets WHERE tariff_id = t.id) as budget_count
+    FROM tariffs t 
+    LEFT JOIN users u ON t.user_id = u.id 
+    WHERE t.user_id = {$_SESSION['user_id']}
+    ORDER BY t.created_at DESC
 ")->fetchAll();
 
 function isComplete($tariff) {
@@ -30,31 +51,20 @@ function isComplete($tariff) {
     <link rel="stylesheet" href="assets/css/tariffs-styles.css">
 </head>
 <body>
-    <div class="header">
-        <div class="header-content">
-            <div class="logo">Generador de Presupuestos</div>
-            <nav class="main-nav">
-                <a href="dashboard.php" class="nav-item">Dashboard</a>
-                <a href="tariffs.php" class="nav-item active">Tarifas</a>
-                <a href="budgets.php" class="nav-item">Presupuestos</a>
-            </nav>
-            <div class="user-menu">
-                <a href="logout.php" class="logout-btn">Cerrar Sesión</a>
-            </div>
-        </div>
-    </div>
+    <?php include SRC_PATH . '/views/templates/header.php'; ?>
 
     <div class="container">
         <div class="page-header">
             <h1>Gestión de Tarifas</h1>
         </div>
 
-        <?php if (isset($_GET['duplicated'])): ?>
-            <div class="alert alert-success">Tarifa duplicada correctamente</div>
+        <?php if (isset($_GET['success'])): ?>
+            <div class="alert alert-success">Tarifa guardada correctamente</div>
         <?php endif; ?>
 
         <div class="actions-bar">
             <a href="upload-tariff.php" class="btn btn-primary">Crear Tarifa</a>
+            <a href="templates.php" class="btn btn-info">Plantillas</a>
             <a href="budgets.php" class="btn btn-secondary">Ver Presupuestos</a>
         </div>
 
@@ -67,8 +77,13 @@ function isComplete($tariff) {
         <?php else: ?>
             <div class="tariffs-table">
                 <div class="table-header">
-                    <div>Nombre de Tarifa</div>
+                    <div>Nombre</div>
+                    <div>Descripción</div>
+                    <div>Estado</div>
                     <div>Fecha</div>
+                    <div>Autor</div>
+                    <div>Acceso</div>
+                    <div>Contador</div>
                     <div>Acciones</div>
                 </div>
                 
@@ -81,23 +96,60 @@ function isComplete($tariff) {
                                 <span class="incomplete-badge">Incompleta</span>
                             <?php endif; ?>
                         </div>
-                        <div class="tariff-date">
-                            <?= date('d/m/Y H:i', strtotime($tariff['created_at'])) ?>
+                        
+                        <div class="tariff-description">
+                            <?= htmlspecialchars(substr($tariff['description'] ?? '', 0, 50)) ?>
+                            <?= strlen($tariff['description'] ?? '') > 50 ? '...' : '' ?>
                         </div>
+                        
+                        <div class="status-cell">
+                            <?php if ($complete): ?>
+                                <select class="status-select" data-tariff-id="<?= $tariff['id'] ?>" data-field="status">
+                                    <option value="active" <?= ($tariff['status'] ?? 'active') === 'active' ? 'selected' : '' ?>>Activa</option>
+                                    <option value="inactive" <?= ($tariff['status'] ?? 'active') === 'inactive' ? 'selected' : '' ?>>Inactiva</option>
+                                </select>
+                            <?php else: ?>
+                                <span class="status-pending">Pendiente</span>
+                            <?php endif; ?>
+                        </div>
+                        
+                        <div class="tariff-date">
+                            <?= date('d/m/Y', strtotime($tariff['created_at'])) ?>
+                        </div>
+                        
+                        <div class="author-name">
+                            <?= htmlspecialchars($tariff['author_name']) ?>
+                        </div>
+                        
+                        <div class="access-cell">
+                            <select class="access-select" data-tariff-id="<?= $tariff['id'] ?>" data-field="access">
+                                <option value="private" <?= ($tariff['access'] ?? 'private') === 'private' ? 'selected' : '' ?>>Privado</option>
+                                <option value="public" <?= ($tariff['access'] ?? 'private') === 'public' ? 'selected' : '' ?>>Público</option>
+                            </select>
+                        </div>
+                        
+                        <div class="counter-cell">
+                            <?php if ($tariff['budget_count'] > 0): ?>
+                                <button class="counter-btn" onclick="viewBudgets(<?= $tariff['id'] ?>)">
+                                    <?= $tariff['budget_count'] ?>
+                                </button>
+                            <?php endif; ?>
+                        </div>
+                        
                         <div class="tariff-actions">
                             <?php if ($complete): ?>
                                 <a href="form.php?tariff_id=<?= $tariff['id'] ?>" class="btn btn-primary btn-small">Generar Presupuesto</a>
                             <?php endif; ?>
                             <a href="edit-tariff.php?id=<?= $tariff['id'] ?>" class="btn btn-secondary btn-small">Editar</a>
-                            <a href="duplicate-tariff.php?id=<?= $tariff['id'] ?>" class="btn btn-info btn-small" 
-                               onclick="return confirm('¿Duplicar esta tarifa?')">Duplicar</a>
-                            <a href="delete-tariff.php?id=<?= $tariff['id'] ?>" class="btn btn-danger btn-small" 
-                               onclick="return confirm('¿Eliminar esta tarifa?')">Borrar</a>
+                            <button class="btn btn-info btn-small" onclick="duplicateTariff(<?= $tariff['id'] ?>)">Duplicar</button>
+                            <button class="btn btn-danger btn-small" onclick="deleteTariff(<?= $tariff['id'] ?>)">Borrar</button>
                         </div>
                     </div>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
     </div>
+
+    <script src="assets/js/tariffs-handler.js"></script>
 </body>
 </html>
