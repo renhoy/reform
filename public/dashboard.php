@@ -10,9 +10,9 @@ require_once SRC_PATH . '/config/config.php';
 requireAuth();
 
 $pdo = getConnection();
-$tariffsCount = $pdo->query("SELECT COUNT(*) FROM tariffs")->fetchColumn();
-$budgetsCount = $pdo->query("SELECT COUNT(*) FROM budgets")->fetchColumn();
-$recentBudgets = $pdo->query("SELECT COUNT(*) FROM budgets WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)")->fetchColumn();
+$tariffsCount = $pdo->query("SELECT COUNT(*) FROM tariffs WHERE user_id = " . $_SESSION['user_id'])->fetchColumn();
+$budgetsCount = $pdo->query("SELECT COUNT(*) FROM budgets WHERE user_id = " . $_SESSION['user_id'])->fetchColumn();
+$recentBudgets = $pdo->query("SELECT COUNT(*) FROM budgets WHERE user_id = " . $_SESSION['user_id'] . " AND created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)")->fetchColumn();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -38,14 +38,12 @@ $recentBudgets = $pdo->query("SELECT COUNT(*) FROM budgets WHERE created_at >= D
         </div>
     </div>
 
-    
     <div class="container">
         <div class="welcome-section">
-            <h1>Dashboard</h1>
-            <p>Gestiona tus tarifas y presupuestos de forma rápida, sencilla y profesional</p>
+            <h1>Bienvenido al Generador de Presupuestos</h1>
+            <p>Gestiona tus tarifas y genera presupuestos profesionales de forma rápida y sencilla.</p>
         </div>
 
-        
         <div class="quick-actions">
             <div class="action-card">
                 <div class="card-icon">📊</div>
@@ -53,14 +51,14 @@ $recentBudgets = $pdo->query("SELECT COUNT(*) FROM budgets WHERE created_at >= D
                 <p>Crea, edita y organiza tus tarifas de precios</p>
                 <a href="tariffs.php" class="btn btn-primary">Ir a Tarifas</a>
             </div>
-            
+
             <div class="action-card">
                 <div class="card-icon">📋</div>
-                <h3>Gestionar Presupuestos</h3>
+                <h3>Ver Presupuestos</h3>
                 <p>Consulta todos los presupuestos generados</p>
-                <a href="budgets.php" class="btn btn-secondary">Ir a Presupuestos</a>
+                <a href="budgets.php" class="btn btn-secondary">Ver Presupuestos</a>
             </div>
-            
+
             <div class="action-card">
                 <div class="card-icon">✨</div>
                 <h3>Crear Nueva Tarifa</h3>
@@ -68,7 +66,7 @@ $recentBudgets = $pdo->query("SELECT COUNT(*) FROM budgets WHERE created_at >= D
                 <a href="upload-tariff.php" class="btn btn-info">Nueva Tarifa</a>
             </div>
         </div>
-        
+
         <div class="stats-section">
             <div class="stat-card">
                 <div class="stat-number"><?= $tariffsCount ?></div>

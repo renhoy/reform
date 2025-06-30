@@ -3,20 +3,25 @@
 // Página de login
 
 if ($_POST) {
-    $username = $_POST['username'] ?? '';
+    $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
     
     $pdo = getConnection();
-    $stmt = $pdo->prepare("SELECT id, password_hash FROM users WHERE username = ?");
-    $stmt->execute([$username]);
+    $stmt = $pdo->prepare("SELECT id, password_hash FROM users WHERE email = ?");
+    $stmt->execute([$email]);
     $user = $stmt->fetch();
     
     if ($user && password_verify($password, $user['password_hash'])) {
         $_SESSION['user_id'] = $user['id'];
+        
+        // Actualizar último acceso
+        $stmt = $pdo->prepare("UPDATE users SET last_access = NOW() WHERE id = ?");
+        $stmt->execute([$user['id']]);
+        
         header('Location: dashboard.php');
         exit;
     } else {
-        $error = "Usuario o contraseña incorrectos";
+        $error = "Email o contraseña incorrectos";
     }
 }
 ?>
@@ -49,8 +54,8 @@ if ($_POST) {
             <?php endif; ?>
             <form method="POST">
                 <div class="form-group">
-                    <label for="username">Usuario:</label>
-                    <input type="text" id="username" name="username" required>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Contraseña:</label>

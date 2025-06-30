@@ -16,13 +16,7 @@ if (!$uuid) {
 }
 
 $pdo = getConnection();
-$stmt = $pdo->prepare("
-    SELECT b.*, t.name as tariff_name, c.name as company_name
-    FROM budgets b 
-    LEFT JOIN tariffs t ON b.tariff_id = t.id 
-    LEFT JOIN company_config c ON t.id = c.tariff_id 
-    WHERE b.uuid = ?
-");
+$stmt = $pdo->prepare("SELECT * FROM budgets WHERE uuid = ?");
 $stmt->execute([$uuid]);
 $budget = $stmt->fetch();
 
@@ -31,8 +25,8 @@ if (!$budget) {
     exit;
 }
 
-$client_data = json_decode($budget['client_data'], true);
-$budget_data = json_decode($budget['budget_data'], true);
+$tariff_data = json_decode($budget['json_tariff_data'], true);
+$budget_data = json_decode($budget['json_budget_data'], true);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -79,17 +73,17 @@ $budget_data = json_decode($budget['budget_data'], true);
         <div class="budget-info">
             <div class="info-section">
                 <h3>Datos del Cliente</h3>
-                <p><strong>Nombre:</strong> <?= htmlspecialchars($client_data['name']) ?></p>
-                <p><strong>NIF/NIE:</strong> <?= htmlspecialchars($client_data['nif_nie']) ?></p>
-                <p><strong>Email:</strong> <?= htmlspecialchars($client_data['email']) ?></p>
-                <p><strong>Teléfono:</strong> <?= htmlspecialchars($client_data['phone']) ?></p>
-                <p><strong>Dirección:</strong> <?= htmlspecialchars($client_data['address']) ?></p>
+                <p><strong>Nombre:</strong> <?= htmlspecialchars($budget['client_name']) ?></p>
+                <p><strong>NIF/NIE:</strong> <?= htmlspecialchars($budget['client_nif_nie']) ?></p>
+                <p><strong>Email:</strong> <?= htmlspecialchars($budget['client_email']) ?></p>
+                <p><strong>Teléfono:</strong> <?= htmlspecialchars($budget['client_phone']) ?></p>
+                <p><strong>Dirección:</strong> <?= htmlspecialchars($budget['client_address']) ?></p>
             </div>
             
             <div class="info-section">
                 <h3>Información del Presupuesto</h3>
-                <p><strong>Empresa:</strong> <?= htmlspecialchars($budget['company_name']) ?></p>
-                <p><strong>Tarifa:</strong> <?= htmlspecialchars($budget['tariff_name']) ?></p>
+                <p><strong>Empresa:</strong> <?= htmlspecialchars($tariff_data['name']) ?></p>
+                <p><strong>Tarifa:</strong> <?= htmlspecialchars($tariff_data['title']) ?></p>
                 <p><strong>Fecha:</strong> <?= date('d/m/Y H:i', strtotime($budget['created_at'])) ?></p>
                 <p><strong>Estado:</strong> <?= ucfirst($budget['status']) ?></p>
             </div>

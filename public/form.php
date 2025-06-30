@@ -16,12 +16,7 @@ if (!$tariff_id) {
 }
 
 $pdo = getConnection();
-$stmt = $pdo->prepare("
-    SELECT t.*, c.* 
-    FROM tariffs t 
-    LEFT JOIN company_config c ON t.id = c.tariff_id 
-    WHERE t.id = ?
-");
+$stmt = $pdo->prepare("SELECT * FROM tariffs WHERE id = ?");
 $stmt->execute([$tariff_id]);
 $data = $stmt->fetch();
 
@@ -30,14 +25,14 @@ if (!$data) {
     exit;
 }
 
-$tariffData = json_decode($data['json_data'], true);
+$tariffData = json_decode($data['json_tariff_data'], true);
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Presupuesto - <?= htmlspecialchars($data['name']) ?></title>
+    <title>Presupuesto - <?= htmlspecialchars($data['title']) ?></title>
     <link rel="stylesheet" href="<?= asset('css/form-styles.css') ?>">
 </head>
 <body>

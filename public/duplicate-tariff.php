@@ -26,38 +26,35 @@ try {
     $original_tariff = $stmt->fetch();
     
     if ($original_tariff) {
-        // Crear nueva tarifa
-        $new_name = $original_tariff['name'] . ' (Copia)';
-        $stmt = $pdo->prepare("INSERT INTO tariffs (name, file_path, json_data) VALUES (?, ?, ?)");
-        $stmt->execute([$new_name, $original_tariff['file_path'], $original_tariff['json_data']]);
-        $new_tariff_id = $pdo->lastInsertId();
+        $new_name = $original_tariff['title'] . ' (Copia)';
+        $new_uuid = generateUUID();
         
-        // Duplicar configuración de empresa
-        $stmt = $pdo->prepare("SELECT * FROM company_config WHERE tariff_id = ?");
-        $stmt->execute([$id]);
-        $original_config = $stmt->fetch();
-        
-        if ($original_config) {
-            $stmt = $pdo->prepare("
-                INSERT INTO company_config 
-                (tariff_id, name, nif, address, contact, logo_url, template, primary_color, secondary_color, summary_note, conditions_note, legal_note) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ");
-            $stmt->execute([
-                $new_tariff_id,
-                $original_config['name'],
-                $original_config['nif'],
-                $original_config['address'],
-                $original_config['contact'],
-                $original_config['logo_url'],
-                $original_config['template'],
-                $original_config['primary_color'],
-                $original_config['secondary_color'],
-                $original_config['summary_note'],
-                $original_config['conditions_note'],
-                $original_config['legal_note']
-            ]);
-        }
+        $stmt = $pdo->prepare("
+            INSERT INTO tariffs 
+            (uuid, title, description, name, nif, address, contact, logo_url, 
+             template, primary_color, secondary_color, summary_note, conditions_note, 
+             access, legal_note, json_tariff_data, user_id) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+        $stmt->execute([
+            $new_uuid,
+            $new_name,
+            $original_tariff['description'],
+            $original_tariff['name'],
+            $original_tariff['nif'],
+            $original_tariff['address'],
+            $original_tariff['contact'],
+            $original_tariff['logo_url'],
+            $original_tariff['template'],
+            $original_tariff['primary_color'],
+            $original_tariff['secondary_color'],
+            $original_tariff['summary_note'],
+            $original_tariff['conditions_note'],
+            $original_tariff['access'],
+            $original_tariff['legal_note'],
+            $original_tariff['json_tariff_data'],
+            $_SESSION['user_id']
+        ]);
     }
     
     $pdo->commit();

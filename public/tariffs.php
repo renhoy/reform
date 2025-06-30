@@ -11,14 +11,12 @@ requireAuth();
 
 $pdo = getConnection();
 $tariffs = $pdo->query("
-    SELECT t.*, c.name as company_name, c.nif, c.address, c.contact 
-    FROM tariffs t 
-    LEFT JOIN company_config c ON t.id = c.tariff_id 
-    ORDER BY t.created_at DESC
+    SELECT * FROM tariffs 
+    ORDER BY created_at DESC
 ")->fetchAll();
 
 function isComplete($tariff) {
-    return !empty($tariff['company_name']) && !empty($tariff['nif']) && 
+    return !empty($tariff['name']) && !empty($tariff['nif']) && 
            !empty($tariff['address']) && !empty($tariff['contact']);
 }
 ?>
@@ -78,7 +76,7 @@ function isComplete($tariff) {
                     <?php $complete = isComplete($tariff); ?>
                     <div class="table-row">
                         <div class="tariff-info">
-                            <div class="tariff-name"><?= htmlspecialchars($tariff['name']) ?></div>
+                            <div class="tariff-name"><?= htmlspecialchars($tariff['title']) ?></div>
                             <?php if (!$complete): ?>
                                 <span class="incomplete-badge">Incompleta</span>
                             <?php endif; ?>

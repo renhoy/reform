@@ -11,10 +11,8 @@ requireAuth();
 
 $pdo = getConnection();
 $budgets = $pdo->query("
-    SELECT b.*, t.name as tariff_name 
-    FROM budgets b 
-    LEFT JOIN tariffs t ON b.tariff_id = t.id 
-    ORDER BY b.created_at DESC 
+    SELECT * FROM budgets 
+    ORDER BY created_at DESC 
     LIMIT 50
 ")->fetchAll();
 ?>
@@ -47,6 +45,11 @@ $budgets = $pdo->query("
             <h1>Presupuestos Generados</h1>
         </div>
 
+        <div class="actions-bar">
+            <a href="tariffs.php" class="btn btn-primary">Ver Tarifas</a>
+            <a href="dashboard.php" class="btn btn-secondary">Dashboard</a>
+        </div>
+
         <?php if (empty($budgets)): ?>
             <div class="empty-state">
                 <h2>No hay presupuestos</h2>
@@ -62,11 +65,10 @@ $budgets = $pdo->query("
                 </div>
                 
                 <?php foreach ($budgets as $budget): ?>
-                    <?php $client = json_decode($budget['client_data'], true); ?>
                     <div class="table-row">
                         <div class="tariff-info">
-                            <div class="tariff-name"><?= htmlspecialchars($client['name'] ?? 'Sin nombre') ?></div>
-                            <small>Tarifa: <?= htmlspecialchars($budget['tariff_name']) ?></small>
+                            <div class="tariff-name"><?= htmlspecialchars($budget['client_name']) ?></div>
+                            <small>UUID: <?= htmlspecialchars($budget['uuid']) ?></small>
                         </div>
                         <div class="tariff-date">
                             <span class="incomplete-badge"><?= ucfirst($budget['status']) ?></span>

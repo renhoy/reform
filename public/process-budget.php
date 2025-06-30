@@ -33,20 +33,19 @@ try {
     }
     
     // Datos del cliente
-    $client_data = [
-        'type' => $_POST['client_type'] ?? '',
-        'name' => $_POST['name'] ?? '',
-        'nif_nie' => $_POST['nif_nie'] ?? '',
-        'phone' => $_POST['phone'] ?? '',
-        'email' => $_POST['email'] ?? '',
-        'web' => $_POST['web'] ?? '',
-        'address' => $_POST['address'] ?? ''
-    ];
+    $client_type = $_POST['client_type'] ?? '';
+    $client_name = $_POST['name'] ?? '';
+    $client_nif_nie = $_POST['nif_nie'] ?? '';
+    $client_phone = $_POST['phone'] ?? '';
+    $client_email = $_POST['email'] ?? '';
+    $client_web = $_POST['web'] ?? '';
+    $client_address = $_POST['address'] ?? '';
+    $client_acceptance = isset($_POST['acceptance']);
     
     $quantities = $_POST['quantity'] ?? [];
     
     // Calcular totales
-    $tariff_data = json_decode($tariff['json_data'], true);
+    $tariff_data = json_decode($tariff['json_tariff_data'], true);
     $budget_items = [];
     $total_base = 0;
     $iva_breakdown = [];
@@ -99,16 +98,30 @@ try {
     // Generar UUID único
     $uuid = generateUUID();
     
-    // Guardar presupuesto
+    // Guardar presupuesto con nueva estructura
     $stmt = $pdo->prepare("
-        INSERT INTO budgets (uuid, tariff_id, client_data, budget_data, status) 
-        VALUES (?, ?, ?, ?, 'pending')
+        INSERT INTO budgets 
+        (uuid, json_tariff_data, client_type, client_name, client_nif_nie, 
+         client_phone, client_email, client_web, client_address, client_acceptance,
+         json_budget_data, status, total, iva, base, user_id) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?)
     ");
     $stmt->execute([
         $uuid,
-        $tariff_id,
-        json_encode($client_data),
-        json_encode($budget_data)
+        json_encode($tariff),
+        $client_type,
+        $client_name,
+        $client_nif_nie,
+        $client_phone,
+        $client_email,
+        $client_web,
+        $client_address,
+        $client_acceptance,
+        json_encode($budget_data),
+        $total_final,
+        $total_iva,
+        $total_base,
+        $_SESSION['user_id']
     ]);
     
     // Redirigir a página de éxito

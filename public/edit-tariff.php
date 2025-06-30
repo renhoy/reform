@@ -16,12 +16,7 @@ if (!$id) {
 }
 
 $pdo = getConnection();
-$stmt = $pdo->prepare("
-    SELECT t.*, c.* 
-    FROM tariffs t 
-    LEFT JOIN company_config c ON t.id = c.tariff_id 
-    WHERE t.id = ?
-");
+$stmt = $pdo->prepare("SELECT * FROM tariffs WHERE id = ?");
 $stmt->execute([$id]);
 $tariff = $stmt->fetch();
 
@@ -42,18 +37,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if (empty($errors)) {
         try {
-            $pdo->beginTransaction();
-            
-            $stmt = $pdo->prepare("UPDATE tariffs SET name = ? WHERE id = ?");
-            $stmt->execute([$tariffName, $id]);
-            
             $stmt = $pdo->prepare("
-                UPDATE company_config SET 
-                name = ?, nif = ?, address = ?, contact = ?, logo_url = ?, 
-                primary_color = ?, secondary_color = ?
-                WHERE tariff_id = ?
+                UPDATE tariffs SET 
+                title = ?, description = ?, name = ?, nif = ?, address = ?, 
+                contact = ?, logo_url = ?, primary_color = ?, secondary_color = ?,
+                summary_note = ?, conditions_note = ?, legal_note = ?
+                WHERE id = ?
             ");
             $stmt->execute([
+                $tariffName,
+                $_POST['description'] ?? '',
                 $companyName,
                 $_POST['company_nif'] ?? '',
                 $_POST['company_address'] ?? '',
@@ -61,24 +54,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_POST['logo_url'] ?? '',
                 $_POST['primary_color'] ?? '#e8951c',
                 $_POST['secondary_color'] ?? '#109c61',
+                $_POST['summary_note'] ?? '',
+                $_POST['conditions_note'] ?? '',
+                $_POST['legal_note'] ?? '',
                 $id
             ]);
             
-            $pdo->commit();
             $success = true;
             
             // Recargar datos
-            $stmt = $pdo->prepare("
-                SELECT t.*, c.* 
-                FROM tariffs t 
-                LEFT JOIN company_config c ON t.id = c.tariff_id 
-                WHERE t.id = ?
-            ");
+            $stmt = $pdo->prepare("SELECT * FROM tariffs WHERE id = ?");
             $stmt->execute([$id]);
             $tariff = $stmt->fetch();
             
         } catch (Exception $e) {
-            $pdo->rollback();
             $errors[] = 'Error al actualizar: ' . $e->getMessage();
         }
     }
