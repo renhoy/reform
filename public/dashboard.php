@@ -10,9 +10,9 @@ require_once SRC_PATH . '/config/config.php';
 requireAuth();
 
 $pdo = getConnection();
-$tariffsCount = $pdo->query("SELECT COUNT(*) FROM tariffs WHERE user_id = " . $_SESSION['user_id'])->fetchColumn();
-$budgetsCount = $pdo->query("SELECT COUNT(*) FROM budgets WHERE user_id = " . $_SESSION['user_id'])->fetchColumn();
-$recentBudgets = $pdo->query("SELECT COUNT(*) FROM budgets WHERE user_id = " . $_SESSION['user_id'] . " AND created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)")->fetchColumn();
+$tariffsCount = $pdo->query("SELECT COUNT(*) FROM tariffs")->fetchColumn();
+$budgetsCount = $pdo->query("SELECT COUNT(*) FROM budgets")->fetchColumn();
+$recentBudgets = $pdo->query("SELECT COUNT(*) FROM budgets WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)")->fetchColumn();
 ?>
 <!DOCTYPE html>
 <html lang="es">

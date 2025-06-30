@@ -1,25 +1,29 @@
 <?php
 // {"_META_file_path_": "src/config/config.php"}
-// Configuración principal de la aplicación
+// Configuración principal sin .htaccess
 
 // Configuración de base de datos
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'budget_form_service');
 define('DB_USER', 'root');
 define('DB_PASS', 'root');
-define('DB_PORT', 8889); // Puerto estándar MAMP
+define('DB_PORT', 8889);
 
-// Rutas de la aplicación
+// URLs absolutas
 $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
 $host = $_SERVER['HTTP_HOST'];
 $basePath = dirname($_SERVER['SCRIPT_NAME']);
 
-define('BASE_URL', $protocol . '://' . $host . $basePath);
+// Detectar si estamos en public/
+if (strpos($basePath, '/public') !== false) {
+    $projectPath = str_replace('/public', '', $basePath);
+} else {
+    $projectPath = $basePath;
+}
+
+define('BASE_URL', $protocol . '://' . $host . $projectPath . '/public');
 define('UPLOAD_DIR', PUBLIC_PATH . '/assets/uploads/');
 define('ASSETS_URL', BASE_URL . '/assets');
-
-// Configuración de servicios externos
-define('PDF_SERVICE_URL', 'https://your-pdf-service.com/generate');
 
 // Configuración de sesión
 if (session_status() === PHP_SESSION_NONE) {
@@ -47,7 +51,7 @@ function getConnection() {
             );
         } catch (PDOException $e) {
             error_log("Database connection error: " . $e->getMessage());
-            die("Error de conexión a la base de datos. Verifica que MAMP esté ejecutándose y la base de datos exista.");
+            die("Error de conexión a la base de datos.");
         }
     }
     
@@ -56,7 +60,7 @@ function getConnection() {
 
 function requireAuth() {
     if (!isset($_SESSION['user_id'])) {
-        header('Location: ' . url('login'));
+        header('Location: ' . BASE_URL . '/login.php');
         exit;
     }
 }
@@ -76,30 +80,13 @@ function asset($path) {
 }
 
 function url($path = '') {
-    if (empty($path)) {
-        return BASE_URL . '/dashboard.php';
-    }
-    
-    // Convertir rutas del router a archivos directos
-    $routes = [
-        'dashboard' => 'dashboard.php',
-        'tariffs' => 'tariffs.php',
-        'budgets' => 'budgets.php',
-        'login' => 'login.php',
-        'logout' => 'logout.php'
-    ];
-    
-    if (isset($routes[$path])) {
-        return BASE_URL . '/' . $routes[$path];
-    }
-    
     return BASE_URL . '/' . ltrim($path, '/');
 }
 
-// Verificar conexión y base de datos
+// Verificar conexión
 try {
     $testConnection = getConnection();
     $testConnection->query("SELECT 1");
 } catch (Exception $e) {
-    die("Error: Base de datos no disponible. Asegúrate de:\n1. MAMP está ejecutándose\n2. Base de datos 'budget_form_service' existe\n3. Configuración de conexión es correcta");
+    die("Error: Base de datos no disponible.");
 }

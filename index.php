@@ -1,6 +1,6 @@
 <?php
 // {"_META_file_path_": "index.php"}
-// Redirección automática a public/
+// Redirección simple sin .htaccess
 
-header('Location: public/');
+header('Location: public/dashboard.php');
 exit;
