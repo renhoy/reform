@@ -1,11 +1,9 @@
 <?php
 // {"_META_file_path_": "public/process-budget.php"}
-// Procesar formulario de presupuesto
+// Procesamiento usando esquema original completo
 
 define('ROOT_PATH', dirname(__DIR__));
 define('SRC_PATH', ROOT_PATH . '/src');
-define('PUBLIC_PATH', __DIR__);
-
 require_once SRC_PATH . '/config/config.php';
 requireAuth();
 
@@ -14,8 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$tariff_id = $_POST['tariff_id'] ?? null;
-if (!$tariff_id) {
+$tariff_uuid = $_POST['tariff_uuid'] ?? null;
+if (!$tariff_uuid) {
     header('Location: dashboard.php');
     exit;
 }
@@ -23,24 +21,14 @@ if (!$tariff_id) {
 $pdo = getConnection();
 
 try {
-    // Obtener datos de la tarifa
-    $stmt = $pdo->prepare("SELECT * FROM tariffs WHERE id = ?");
-    $stmt->execute([$tariff_id]);
+    // Obtener tarifa completa
+    $stmt = $pdo->prepare("SELECT * FROM tariffs WHERE uuid = ?");
+    $stmt->execute([$tariff_uuid]);
     $tariff = $stmt->fetch();
     
     if (!$tariff) {
         throw new Exception("Tarifa no encontrada");
     }
-    
-    // Datos del cliente
-    $client_type = $_POST['client_type'] ?? '';
-    $client_name = $_POST['name'] ?? '';
-    $client_nif_nie = $_POST['nif_nie'] ?? '';
-    $client_phone = $_POST['phone'] ?? '';
-    $client_email = $_POST['email'] ?? '';
-    $client_web = $_POST['web'] ?? '';
-    $client_address = $_POST['address'] ?? '';
-    $client_acceptance = isset($_POST['acceptance']);
     
     $quantities = $_POST['quantity'] ?? [];
     
@@ -54,8 +42,8 @@ try {
         if ($item['level'] === 'item' && isset($quantities[$item['id']])) {
             $quantity = floatval($quantities[$item['id']]);
             if ($quantity > 0) {
-                $pvp = floatval($item['pvp']);
-                $iva_rate = floatval($item['iva_percentage']);
+                $pvp = floatval($item['pvp'] ?? 0);
+                $iva_rate = floatval($item['iva_percentage'] ?? 0);
                 
                 $total_item = $quantity * $pvp;
                 $base_amount = $total_item / (1 + $iva_rate / 100);
@@ -66,7 +54,7 @@ try {
                     'name' => $item['name'],
                     'description' => $item['description'] ?? '',
                     'quantity' => $quantity,
-                    'unit' => $item['unit'],
+                    'unit' => $item['unit'] ?? '',
                     'pvp' => $pvp,
                     'iva_rate' => $iva_rate,
                     'total' => $total_item
@@ -95,28 +83,31 @@ try {
         ]
     ];
     
-    // Generar UUID único
     $uuid = generateUUID();
     
-    // Guardar presupuesto con nueva estructura
+    // Guardar usando esquema original completo
     $stmt = $pdo->prepare("
         INSERT INTO budgets 
         (uuid, json_tariff_data, client_type, client_name, client_nif_nie, 
-         client_phone, client_email, client_web, client_address, client_acceptance,
-         json_budget_data, status, total, iva, base, user_id) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?)
+         client_phone, client_email, client_web, client_address, client_postal_code,
+         client_locality, client_province, client_acceptance, json_budget_data, 
+         status, total, iva, base, start_date, end_date, user_id) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 30 DAY), ?)
     ");
     $stmt->execute([
         $uuid,
-        json_encode($tariff),
-        $client_type,
-        $client_name,
-        $client_nif_nie,
-        $client_phone,
-        $client_email,
-        $client_web,
-        $client_address,
-        $client_acceptance,
+        json_encode($tariff), // Snapshot completo tarifa
+        $_POST['client_type'] ?? '',
+        $_POST['client_name'] ?? '',
+        $_POST['client_nif_nie'] ?? '',
+        $_POST['client_phone'] ?? '',
+        $_POST['client_email'] ?? '',
+        $_POST['client_web'] ?? '',
+        $_POST['client_address'] ?? '',
+        $_POST['client_postal_code'] ?? '',
+        $_POST['client_locality'] ?? '',
+        $_POST['client_province'] ?? '',
+        isset($_POST['client_acceptance']) ? 1 : 0,
         json_encode($budget_data),
         $total_final,
         $total_iva,
@@ -124,7 +115,6 @@ try {
         $_SESSION['user_id']
     ]);
     
-    // Redirigir a página de éxito
     header('Location: budget-success.php?uuid=' . $uuid);
     exit;
     
