@@ -1,6 +1,6 @@
 <?php
 // {"_META_file_path_": "public/dashboard.php"}
-// Dashboard rediseñado con estilos coherentes
+// Dashboard con layout GitHub reorganizado
 
 define('ROOT_PATH', dirname(__DIR__));
 define('SRC_PATH', ROOT_PATH . '/src');
@@ -20,6 +20,7 @@ $recentBudgets = $pdo->query("SELECT COUNT(*) FROM budgets WHERE user_id = " . $
     <title>Dashboard - Generador de Presupuestos</title>
     <link rel="stylesheet" href="<?= asset('css/common-styles.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/header-styles.css') ?>">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <style>
         .dashboard-container {
             max-width: 1200px;
@@ -27,29 +28,39 @@ $recentBudgets = $pdo->query("SELECT COUNT(*) FROM budgets WHERE user_id = " . $
             padding: 2rem;
         }
 
-        .welcome-section {
-            text-align: center;
+        .page-title {
+            font-size: 2rem;
+            color: var(--dark-gray);
+            font-weight: 600;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
             margin-bottom: 3rem;
         }
 
-        .welcome-section h1 {
-            color: var(--dark-gray);
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
         }
 
-        .welcome-section p {
-            color: #666;
-            font-size: 1.2rem;
-            max-width: 600px;
-            margin: 0 auto;
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
         }
 
         .quick-actions {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 2rem;
-            margin-bottom: 3rem;
         }
 
         .action-card {
@@ -67,8 +78,9 @@ $recentBudgets = $pdo->query("SELECT COUNT(*) FROM budgets WHERE user_id = " . $
         }
 
         .card-icon {
-            font-size: 3rem;
             margin-bottom: 1rem;
+            display: flex;
+            justify-content: center;
         }
 
         .action-card h3 {
@@ -81,20 +93,6 @@ $recentBudgets = $pdo->query("SELECT COUNT(*) FROM budgets WHERE user_id = " . $
             color: #666;
             margin-bottom: 1.5rem;
             line-height: 1.5;
-        }
-
-        .stats-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         .stat-number {
@@ -112,19 +110,11 @@ $recentBudgets = $pdo->query("SELECT COUNT(*) FROM budgets WHERE user_id = " . $
         }
 
         @media (max-width: 768px) {
-            .welcome-section h1 {
-                font-size: 2rem;
-            }
-            
-            .welcome-section p {
-                font-size: 1rem;
-            }
-            
-            .quick-actions {
+            .stats-section {
                 grid-template-columns: 1fr;
             }
             
-            .stats-section {
+            .quick-actions {
                 grid-template-columns: 1fr;
             }
         }
@@ -146,34 +136,10 @@ $recentBudgets = $pdo->query("SELECT COUNT(*) FROM budgets WHERE user_id = " . $
     </div>
 
     <div class="dashboard-container">
-        <div class="welcome-section">
-            <h1>Bienvenido al Generador de Presupuestos</h1>
-            <p>Gestiona tus tarifas y genera presupuestos profesionales de forma rápida y sencilla.</p>
-        </div>
+        <!-- Línea 1: Título -->
+        <h1 class="page-title">Dashboard</h1>
 
-        <div class="quick-actions">
-            <div class="action-card">
-                <div class="card-icon">📊</div>
-                <h3>Gestionar Tarifas</h3>
-                <p>Crea, edita y organiza tus tarifas de precios</p>
-                <a href="tariffs.php" class="btn btn-secondary">Ir a Tarifas</a>
-            </div>
-
-            <div class="action-card">
-                <div class="card-icon">📋</div>
-                <h3>Ver Presupuestos</h3>
-                <p>Consulta todos los presupuestos generados</p>
-                <a href="budgets.php" class="btn btn-primary">Ver Presupuestos</a>
-            </div>
-
-            <div class="action-card">
-                <div class="card-icon">✨</div>
-                <h3>Crear Nueva Tarifa</h3>
-                <p>Comienza creando una nueva tarifa de precios</p>
-                <a href="upload-tariff.php" class="btn btn-secondary">Nueva Tarifa</a>
-            </div>
-        </div>
-
+        <!-- Línea 2: Estadísticas -->
         <div class="stats-section">
             <div class="stat-card">
                 <div class="stat-number"><?= $tariffsCount ?></div>
@@ -190,6 +156,44 @@ $recentBudgets = $pdo->query("SELECT COUNT(*) FROM budgets WHERE user_id = " . $
                 <div class="stat-label">Esta Semana</div>
             </div>
         </div>
+
+        <!-- Línea 3: Acciones -->
+        <div class="quick-actions">
+            <div class="action-card">
+                <div class="card-icon">
+                    <i data-lucide="folder" style="width: 48px; height: 48px; color: var(--secondary-orange);"></i>
+                </div>
+                <h3>Tarifas</h3>
+                <p>Crea, edita y organiza tus tarifas de precios</p>
+                <a href="tariffs.php" class="btn btn-secondary">Ir a Tarifas</a>
+            </div>
+
+            <div class="action-card">
+                <div class="card-icon">
+                    <i data-lucide="file-text" style="width: 48px; height: 48px; color: var(--primary-green);"></i>
+                </div>
+                <h3>Presupuestos</h3>
+                <p>Consulta todos los presupuestos generados</p>
+                <a href="budgets.php" class="btn btn-primary">Ir a Presupuestos</a>
+            </div>
+
+            <div class="action-card">
+                <div class="card-icon">
+                    <i data-lucide="plus-circle" style="width: 48px; height: 48px; color: var(--secondary-orange);"></i>
+                </div>
+                <h3>Crear Nueva Tarifa</h3>
+                <p>Comienza creando una nueva tarifa de precios</p>
+                <a href="upload-tariff.php" class="btn btn-secondary">Nueva Tarifa</a>
+            </div>
+        </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
 </body>
 </html>

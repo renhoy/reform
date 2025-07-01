@@ -1,4 +1,4 @@
-// Handler para nueva tarifa con funcionalidades completas
+// JavaScript para crear tarifa con CSV processor
 // {"_META_file_path_": "public/assets/js/new-tariff-handler.js"}
 
 class NewTariffHandler {
@@ -10,16 +10,25 @@ class NewTariffHandler {
 
     initialize() {
         this.initializeEventListeners();
-        this.initializeColorPickers();
+        this.initializeFileUpload();
     }
 
     initializeEventListeners() {
-        // Archivo CSV
+        // Botones de acción
+        document.getElementById('clearAll')?.addEventListener('click', () => this.clearAll());
+        document.getElementById('downloadTemplate')?.addEventListener('click', () => this.downloadTemplate());
+        document.getElementById('exportPreview')?.addEventListener('click', () => this.exportPreview());
+        document.getElementById('deletePreview')?.addEventListener('click', () => this.deletePreview());
+    }
+
+    initializeFileUpload() {
         const fileInput = document.getElementById('csv_file');
         const uploadArea = document.querySelector('.upload-area');
+        const logoInput = document.getElementById('logo_file');
+        const imageUploadArea = document.getElementById('imageUploadArea');
 
         if (fileInput && uploadArea) {
-            // Drag and drop
+            // CSV drag and drop
             uploadArea.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 uploadArea.classList.add('dragover');
@@ -37,213 +46,120 @@ class NewTariffHandler {
                 const files = e.dataTransfer.files;
                 if (files.length > 0) {
                     fileInput.files = files;
-                    this.handleFileUpload();
+                    this.handleCSVUpload();
                 }
             });
 
-            fileInput.addEventListener('change', () => this.handleFileUpload());
+            fileInput.addEventListener('change', () => this.handleCSVUpload());
         }
 
-        // Botones de acción
-        document.getElementById('clearAll')?.addEventListener('click', () => this.clearAll());
-        document.getElementById('downloadTemplate')?.addEventListener('click', () => this.downloadTemplate());
-        document.getElementById('exportCsv')?.addEventListener('click', () => this.exportCsv());
-        document.getElementById('showJson')?.addEventListener('click', () => this.showJson());
-        document.getElementById('deleteTariff')?.addEventListener('click', () => this.deleteTariff());
-        document.getElementById('saveAsTemplate')?.addEventListener('click', () => this.openSaveTemplateModal());
-        document.getElementById('template_select')?.addEventListener('change', (e) => this.loadTemplate(e.target.value));
-        
-        // Modal guardar plantilla
-        this.initializeSaveTemplateModal();
+        // Image drag and drop
+        if (imageUploadArea) {
+            imageUploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                imageUploadArea.classList.add('dragover');
+            });
+
+            imageUploadArea.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                imageUploadArea.classList.remove('dragover');
+            });
+
+            imageUploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                imageUploadArea.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    logoInput.files = files;
+                    this.handleLogoUpload({ target: { files } });
+                }
+            });
+        }
+
+        // Logo upload
+        if (logoInput) {
+            logoInput.addEventListener('change', (e) => this.handleLogoUpload(e));
+        }
+
+        // Remove image button
+        document.getElementById('removeImageBtn')?.addEventListener('click', () => this.removeImage());
     }
 
-    initializeSaveTemplateModal() {
-        const modal = document.getElementById('saveTemplateModal');
-        const closeBtn = modal?.querySelector('.close-modal');
-        const form = document.getElementById('saveTemplateForm');
-        
-        closeBtn?.addEventListener('click', () => this.closeSaveTemplateModal());
-        form?.addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.saveAsTemplate();
-        });
-        
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) this.closeSaveTemplateModal();
-        });
-    }
+    handleLogoUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
 
-    openSaveTemplateModal() {
-        document.getElementById('saveTemplateModal').style.display = 'block';
-    }
+        // Validar tipo de archivo
+        const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/svg+xml'];
+        if (!validTypes.includes(file.type)) {
+            this.showMessage('Solo se permiten archivos JPG, PNG o SVG', 'error');
+            return;
+        }
 
-    closeSaveTemplateModal() {
-        document.getElementById('saveTemplateModal').style.display = 'none';
-        document.getElementById('saveTemplateForm').reset();
-    }
+        // Subir archivo
+        const formData = new FormData();
+        formData.append('logo', file);
 
-    saveAsTemplate() {
-        const formData = new FormData(document.getElementById('tariffForm'));
-        const templateName = document.getElementById('template_name').value;
-        const templateDescription = document.getElementById('template_description').value;
-        
-        const templateData = {
-            title: formData.get('tariff_name'),
-            description: formData.get('description'),
-            logo_url: formData.get('logo_url'),
-            company_name: formData.get('company_name'),
-            nif: formData.get('company_nif'),
-            address: formData.get('company_address'),
-            contact: formData.get('company_contact'),
-            template: formData.get('template'),
-            primary_color: formData.get('primary_color'),
-            secondary_color: formData.get('secondary_color'),
-            summary_note: formData.get('summary_note'),
-            conditions_note: formData.get('conditions_note'),
-            legal_note: formData.get('legal_note'),
-            json_tariff_data: this.jsonData
-        };
-        
-        fetch('save-template.php', {
+        fetch('upload-logo.php', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                name: templateName,
-                description: templateDescription,
-                template_data: templateData
-            })
+            body: formData
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                this.closeSaveTemplateModal();
-                alert('Plantilla guardada correctamente');
+                document.getElementById('logo_url').value = data.url;
+                this.showImagePreview(data.url);
+                this.showMessage('Logo subido correctamente', 'success');
             } else {
-                alert('Error: ' + data.message);
+                this.showMessage('Error al subir logo: ' + data.error, 'error');
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-            alert('Error al guardar la plantilla');
+            this.showMessage('Error al subir logo', 'error');
         });
     }
 
-    loadTemplate(templateId) {
-        if (!templateId) return;
+    showImagePreview(imageUrl) {
+        const uploadArea = document.getElementById('imageUploadArea');
+        const previewContainer = document.getElementById('imagePreviewContainer');
         
-        fetch(`get-template.php?id=${templateId}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    this.loadTemplateData(JSON.parse(data.template.template_data));
-                }
+        uploadArea.style.display = 'none';
+        previewContainer.style.display = 'block';
+        
+        const img = document.getElementById('imagePreview');
+        img.src = imageUrl;
+    }
+
+    removeImage() {
+        const imageUrl = document.getElementById('logo_url').value;
+        
+        if (imageUrl) {
+            // Eliminar del servidor
+            fetch('delete-logo.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: imageUrl })
             })
-            .catch(error => console.error('Error:', error));
-    }
-
-    loadTemplateData(templateData) {
-        const form = document.getElementById('tariffForm');
-        
-        form.querySelector('#tariff_name').value = templateData.title || '';
-        form.querySelector('#description').value = templateData.description || '';
-        form.querySelector('#company_name').value = templateData.company_name || '';
-        form.querySelector('#company_nif').value = templateData.nif || '';
-        form.querySelector('#company_address').value = templateData.address || '';
-        form.querySelector('#company_contact').value = templateData.contact || '';
-        form.querySelector('#logo_url').value = templateData.logo_url || '';
-        form.querySelector('#template').value = templateData.template || '';
-        form.querySelector('#primary_color').value = templateData.primary_color || '#e8951c';
-        form.querySelector('#secondary_color').value = templateData.secondary_color || '#109c61';
-        form.querySelector('#summary_note').value = templateData.summary_note || '';
-        form.querySelector('#conditions_note').value = templateData.conditions_note || '';
-        form.querySelector('#legal_note').value = templateData.legal_note || '';
-        
-        // Actualizar previews de color
-        document.getElementById('primaryColorPreview').style.background = templateData.primary_color || '#e8951c';
-        document.getElementById('secondaryColorPreview').style.background = templateData.secondary_color || '#109c61';
-        
-        // Cargar datos de tarifa si existen
-        if (templateData.json_tariff_data && templateData.json_tariff_data.length > 0) {
-            this.jsonData = templateData.json_tariff_data;
-            this.showTariffSection();
+            .then(() => {
+                this.resetImageUpload();
+            })
+            .catch(() => {
+                this.resetImageUpload();
+            });
+        } else {
+            this.resetImageUpload();
         }
     }
 
-    initializeColorPickers() {
-        const primaryPreview = document.getElementById('primaryColorPreview');
-        const secondaryPreview = document.getElementById('secondaryColorPreview');
-        const primaryInput = document.getElementById('primary_color');
-        const secondaryInput = document.getElementById('secondary_color');
-
-        if (primaryPreview && primaryInput) {
-            primaryPreview.addEventListener('click', () => {
-                primaryInput.click();
-            });
-
-            primaryInput.addEventListener('change', (e) => {
-                primaryPreview.style.background = e.target.value;
-            });
-        }
-
-        if (secondaryPreview && secondaryInput) {
-            secondaryPreview.addEventListener('click', () => {
-                secondaryInput.click();
-            });
-
-            secondaryInput.addEventListener('change', (e) => {
-                secondaryPreview.style.background = e.target.value;
-            });
-        }
+    resetImageUpload() {
+        document.getElementById('logo_url').value = '';
+        document.getElementById('logo_file').value = '';
+        document.getElementById('imageUploadArea').style.display = 'block';
+        document.getElementById('imagePreviewContainer').style.display = 'none';
     }
 
-    clearAll() {
-        if (confirm('Se van a eliminar todos los datos. ¿Continuar?\n\nEsta acción no se puede deshacer.')) {
-            // Limpiar formulario
-            document.getElementById('tariffForm').reset();
-            
-            // Limpiar datos CSV
-            this.jsonData = [];
-            this.csvData = [];
-            document.getElementById('csv_data').value = '';
-            
-            // Mostrar sección de upload y ocultar tarifa
-            document.getElementById('csvUploadSection').style.display = 'block';
-            document.getElementById('tariffSection').style.display = 'none';
-            
-            // Restaurar colores por defecto
-            const primaryPreview = document.getElementById('primaryColorPreview');
-            const secondaryPreview = document.getElementById('secondaryColorPreview');
-            const primaryInput = document.getElementById('primary_color');
-            const secondaryInput = document.getElementById('secondary_color');
-            
-            if (primaryPreview && primaryInput) {
-                primaryInput.value = '#e8951c';
-                primaryPreview.style.background = '#e8951c';
-            }
-            
-            if (secondaryPreview && secondaryInput) {
-                secondaryInput.value = '#109c61';
-                secondaryPreview.style.background = '#109c61';
-            }
-        }
-    }
-
-    downloadTemplate() {
-        const templateContent = `"Nivel","ID","Nombre","Descripción","Ud","%IVA","PVP"
-"Capítulo",1,"Nombre del Capítulo 1",,,,
-"Subcapítulo","1.1","Nombre del Subcapítulo 1.1",,,,
-"Apartado","1.1.1","Nombre del Apartado 1.1.1",,,,
-"Partida","1.1.1.1","Nombre del Partida 1.1.1.1","Descripción de la Partida 1.1.1.1","Unidad","5,00","125,00"
-"Capítulo",2,"Nombre del Capítulo 2",,,,
-"Subcapítulo","2.1","Nombre del Subcapítulo 2.1",,,,
-"Partida","2.1.1","Nombre del Partida 2.1.1","Descripción de la Partida 2.1.1","hora","10,00","20,00"
-"Capítulo",3,"Nombre del Capítulo 3",,,,
-"Partida","3.1","Nombre del Partida 3.1","Descripción de la Partida 3.1","m","21,00","5,00"`;
-
-        this.downloadFile(templateContent, 'plantilla-tarifa.csv', 'text/csv;charset=utf-8;');
-    }
-
-    handleFileUpload() {
+    handleCSVUpload() {
         const fileInput = document.getElementById('csv_file');
         const file = fileInput.files[0];
         if (!file) return;
@@ -257,7 +173,7 @@ class NewTariffHandler {
         try {
             const rows = this.parseCSV(csvContent);
             if (rows.length === 0) {
-                alert("Error: El archivo CSV está vacío o es inválido");
+                this.showMessage("Error: El archivo CSV está vacío o es inválido", 'error');
                 return;
             }
 
@@ -274,7 +190,7 @@ class NewTariffHandler {
             const missingFields = essentialFields.filter((field) => !(field in fieldIndices));
 
             if (missingFields.length > 0) {
-                alert(`Error: Faltan campos esenciales: ${missingFields.join(", ")}`);
+                this.showMessage(`Error: Faltan campos esenciales: ${missingFields.join(", ")}`, 'error');
                 return;
             }
 
@@ -299,14 +215,14 @@ class NewTariffHandler {
             }
 
             if (this.csvData.length === 0) {
-                alert("Error: No se encontraron datos válidos");
+                this.showMessage("Error: No se encontraron datos válidos", 'error');
                 return;
             }
 
             this.convertToJSON();
-            this.showTariffSection();
+            this.showPreview();
         } catch (error) {
-            alert('Error al procesar el archivo: ' + error.message);
+            this.showMessage('Error al procesar el archivo: ' + error.message, 'error');
         }
     }
 
@@ -408,6 +324,9 @@ class NewTariffHandler {
 
             return jsonObject;
         });
+
+        // Guardar en campo oculto
+        document.getElementById('csv_data').value = JSON.stringify(this.jsonData);
     }
 
     formatNumber(value) {
@@ -421,16 +340,18 @@ class NewTariffHandler {
         return value.replace(".", ",");
     }
 
-    showTariffSection() {
-        // Ocultar sección de upload y mostrar tarifa
+    showPreview() {
+        // Ocultar upload section
         document.getElementById('csvUploadSection').style.display = 'none';
-        document.getElementById('tariffSection').style.display = 'block';
+        document.getElementById('csvFormatSection').style.display = 'none';
         
-        // Guardar datos en campo oculto
-        document.getElementById('csv_data').value = JSON.stringify(this.jsonData);
+        // Mostrar preview section
+        document.getElementById('previewSection').style.display = 'block';
         
         // Mostrar jerarquía
         this.displayHierarchy();
+        
+        this.showMessage('CSV procesado correctamente', 'success');
     }
 
     displayHierarchy() {
@@ -468,6 +389,7 @@ class NewTariffHandler {
                 html += `<span>${item.unit}</span>`;
                 html += `<span>%IVA: ${ivaFormatted}</span>`;
                 html += `<span class="item-price">PVP: ${pvpFormatted} €</span>`;
+                html += `<span>${item.description}</span>`;
                 html += `</div>`;
                 html += `</div>`;
             }
@@ -556,11 +478,48 @@ class NewTariffHandler {
         });
     }
 
-    exportCsv() {
-        if (this.jsonData.length === 0) return;
+    clearAll() {
+        if (confirm('Se van a eliminar todos los datos. ¿Continuar?\n\nEsta acción no se puede deshacer.')) {
+            // Limpiar formulario
+            document.getElementById('tariffForm').reset();
+            
+            // Limpiar datos CSV
+            this.jsonData = [];
+            this.csvData = [];
+            document.getElementById('csv_data').value = '';
+            
+            // Mostrar sección upload
+            document.getElementById('csvUploadSection').style.display = 'block';
+            document.getElementById('csvFormatSection').style.display = 'block';
+            document.getElementById('previewSection').style.display = 'none';
+        }
+    }
 
+    downloadTemplate() {
+        const templateContent = `"Nivel","ID","Nombre","Descripción","Ud","%IVA","PVP"
+"Capítulo",1,"Nombre del Capítulo 1",,,,
+"Subcapítulo","1.1","Nombre del Subcapítulo 1.1",,,,
+"Apartado","1.1.1","Nombre del Apartado 1.1.1",,,,
+"Partida","1.1.1.1","Nombre del Partida 1.1.1.1","Descripción de la Partida 1.1.1.1","Unidad","5,00","125,00"
+"Capítulo",2,"Nombre del Capítulo 2",,,,
+"Subcapítulo","2.1","Nombre del Subcapítulo 2.1",,,,
+"Partida","2.1.1","Nombre del Partida 2.1.1","Descripción de la Partida 2.1.1","hora","10,00","20,00"
+"Capítulo",3,"Nombre del Capítulo 3",,,,
+"Partida","3.1","Nombre del Partida 3.1","Descripción de la Partida 3.1","m","21,00","5,00"`;
+
+        this.downloadFile(templateContent, 'plantilla-tarifa.csv', 'text/csv;charset=utf-8;');
+    }
+
+    exportPreview() {
+        if (this.jsonData.length === 0) return;
         const csvContent = this.jsonToCSV(this.jsonData);
         this.downloadFile(csvContent, 'tarifa_exportada.csv', 'text/csv;charset=utf-8;');
+    }
+
+    deletePreview() {
+        if (confirm('Se eliminará la previsualización de tarifa.\n\n¿Continuar?')) {
+            this.clearAll();
+        }
     }
 
     jsonToCSV(jsonData) {
@@ -608,27 +567,6 @@ class NewTariffHandler {
             .join("\n");
     }
 
-    showJson() {
-        console.log('JSON de la tarifa:', JSON.stringify(this.jsonData, null, 2));
-    }
-
-    deleteTariff() {
-        if (confirm('Se eliminará la tarifa y tendrá que subir otra.\n\n¿Continuar?')) {
-            // Limpiar datos
-            this.jsonData = [];
-            this.csvData = [];
-            document.getElementById('csv_data').value = '';
-            
-            // Mostrar sección de upload y ocultar tarifa
-            document.getElementById('csvUploadSection').style.display = 'block';
-            document.getElementById('tariffSection').style.display = 'none';
-            
-            // Limpiar input file
-            const fileInput = document.getElementById('csv_file');
-            if (fileInput) fileInput.value = '';
-        }
-    }
-
     downloadFile(content, filename, mimeType) {
         const blob = new Blob([content], { type: mimeType });
         const url = URL.createObjectURL(blob);
@@ -639,6 +577,24 @@ class NewTariffHandler {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+    }
+
+    showMessage(message, type) {
+        // Remover mensajes anteriores
+        const existingMessages = document.querySelectorAll('.error-message, .success-message');
+        existingMessages.forEach(msg => msg.remove());
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
+        messageDiv.textContent = message;
+
+        const container = document.querySelector('.message-container');
+        container.appendChild(messageDiv);
+
+        // Auto-remove después de 5 segundos
+        setTimeout(() => {
+            messageDiv.remove();
+        }, 5000);
     }
 }
 
