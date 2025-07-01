@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
 
                     <div class="form-section">
-                        <h3>Datos de la Empresa (Encabezado de Formulario y del PDF)</h3>
+                        <h3>Datos de la Empresa</h3>
                         <div class="form-group">
                             <label for="company_name">Nombre de la Empresa:</label>
                             <input type="text" id="company_name" name="company_name" required value="<?= htmlspecialchars($_POST['company_name'] ?? $defaults['name'] ?? '') ?>">

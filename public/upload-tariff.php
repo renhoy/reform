@@ -165,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <!-- Card 2: Datos de la Empresa -->
                     <div class="form-section">
-                        <div class="section-header">Datos de la Empresa (Encabezado de Formulario y del PDF)</div>
+                        <div class="section-header">Datos de la Empresa</div>
                         <div class="section-content">
                             <!-- Selector de imagen -->
                             <div class="form-group">

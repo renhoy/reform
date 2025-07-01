@@ -1,0 +1,261 @@
+/* Estilos para página de presupuestos */
+/* {"_META_file_path_": "refor/assets/css/budgets.css"} */
+
+.container {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    color: var(--dark-gray);
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.filters-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 1rem;
+}
+
+.filters-form {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto auto;
+    gap: 1rem;
+    align-items: center;
+}
+
+.search-input input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.filter-select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.stats-summary {
+    background: var(--light-gray);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.stats-text {
+    font-size: 0.9rem;
+    color: var(--dark-gray);
+}
+
+.stat-item {
+    margin: 0 0.5rem;
+    font-weight: 500;
+}
+
+.budgets-table {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.table-header {
+    background: var(--secondary-orange);
+    color: white;
+    display: grid;
+    grid-template-columns: 2fr 0.5fr 1fr 1.5fr 1fr 1.5fr 1fr 3fr;
+    padding: 1rem;
+    font-weight: bold;
+    gap: 1rem;
+    align-items: center;
+}
+
+.table-row {
+    display: grid;
+    grid-template-columns: 2fr 0.5fr 1fr 1.5fr 1fr 1.5fr 1fr 3fr;
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    align-items: center;
+    gap: 1rem;
+    transition: background 0.3s;
+}
+
+.table-row:hover {
+    background: #f8f9fa;
+}
+
+.table-row:last-child {
+    border-bottom: none;
+}
+
+.client-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.client-name {
+    font-weight: 500;
+    color: var(--dark-gray);
+    margin-bottom: 0.25rem;
+}
+
+.client-nif {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.notes-column {
+    text-align: center;
+}
+
+.notes-icon {
+    width: 16px;
+    height: 16px;
+    color: #999;
+}
+
+.notes-indicator {
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+
+.notes-indicator:hover {
+    background: rgba(0,0,0,0.05);
+}
+
+.notes-indicator.active .notes-icon {
+    color: var(--secondary-orange);
+}
+
+.total-info {
+    text-align: right;
+    cursor: help;
+}
+
+.total-amount {
+    font-weight: 600;
+    color: var(--primary-green);
+}
+
+.tariff-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tariff-view-btn {
+    flex-shrink: 0;
+}
+
+.tariff-name {
+    font-size: 0.85rem;
+    color: #666;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.status-select {
+    padding: 4px 8px;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: white;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-select.badge-yellow {
+    background: #ffc107;
+    color: #000;
+}
+
+.status-select.badge-orange {
+    background: #fd7e14;
+}
+
+.status-select.badge-blue {
+    background: #007bff;
+}
+
+.status-select.badge-green {
+    background: #28a745;
+}
+
+.status-select.badge-red {
+    background: #dc3545;
+}
+
+.status-select.badge-gray {
+    background: #6c757d;
+}
+
+.date-info {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.days-left {
+    color: var(--secondary-orange);
+    font-weight: 500;
+}
+
+.no-date {
+    color: #999;
+    font-style: italic;
+}
+
+.author-info {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.actions-info {
+    display: flex;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 1200px) {
+    .filters-form {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .table-header,
+    .table-row {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .table-header {
+        display: none;
+    }
+    
+    .table-row {
+        padding: 1.5rem;
+        border-bottom: 2px solid #eee;
+    }
+    
+    .actions-info {
+        justify-content: flex-start;
+    }
+}

@@ -1,0 +1,224 @@
+/* Estilos para formularios */
+/* {"_META_file_path_": "refor/assets/css/forms.css"} */
+
+.action-bar {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.left-column,
+.right-column {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.form-section {
+    margin-bottom: 2rem;
+}
+
+.form-section h3 {
+    color: var(--secondary-orange);
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    border-bottom: 2px solid var(--secondary-orange);
+    padding-bottom: 0.5rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group textarea {
+    resize: vertical;
+    height: 60px;
+}
+
+.color-picker {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.color-preview {
+    width: 40px;
+    height: 30px;
+    border-radius: 4px;
+    border: 2px solid #ddd;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.color-preview:hover {
+    transform: scale(1.05);
+}
+
+.upload-area {
+    border: 2px dashed #ddd;
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    text-align: center;
+    transition: border-color 0.3s;
+    margin-bottom: 1rem;
+}
+
+.upload-area.dragover {
+    border-color: var(--secondary-orange);
+    background: rgba(232, 149, 28, 0.05);
+}
+
+.upload-text {
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.format-info {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.format-info h4 {
+    color: var(--dark-gray);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.csv-example {
+    background: white;
+    padding: 0.75rem;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.75rem;
+    border: 1px solid #ddd;
+    margin-bottom: 0.75rem;
+    white-space: pre;
+    overflow-x: auto;
+}
+
+.tariff-status {
+    color: var(--primary-green);
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.tariff-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.hierarchy-container {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    max-height: 400px;
+    overflow-y: auto;
+    background: #fafafa;
+}
+
+/* Jerarquía de tarifa */
+.level-container {
+    margin-bottom: 1px;
+}
+
+.level-header {
+    padding: 8px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    border: 1px solid;
+    transition: all 0.2s;
+}
+
+.level-toggle {
+    margin-right: 8px;
+    font-size: 12px;
+    width: 12px;
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.level-toggle.collapsed {
+    transform: rotate(-90deg);
+}
+
+.collapsible {
+    display: none;
+}
+
+.collapsible.active {
+    display: block;
+}
+
+.level-children {
+    padding: 8px 0 8px 16px;
+}
+
+.level-chapter .level-header {
+    background-color: var(--primary-green);
+    color: white;
+    border-color: var(--primary-green);
+}
+
+.level-subchapter .level-header {
+    background-color: var(--secondary-orange);
+    color: white;
+    border-color: var(--secondary-orange);
+}
+
+.level-section .level-header {
+    background-color: white;
+    color: var(--primary-green);
+    border-color: var(--primary-green);
+}
+
+.level-item .level-header {
+    background-color: var(--medium-gray);
+    color: var(--black);
+    border-color: var(--medium-gray);
+}
+
+.level-item-details {
+    background-color: white;
+    color: var(--black);
+    border: 1px solid var(--medium-gray);
+    border-top: none;
+    padding: 8px 16px;
+    font-size: 0.9em;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 1rem;
+    align-items: center;
+}
+
+@media (max-width: 1024px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .action-bar {
+        flex-direction: column;
+        align-items: center;
+    }
+}

@@ -110,12 +110,12 @@ $stats = $stats->fetch();
         <!-- Línea 2: Estadísticas -->
         <div class="stats-summary">
             Presupuestos Realizados (<?= $stats['total'] ?>): 
-            👍 Aprobados (<?= $stats['approved'] ?>), 
-            ❌ Rechazados (<?= $stats['rejected'] ?>), 
-            📤 Enviados (<?= $stats['sent'] ?>), 
-            ⏰ Expirados (<?= $stats['expired'] ?>), 
-            ⏸️ Pendientes (<?= $stats['pending'] ?>), 
-            ✍️ Borrador (<?= $stats['draft'] ?>)
+            Aprobados (<?= $stats['approved'] ?>), 
+            Rechazados (<?= $stats['rejected'] ?>), 
+            Enviados (<?= $stats['sent'] ?>), 
+            Expirados (<?= $stats['expired'] ?>), 
+            Pendientes (<?= $stats['pending'] ?>), 
+            Borrador (<?= $stats['draft'] ?>)
         </div>
 
         <!-- Línea 3: Filtros -->
