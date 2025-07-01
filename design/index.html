@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<!-- {"_META_file_path_": "design/index.html"} -->
+<!-- Design System - Componentes reutilizables -->
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design System - Generador de Presupuestos</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+    <div class="design-container">
+        <header class="design-header">
+            <h1>Design System</h1>
+            <p>Componentes reutilizables del Generador de Presupuestos</p>
+        </header>
+
+        <nav class="design-nav">
+            <a href="#buttons">Botones</a>
+            <a href="#badges">Badges</a>
+            <a href="#tables">Tablas</a>
+            <a href="#forms">Formularios</a>
+            <a href="#modals">Modales</a>
+        </nav>
+
+        <main class="design-content">
+            <!-- BOTONES -->
+            <section id="buttons" class="component-section">
+                <h2>Botones</h2>
+                
+                <div class="component-group">
+                    <h3>Botones principales</h3>
+                    <div class="examples">
+                        <button class="btn btn--primary">Crear Tarifa</button>
+                        <button class="btn btn--secondary">Ver Presupuestos</button>
+                        <button class="btn btn--outline">Limpiar</button>
+                        <button class="btn btn--danger">Eliminar</button>
+                    </div>
+                </div>
+
+                <div class="component-group">
+                    <h3>Tamaños</h3>
+                    <div class="examples">
+                        <button class="btn btn--primary btn--small">Pequeño</button>
+                        <button class="btn btn--primary">Normal</button>
+                        <button class="btn btn--primary btn--large">Grande</button>
+                    </div>
+                </div>
+
+                <div class="component-group">
+                    <h3>Estados</h3>
+                    <div class="examples">
+                        <button class="btn btn--primary">Normal</button>
+                        <button class="btn btn--primary" disabled>Deshabilitado</button>
+                    </div>
+                </div>
+
+                <div class="component-group">
+                    <h3>Botones de icono</h3>
+                    <div class="examples">
+                        <button class="btn-icon btn-icon--black" title="Editar">
+                            <i data-lucide="pencil"></i>
+                        </button>
+                        <button class="btn-icon btn-icon--black" title="Duplicar">
+                            <i data-lucide="copy"></i>
+                        </button>
+                        <button class="btn-icon btn-icon--red" title="Eliminar">
+                            <i data-lucide="trash-2"></i>
+                        </button>
+                        <button class="btn-icon btn-icon--green" title="Aprobar">
+                            <i data-lucide="check"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="component-group">
+                    <h3>Grupos de botones</h3>
+                    <div class="examples">
+                        <div class="btn-group">
+                            <button class="btn btn--primary">Guardar</button>
+                            <button class="btn btn--outline">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BADGES -->
+            <section id="badges" class="component-section">
+                <h2>Badges</h2>
+                
+                <div class="component-group">
+                    <h3>Estados</h3>
+                    <div class="examples">
+                        <span class="badge badge--success">Activa</span>
+                        <span class="badge badge--danger">Inactiva</span>
+                        <span class="badge badge--warning">Pendiente</span>
+                        <span class="badge badge--info">Enviado</span>
+                    </div>
+                </div>
+
+                <div class="component-group">
+                    <h3>Acceso</h3>
+                    <div class="examples">
+                        <span class="badge badge--success">Público</span>
+                        <span class="badge badge--danger">Privado</span>
+                    </div>
+                </div>
+
+                <div class="component-group">
+                    <h3>Especiales</h3>
+                    <div class="examples">
+                        <span class="badge badge--danger badge--small">Incompleta</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TABLAS -->
+            <section id="tables" class="component-section">
+                <h2>Tablas</h2>
+                
+                <div class="component-group">
+                    <h3>Tabla completa con todos los tipos de campo</h3>
+                    <div class="examples examples--full">
+                        <div class="table-responsive">
+                            <div class="table-header" style="grid-template-columns: 80px 2fr 32px 140px 120px 120px 140px 140px;">
+                                <div class="text-center">Código</div>
+                                <div>Nombre</div>
+                                <div></div>
+                                <div class="text-right">Total</div>
+                                <div class="text-center">Acceso</div>
+                                <div class="text-center">Tarifa</div>
+                                <div class="text-center">Presupuestos</div>
+                                <div class="text-center">Acciones</div>
+                            </div>
+                            
+                            <div class="table-row" style="grid-template-columns: 80px 2fr 32px 140px 120px 120px 140px 140px;">
+                                <div class="table-cell table-cell--center">1</div>
+                                <div class="table-cell table-cell--left">
+                                    <div>
+                                        <div class="cell-line">
+                                            <span class="badge badge--danger badge--small">Incompleta</span>
+                                            Nombre de Tarifa
+                                        </div>
+                                        <div class="cell-meta">30/06/2025 - Descripción de la Tarifa</div>
+                                    </div>
+                                </div>
+                                <div class="table-cell table-cell--center">
+                                    <button class="btn-icon btn-icon--black" title="Ver anotaciones">
+                                        <i data-lucide="notebook-pen"></i>
+                                    </button>
+                                </div>
+                                <div class="table-cell table-cell--right">
+                                    <span class="total-amount" title="Base: 10.203,03 €&#10;IVA (21%): 2.142,64 €&#10;Total: 12.345,67 €">12.345,67€</span>
+                                </div>
+                                <div class="table-cell table-cell--center">
+                                    <span class="badge badge--danger">Privado</span>
+                                </div>
+                                <div class="table-cell table-cell--center">
+                                    <button class="btn-icon btn-icon--black" title="Ver tarifa">
+                                        <i data-lucide="eye"></i>
+                                    </button>
+                                    <div class="cell-meta">Sin título</div>
+                                </div>
+                                <div class="table-cell table-cell--center">
+                                    <button class="btn-icon btn-icon--black" title="Generar presupuesto">
+                                        <i data-lucide="file-input"></i>
+                                    </button>
+                                    <button class="btn-icon btn-icon--black" title="Ver presupuestos">
+                                        <i data-lucide="list"></i>
+                                    </button>
+                                    <span class="count-badge">234</span>
+                                </div>
+                                <div class="table-cell table-cell--center">
+                                    <div class="btn-group">
+                                        <button class="btn-icon btn-icon--black" title="Editar">
+                                            <i data-lucide="pencil"></i>
+                                        </button>
+                                        <button class="btn-icon btn-icon--black" title="Duplicar">
+                                            <i data-lucide="copy"></i>
+                                        </button>
+                                        <button class="btn-icon btn-icon--red" title="Eliminar">
+                                            <i data-lucide="trash-2"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="component-group">
+                    <h3>Botones por página</h3>
+                    <div class="examples">
+                        <div class="icon-group">
+                            <h4>Tarifas (Naranja)</h4>
+                            <button class="btn btn--secondary">Tarifas</button>
+                            <button class="btn btn--secondary">Nueva Tarifa</button>
+                            <button class="btn btn--secondary">Guardar Tarifa</button>
+                        </div>
+                        
+                        <div class="icon-group">
+                            <h4>Presupuestos (Verde)</h4>
+                            <button class="btn btn--primary">Presupuestos</button>
+                            <button class="btn btn--primary">Guardar</button>
+                        </div>
+                        
+                        <div class="icon-group">
+                            <h4>Plantillas (Naranja Oscuro)</h4>
+                            <button class="btn btn--secondary-dark">Plantillas</button>
+                            <button class="btn btn--secondary-dark">Guardar Plantillas</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="component-group">
+                    <h3>Modal</h3>
+                    <div class="examples">
+                        <div class="modal-demo">
+                            <div class="modal-header">
+                                <button class="btn-icon btn-icon--black modal-close">
+                                    <i data-lucide="x"></i>
+                                </button>
+                            </div>
+                            <div class="modal-title">
+                                <h3>Título del Modal</h3>
+                            </div>
+                            <div class="modal-content">
+                                <p>Contenido del modal que hace scroll si es necesario.</p>
+                                <p>Más contenido para demostrar...</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn--outline">Cancelar</button>
+                                <button class="btn btn--primary">Aceptar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- HEADER -->
+            <section id="header" class="component-section">
+                <h2>Header</h2>
+                
+                <div class="component-group">
+                    <h3>Header simulado como card</h3>
+                    <div class="examples examples--full">
+                        <div class="header-card">
+                            <div class="header-content">
+                                <div class="header-left">
+                                    <i data-lucide="calculator" class="header-icon"></i>
+                                    Generador de Presupuestos
+                                </div>
+                                
+                                <nav class="header-nav">
+                                    <a href="#" class="nav-item active">Dashboard</a>
+                                    <a href="#" class="nav-item">Tarifas</a>
+                                    <a href="#" class="nav-item">Presupuestos</a>
+                                </nav>
+                                
+                                <div class="header-right">
+                                    <button class="btn-icon btn-icon--black logout-btn" title="Cerrar sesión">
+                                        <i data-lucide="log-out"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CARDS -->
+            <section id="cards" class="component-section">
+                <h2>Cards</h2>
+                
+                <div class="component-group">
+                    <h3>Card básico</h3>
+                    <div class="examples">
+                        <div class="card">
+                            <div class="card-title">
+                                <h3>Título de la Card</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>Contenido de la card que puede incluir texto, formularios, o cualquier otro elemento.</p>
+                                <p>Más contenido aquí...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="component-group">
+                    <h3>Stats Cards</h3>
+                    <div class="examples">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">2</div>
+                                <div class="stat-label">TARIFAS CREADAS</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">1</div>
+                                <div class="stat-label">PRESUPUESTOS GENERADOS</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">1</div>
+                                <div class="stat-label">ESTA SEMANA</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="component-group">
+                    <h3>Action Cards</h3>
+                    <div class="examples">
+                        <div class="actions-grid">
+                            <div class="action-card">
+                                <div class="action-icon">
+                                    <i data-lucide="folder"></i>
+                                </div>
+                                <h3>Tarifas</h3>
+                                <p>Crea, edita y organiza tus tarifas de precios</p>
+                                <button class="btn btn--secondary">Ir a Tarifas</button>
+                            </div>
+                            <div class="action-card">
+                                <div class="action-icon">
+                                    <i data-lucide="bar-chart-3"></i>
+                                </div>
+                                <h3>Presupuestos</h3>
+                                <p>Consulta todos los presupuestos generados</p>
+                                <button class="btn btn--primary">Ir a Presupuestos</button>
+                            </div>
+                            <div class="action-card">
+                                <div class="action-icon">
+                                    <i data-lucide="plus"></i>
+                                </div>
+                                <h3>Crear Nueva Tarifa</h3>
+                                <p>Comienza creando una nueva tarifa de precios</p>
+                                <button class="btn btn--secondary">Nueva Tarifa</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="forms" class="component-section">
+                <h2>Formularios</h2>
+                <p>Próximamente...</p>
+            </section>
+
+            <section id="modals" class="component-section">
+                <h2>Modales</h2>
+                <p>Próximamente...</p>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Inicializar iconos
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+
+        // Navegación smooth
+        document.querySelectorAll('.design-nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
