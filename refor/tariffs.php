@@ -1,190 +1,174 @@
 <?php
 // {"_META_file_path_": "refor/tariffs.php"}
-// Página principal de gestión de tarifas
+// Página de gestión de tarifas
 
-require_once 'includes/config.php';
-require_once 'includes/tariffs-helpers.php';
+require_once 'config.php';
+require_once 'auth.php';
 requireAuth();
 
-// Obtener datos
-$tariffs = getTariffsWithData();
+$pdo = getConnection();
+$stmt = $pdo->prepare("
+    SELECT * FROM tariffs
+    WHERE user_id = ?
+    ORDER BY created_at DESC
+");
+$stmt->execute([$_SESSION['user_id']]);
+$tariffs = $stmt->fetchAll();
 
-$title = "Tarifas";
+function isComplete($tariff) {
+    return !empty($tariff['title']) && 
+           !empty($tariff['name']) && 
+           !empty($tariff['nif']) && 
+           !empty($tariff['address']) && 
+           !empty($tariff['contact']);
+}
+
+$pageTitle = "Tarifas";
+$activeNav = "tariffs";
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $title ?> - Generador de Presupuestos</title>
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/header.css">
-    <link rel="stylesheet" href="assets/css/tariffs.css">
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <title><?= $pageTitle ?> - Budget Generator</title>
+    <link rel="stylesheet" href="assets/css/design-system.css">
 </head>
 <body>
-    <?php include 'includes/header.php'; ?>
+    <?php include 'components/header.php'; ?>
 
-    <div class="container">
-        <!-- Línea 1: Título -->
-        <div class="page-header-row">
-            <h1 class="page-title">Tarifas</h1>
-        </div>
-
-        <!-- Línea 2: Barra de Acciones -->
-        <div class="actions-row">
-            <a href="create-tariff.php" class="btn btn-primary">Crear Tarifa</a>
-        </div>
-
-        <!-- Línea 3: Listado de Tarifas -->
-        <?php if (empty($tariffs)): ?>
-            <div class="empty-state">
-                <h3>No hay tarifas disponibles</h3>
-                <p>Crea tu primera tarifa para comenzar</p>
-                <a href="create-tariff.php" class="btn btn-primary">Crear Primera Tarifa</a>
+    <main class="main-content">
+        <div class="page-header">
+            <div class="page-header__content">
+                <h1 class="page-header__title"><?= $pageTitle ?></h1>
+                <p class="page-header__subtitle">Gestiona tus tarifas de precios</p>
             </div>
-        <?php else: ?>
-            <div class="data-table">
-                <div class="table-header" style="grid-template-columns: 80px 2fr 120px 140px 120px 120px 140px;">
-                    <div>Código</div>
-                    <div>Nombre</div>
-                    <div>Acceso</div>
-                    <div>Presupuestos</div>
-                    <div>Estado</div>
-                    <div>Autor</div>
-                    <div>Acciones</div>
+            <div class="page-header__actions">
+                <a href="tariff-form.php" class="btn btn--primary">
+                    <span class="btn__icon">+</span>
+                    Nueva Tarifa
+                </a>
+            </div>
+        </div>
+
+        <?php if (isset($_GET['success'])): ?>
+            <div class="alert alert--success">
+                <div class="alert__icon">✓</div>
+                <div class="alert__content">
+                    <div class="alert__title">¡Éxito!</div>
+                    <div class="alert__message">Operación completada correctamente</div>
                 </div>
-                
-                <?php foreach ($tariffs as $tariff): ?>
-                    <?php $isComplete = isTariffComplete($tariff); ?>
-                    <div class="table-row" style="grid-template-columns: 80px 2fr 120px 140px 120px 120px 140px;">
-                        <!-- Desktop version -->
-                        <div class="code-column desktop-only">
-                            <?= $tariff['id'] ?>
-                        </div>
-                        
-                        <div class="name-column desktop-only" title="<?= htmlspecialchars($tariff['title'] . ' - ' . formatDate($tariff['created_at']) . ' - ' . ($tariff['description'] ?: 'Sin descripción')) ?>">
-                            <?php if (!$isComplete): ?>
-                                <span class="incomplete-badge">Incompleta</span>
-                            <?php endif; ?>
-                            <div class="tariff-title"><?= htmlspecialchars($tariff['title']) ?></div>
-                            <small class="tariff-meta">
-                                <?= formatDate($tariff['created_at']) ?> - <?= htmlspecialchars(substr($tariff['description'] ?: 'Sin descripción', 0, 50)) ?><?= strlen($tariff['description'] ?: '') > 50 ? '...' : '' ?>
-                            </small>
-                        </div>
-                        
-                        <div class="access-column desktop-only">
-                            <span class="access-badge <?= $tariff['access'] ?>" data-tariff-id="<?= $tariff['id'] ?>" onclick="toggleAccess(this)">
-                                <?= $tariff['access'] === 'private' ? 'Privado' : 'Público' ?>
-                            </span>
-                        </div>
-                        
-                        <div class="budgets-column desktop-only">
-                            <?php if ($isComplete && $tariff['status'] === 'active'): ?>
-                                <button class="btn-icon black btn-generate" data-tariff-id="<?= $tariff['id'] ?>" title="Generar presupuesto">
-                                    <i data-lucide="file-input"></i>
-                                </button>
-                            <?php endif; ?>
-                            
-                            <?php if ($tariff['budgets_count'] > 0): ?>
-                                <button class="btn-icon black btn-view-budgets" data-tariff-id="<?= $tariff['id'] ?>" title="Ver presupuestos">
-                                    <i data-lucide="list"></i>
-                                </button>
-                                <span class="budgets-count"><?= $tariff['budgets_count'] ?></span>
-                            <?php endif; ?>
-                        </div>
-                        
-                        <div class="status-column desktop-only">
-                            <?php if ($isComplete): ?>
-                                <span class="status-badge <?= $tariff['status'] ?>" data-tariff-id="<?= $tariff['id'] ?>" onclick="toggleStatus(this)">
-                                    <?= $tariff['status'] === 'active' ? 'Activa' : 'Inactiva' ?>
-                                </span>
-                            <?php endif; ?>
-                        </div>
-                        
-                        <div class="author-column desktop-only">
-                            <?= htmlspecialchars($tariff['author_name']) ?>
-                        </div>
-                        
-                        <div class="action-buttons desktop-only">
-                            <button class="btn-icon black btn-edit" data-type="tariff" data-id="<?= $tariff['id'] ?>" title="Editar">
-                                <i data-lucide="pencil"></i>
-                            </button>
-                            <button class="btn-icon black btn-duplicate" data-type="tariff" data-id="<?= $tariff['id'] ?>" title="Duplicar">
-                                <i data-lucide="copy"></i>
-                            </button>
-                            <button class="btn-icon red btn-delete" data-type="tariff" data-id="<?= $tariff['id'] ?>" title="Borrar">
-                                <i data-lucide="trash-2"></i>
-                            </button>
-                        </div>
-
-                        <!-- Mobile version -->
-                        <div class="mobile-only">
-                            <div class="mobile-card-header">Nombre <span style="float: right;">Código</span></div>
-                            <div class="mobile-card-section">
-                                <div>
-                                    <?php if (!$isComplete): ?>
-                                        <span class="incomplete-badge">Incompleta</span>
-                                    <?php endif; ?>
-                                    <div class="tariff-title"><?= htmlspecialchars($tariff['title']) ?></div>
-                                    <div class="tariff-meta"><?= formatDate($tariff['created_at']) ?> - <?= htmlspecialchars($tariff['description'] ?: 'Sin descripción') ?></div>
-                                </div>
-                                <div style="font-weight: 600; font-size: 18px;"><?= $tariff['id'] ?></div>
-                            </div>
-
-                            <div class="mobile-card-header">Acceso <span style="float: right;">Presupuestos</span></div>
-                            <div class="mobile-card-section">
-                                <span class="access-badge <?= $tariff['access'] ?>" data-tariff-id="<?= $tariff['id'] ?>" onclick="toggleAccess(this)">
-                                    <?= $tariff['access'] === 'private' ? 'Privado' : 'Público' ?>
-                                </span>
-                                <div class="budgets-column">
-                                    <?php if ($isComplete && $tariff['status'] === 'active'): ?>
-                                        <button class="btn-icon black btn-generate" data-tariff-id="<?= $tariff['id'] ?>" title="Generar presupuesto">
-                                            <i data-lucide="file-input"></i>
-                                        </button>
-                                    <?php endif; ?>
-                                    
-                                    <?php if ($tariff['budgets_count'] > 0): ?>
-                                        <button class="btn-icon black btn-view-budgets" data-tariff-id="<?= $tariff['id'] ?>" title="Ver presupuestos">
-                                            <i data-lucide="list"></i>
-                                        </button>
-                                        <span class="budgets-count"><?= $tariff['budgets_count'] ?></span>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-
-                            <div class="mobile-card-header">Estado <span style="float: right;">Autor</span></div>
-                            <div class="mobile-card-section">
-                                <?php if ($isComplete): ?>
-                                    <span class="status-badge <?= $tariff['status'] ?>" data-tariff-id="<?= $tariff['id'] ?>" onclick="toggleStatus(this)">
-                                        <?= $tariff['status'] === 'active' ? 'Activa' : 'Inactiva' ?>
-                                    </span>
-                                <?php endif; ?>
-                                <div><?= htmlspecialchars($tariff['author_name']) ?></div>
-                            </div>
-
-                            <div class="mobile-card-header">Acciones</div>
-                            <div class="mobile-card-section">
-                                <div class="action-buttons">
-                                    <button class="btn-icon black btn-edit" data-type="tariff" data-id="<?= $tariff['id'] ?>" title="Editar">
-                                        <i data-lucide="pencil"></i>
-                                    </button>
-                                    <button class="btn-icon black btn-duplicate" data-type="tariff" data-id="<?= $tariff['id'] ?>" title="Duplicar">
-                                        <i data-lucide="copy"></i>
-                                    </button>
-                                    <button class="btn-icon red btn-delete" data-type="tariff" data-id="<?= $tariff['id'] ?>" title="Borrar">
-                                        <i data-lucide="trash-2"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
             </div>
         <?php endif; ?>
-    </div>
 
-    <script src="assets/js/main.js"></script>
-    <script src="assets/js/tariffs.js"></script>
+        <?php if (isset($_GET['error'])): ?>
+            <div class="alert alert--error">
+                <div class="alert__icon">!</div>
+                <div class="alert__content">
+                    <div class="alert__title">Error</div>
+                    <div class="alert__message"><?= htmlspecialchars($_GET['error']) ?></div>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <div class="content-section">
+            <?php if (empty($tariffs)): ?>
+                <div class="empty-state">
+                    <div class="empty-state__icon">📊</div>
+                    <h2 class="empty-state__title">No hay tarifas</h2>
+                    <p class="empty-state__description">
+                        Crea tu primera tarifa para comenzar a generar presupuestos
+                    </p>
+                    <a href="tariff-form.php" class="btn btn--primary">
+                        Crear Primera Tarifa
+                    </a>
+                </div>
+            <?php else: ?>
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="table__head">
+                                <tr>
+                                    <th>Tarifa</th>
+                                    <th>Estado</th>
+                                    <th>Fecha</th>
+                                    <th class="table__actions">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table__body">
+                                <?php foreach ($tariffs as $tariff): ?>
+                                    <?php $complete = isComplete($tariff); ?>
+                                    <tr class="table__row">
+                                        <td class="table__cell">
+                                            <div class="table__cell-content">
+                                                <div class="table__cell-title"><?= htmlspecialchars($tariff['title']) ?></div>
+                                                <?php if ($tariff['name']): ?>
+                                                    <div class="table__cell-subtitle"><?= htmlspecialchars($tariff['name']) ?></div>
+                                                <?php endif; ?>
+                                            </div>
+                                        </td>
+                                        <td class="table__cell">
+                                            <?php if ($complete): ?>
+                                                <span class="badge badge--success">Completa</span>
+                                            <?php else: ?>
+                                                <span class="badge badge--warning">Incompleta</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td class="table__cell">
+                                            <time class="table__date">
+                                                <?= date('d/m/Y H:i', strtotime($tariff['created_at'])) ?>
+                                            </time>
+                                        </td>
+                                        <td class="table__cell table__actions">
+                                            <div class="btn-group">
+                                                <?php if ($complete): ?>
+                                                    <a href="budget-form.php?tariff_id=<?= $tariff['id'] ?>" 
+                                                       class="btn btn--sm btn--primary" 
+                                                       title="Crear Presupuesto">
+                                                        Presupuesto
+                                                    </a>
+                                                <?php endif; ?>
+                                                <a href="tariff-form.php?id=<?= $tariff['id'] ?>" 
+                                                   class="btn btn--sm btn--secondary" 
+                                                   title="Editar">
+                                                    Editar
+                                                </a>
+                                                <button type="button" 
+                                                        class="btn btn--sm btn--outline" 
+                                                        onclick="duplicateTariff(<?= $tariff['id'] ?>)"
+                                                        title="Duplicar">
+                                                    Duplicar
+                                                </button>
+                                                <button type="button" 
+                                                        class="btn btn--sm btn--danger" 
+                                                        onclick="deleteTariff(<?= $tariff['id'] ?>)"
+                                                        title="Eliminar">
+                                                    Eliminar
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+    </main>
+
+    <script>
+        function duplicateTariff(id) {
+            if (confirm('¿Duplicar esta tarifa?')) {
+                window.location.href = `duplicate-tariff.php?id=${id}`;
+            }
+        }
+
+        function deleteTariff(id) {
+            if (confirm('¿Eliminar esta tarifa? Esta acción no se puede deshacer.')) {
+                window.location.href = `delete-tariff.php?id=${id}`;
+            }
+        }
+    </script>
 </body>
 </html>

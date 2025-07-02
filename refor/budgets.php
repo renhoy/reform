@@ -1,225 +1,234 @@
 <?php
 // {"_META_file_path_": "refor/budgets.php"}
-// Página principal de gestión de presupuestos
+// Página de gestión de presupuestos
 
-require_once 'includes/config.php';
-require_once 'includes/budgets-helpers.php';
+require_once 'config.php';
+require_once 'auth.php';
 requireAuth();
 
-// Obtener filtros
-$search = $_GET['search'] ?? '';
-$status = $_GET['status'] ?? '';
-$dateFrom = $_GET['date_from'] ?? '';
-$dateTo = $_GET['date_to'] ?? '';
+$pdo = getConnection();
+$stmt = $pdo->prepare("
+    SELECT b.*, t.title as tariff_name 
+    FROM budgets b 
+    LEFT JOIN tariffs t ON b.tariff_id = t.id 
+    WHERE b.user_id = ?
+    ORDER BY b.created_at DESC 
+    LIMIT 50
+");
+$stmt->execute([$_SESSION['user_id']]);
+$budgets = $stmt->fetchAll();
 
-// Obtener datos
-$budgets = getBudgetsWithFilters($search, $status, $dateFrom, $dateTo);
-$stats = getBudgetStats();
+function getStatusInfo($status) {
+    $statuses = [
+        'draft' => ['text' => 'Borrador', 'class' => 'neutral'],
+        'sent' => ['text' => 'Enviado', 'class' => 'info'],
+        'pending' => ['text' => 'Pendiente', 'class' => 'warning'],
+        'approved' => ['text' => 'Aprobado', 'class' => 'success'],
+        'rejected' => ['text' => 'Rechazado', 'class' => 'error'],
+        'expired' => ['text' => 'Expirado', 'class' => 'error']
+    ];
+    
+    return $statuses[$status] ?? ['text' => ucfirst($status), 'class' => 'neutral'];
+}
 
-$title = "Presupuestos";
+$pageTitle = "Presupuestos";
+$activeNav = "budgets";
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $title ?> - Generador de Presupuestos</title>
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/header.css">
-    <link rel="stylesheet" href="assets/css/budgets.css">
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <title><?= $pageTitle ?> - Budget Generator</title>
+    <link rel="stylesheet" href="assets/css/design-system.css">
 </head>
 <body>
-    <?php include 'includes/header.php'; ?>
+    <?php include 'components/header.php'; ?>
 
-    <div class="container">
-        <!-- Línea 1: Título -->
-        <div class="page-header-row">
-            <h1 class="page-title">Presupuestos</h1>
-        </div>
-
-        <!-- Línea 2: Estadísticas -->
-        <div class="stats-summary">
-            Presupuestos Realizados (<?= $stats['total'] ?>): 
-            👍 Aprobados (<?= $stats['approved'] ?>), 
-            ❌ Rechazados (<?= $stats['rejected'] ?>), 
-            📤 Enviados (<?= $stats['sent'] ?>), 
-            ⏰ Expirados (<?= $stats['expired'] ?>), 
-            ⏸️ Pendientes (<?= $stats['pending'] ?>), 
-            ✍️ Borrador (<?= $stats['draft'] ?>)
-        </div>
-
-        <!-- Línea 3: Filtros -->
-        <div class="filters-row">
-            <form method="GET" class="filters-form">
-                <input type="text" name="search" placeholder="Buscar por cliente..." value="<?= htmlspecialchars($search) ?>" class="filter-input">
-                
-                <select name="status" class="filter-select">
-                    <option value="">Todos los estados</option>
-                    <option value="draft" <?= $status === 'draft' ? 'selected' : '' ?>>Borrador</option>
-                    <option value="pending" <?= $status === 'pending' ? 'selected' : '' ?>>Pendiente</option>
-                    <option value="sent" <?= $status === 'sent' ? 'selected' : '' ?>>Enviado</option>
-                    <option value="approved" <?= $status === 'approved' ? 'selected' : '' ?>>Aprobado</option>
-                    <option value="rejected" <?= $status === 'rejected' ? 'selected' : '' ?>>Rechazado</option>
-                    <option value="expired" <?= $status === 'expired' ? 'selected' : '' ?>>Expirado</option>
-                </select>
-                
-                <input type="date" name="date_from" value="<?= htmlspecialchars($dateFrom) ?>" class="filter-date">
-                <input type="date" name="date_to" value="<?= htmlspecialchars($dateTo) ?>" class="filter-date">
-                
-                <button type="submit" class="btn btn-primary">Filtrar</button>
-                <a href="budgets.php" class="btn btn-outline">Limpiar</a>
-            </form>
-        </div>
-
-        <!-- Línea 4: Tabla -->
-        <div class="data-table">
-            <div class="table-header" style="grid-template-columns: 2fr 60px 1fr 1.5fr 1fr 1fr 1fr 2fr;">
-                <div>Cliente (NIF/NIE)</div>
-                <div>📝</div>
-                <div>Total</div>
-                <div>Tarifa</div>
-                <div>Estado</div>
-                <div>Fecha</div>
-                <div>Autor</div>
-                <div>Acciones</div>
+    <main class="main-content">
+        <div class="page-header">
+            <div class="page-header__content">
+                <h1 class="page-header__title"><?= $pageTitle ?></h1>
+                <p class="page-header__subtitle">Consulta y gestiona todos tus presupuestos</p>
             </div>
-            
+            <div class="page-header__actions">
+                <a href="tariffs.php" class="btn btn--outline">
+                    <span class="btn__icon">📊</span>
+                    Ver Tarifas
+                </a>
+            </div>
+        </div>
+
+        <?php if (isset($_GET['success'])): ?>
+            <div class="alert alert--success">
+                <div class="alert__icon">✓</div>
+                <div class="alert__content">
+                    <div class="alert__title">¡Presupuesto generado!</div>
+                    <div class="alert__message">El presupuesto se ha creado correctamente</div>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <div class="content-section">
             <?php if (empty($budgets)): ?>
                 <div class="empty-state">
-                    <h3>No hay presupuestos</h3>
-                    <p>Los presupuestos aparecerán aquí cuando se generen</p>
+                    <div class="empty-state__icon">📋</div>
+                    <h2 class="empty-state__title">No hay presupuestos</h2>
+                    <p class="empty-state__description">
+                        Crea tu primera tarifa para poder generar presupuestos
+                    </p>
+                    <a href="tariffs.php" class="btn btn--primary">
+                        Ver Tarifas
+                    </a>
                 </div>
             <?php else: ?>
-                <?php foreach ($budgets as $budget): ?>
-                    <div class="table-row" style="grid-template-columns: 2fr 60px 1fr 1.5fr 1fr 1fr 1fr 2fr;">
-                        <div class="client-info">
-                            <div><?= htmlspecialchars($budget['client_name']) ?></div>
-                            <small>(<?= htmlspecialchars($budget['client_nif_nie']) ?>)</small>
-                        </div>
-                        
-                        <div class="notes-column">
-                            <button class="btn-icon black notes-btn" data-budget-id="<?= $budget['id'] ?>" title="Ver apuntes">
-                                <i data-lucide="sticky-note"></i>
-                            </button>
-                        </div>
-                        
-                        <div class="total-column" title="Base: <?= formatNumber($budget['base']) ?>€ | IVA: <?= formatNumber($budget['iva']) ?>€ | Total: <?= formatNumber($budget['total']) ?>€">
-                            <?= formatNumber($budget['total']) ?>€
-                        </div>
-                        
-                        <div class="tariff-column">
-                            <button class="btn btn-outline btn-small view-tariff" data-tariff-data='<?= htmlspecialchars(json_encode(['name' => $budget['tariff_name'] ?? 'Sin datos'])) ?>'>Ver</button>
-                            <small><?= htmlspecialchars($budget['tariff_title'] ?? 'Sin título') ?></small>
-                        </div>
-                        
-                        <div class="status-column">
-                            <select class="status-select" data-budget-id="<?= $budget['id'] ?>">
-                                <option value="draft" <?= $budget['status'] === 'draft' ? 'selected' : '' ?>>Borrador</option>
-                                <option value="pending" <?= $budget['status'] === 'pending' ? 'selected' : '' ?>>Pendiente</option>
-                                <option value="sent" <?= $budget['status'] === 'sent' ? 'selected' : '' ?>>Enviado</option>
-                                <option value="approved" <?= $budget['status'] === 'approved' ? 'selected' : '' ?>>Aprobado</option>
-                                <option value="rejected" <?= $budget['status'] === 'rejected' ? 'selected' : '' ?>>Rechazado</option>
-                                <option value="expired" <?= $budget['status'] === 'expired' ? 'selected' : '' ?>>Expirado</option>
+                <div class="card">
+                    <div class="card__header">
+                        <h2 class="card__title">Últimos Presupuestos</h2>
+                        <div class="card__actions">
+                            <select class="form-select form-select--sm" onchange="filterBudgets(this.value)">
+                                <option value="">Todos los estados</option>
+                                <option value="draft">Borradores</option>
+                                <option value="sent">Enviados</option>
+                                <option value="pending">Pendientes</option>
+                                <option value="approved">Aprobados</option>
+                                <option value="rejected">Rechazados</option>
+                                <option value="expired">Expirados</option>
                             </select>
                         </div>
-                        
-                        <div class="date-column">
-                            <?= formatDate($budget['created_at']) ?>
-                            <?php if ($budget['end_date']): ?>
-                                <?php 
-                                $daysRemaining = getDaysRemaining($budget['end_date']);
-                                if ($daysRemaining !== null): ?>
-                                    <small class="days-remaining <?= $daysRemaining <= 3 ? 'urgent' : '' ?>">
-                                        (<?= $daysRemaining ?> días)
-                                    </small>
-                                <?php endif; ?>
-                            <?php endif; ?>
-                        </div>
-                        
-                        <div class="author-column">
-                            <?= htmlspecialchars($budget['author_name']) ?>
-                        </div>
-                        
-                        <div class="action-buttons">
-                            <?php if ($budget['pdf_url']): ?>
-                                <button class="btn-icon black btn-view-pdf" data-pdf-url="<?= htmlspecialchars($budget['pdf_url']) ?>" title="Ver PDF">
-                                    <i data-lucide="file-check"></i>
-                                </button>
-                            <?php else: ?>
-                                <button class="btn-icon black" disabled title="PDF no disponible">
-                                    <i data-lucide="file-check" style="opacity: 0.3;"></i>
-                                </button>
-                            <?php endif; ?>
-                            
-                            <?php if (!$budget['pdf_url']): ?>
-                                <button class="btn-icon black btn-create-pdf" data-budget-id="<?= $budget['id'] ?>" title="Crear PDF">
-                                    <i data-lucide="file-stack"></i>
-                                </button>
-                            <?php else: ?>
-                                <button class="btn-icon black" disabled title="PDF ya creado">
-                                    <i data-lucide="file-stack" style="opacity: 0.3;"></i>
-                                </button>
-                            <?php endif; ?>
-                            
-                            <button class="btn-icon black btn-edit" data-type="budget" data-id="<?= $budget['id'] ?>" title="Editar">
-                                <i data-lucide="pencil"></i>
-                            </button>
-                            <button class="btn-icon black btn-duplicate" data-type="budget" data-id="<?= $budget['id'] ?>" title="Duplicar">
-                                <i data-lucide="copy"></i>
-                            </button>
-                            <button class="btn-icon red btn-delete" data-type="budget" data-id="<?= $budget['id'] ?>" title="Borrar">
-                                <i data-lucide="trash-2"></i>
-                            </button>
-                        </div>
                     </div>
-                <?php endforeach; ?>
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="table__head">
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Tarifa</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Fecha</th>
+                                    <th class="table__actions">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table__body">
+                                <?php foreach ($budgets as $budget): ?>
+                                    <?php 
+                                        $statusInfo = getStatusInfo($budget['status']);
+                                    ?>
+                                    <tr class="table__row" data-status="<?= $budget['status'] ?>">
+                                        <td class="table__cell">
+                                            <div class="table__cell-content">
+                                                <div class="table__cell-title"><?= htmlspecialchars($budget['client_name']) ?></div>
+                                                <div class="table__cell-subtitle"><?= htmlspecialchars($budget['client_email'] ?? '') ?></div>
+                                            </div>
+                                        </td>
+                                        <td class="table__cell">
+                                            <div class="table__cell-content">
+                                                <div class="table__cell-title"><?= htmlspecialchars($budget['tariff_name'] ?? 'Sin tarifa') ?></div>
+                                                <div class="table__cell-subtitle">UUID: <?= substr($budget['uuid'], 0, 8) ?>...</div>
+                                            </div>
+                                        </td>
+                                        <td class="table__cell">
+                                            <div class="table__amount">
+                                                <?= number_format($budget['total'], 2, ',', '.') ?> €
+                                            </div>
+                                        </td>
+                                        <td class="table__cell">
+                                            <span class="badge badge--<?= $statusInfo['class'] ?>">
+                                                <?= $statusInfo['text'] ?>
+                                            </span>
+                                        </td>
+                                        <td class="table__cell">
+                                            <time class="table__date">
+                                                <?= date('d/m/Y H:i', strtotime($budget['created_at'])) ?>
+                                            </time>
+                                        </td>
+                                        <td class="table__cell table__actions">
+                                            <div class="btn-group">
+                                                <a href="budget-view.php?uuid=<?= $budget['uuid'] ?>" 
+                                                   class="btn btn--sm btn--primary" 
+                                                   title="Ver Presupuesto">
+                                                    Ver
+                                                </a>
+                                                <?php if ($budget['status'] === 'draft'): ?>
+                                                    <a href="budget-form.php?edit=<?= $budget['uuid'] ?>" 
+                                                       class="btn btn--sm btn--secondary" 
+                                                       title="Editar">
+                                                        Editar
+                                                    </a>
+                                                <?php endif; ?>
+                                                <?php if ($budget['pdf_url']): ?>
+                                                    <a href="<?= $budget['pdf_url'] ?>" 
+                                                       class="btn btn--sm btn--outline" 
+                                                       title="Descargar PDF" 
+                                                       target="_blank">
+                                                        PDF
+                                                    </a>
+                                                <?php endif; ?>
+                                                <button type="button" 
+                                                        class="btn btn--sm btn--danger" 
+                                                        onclick="deleteBudget('<?= $budget['uuid'] ?>')"
+                                                        title="Eliminar">
+                                                    Eliminar
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Estadísticas rápidas -->
+                <div class="stats-grid">
+                    <?php
+                    $stats = [
+                        'total' => count($budgets),
+                        'pending' => count(array_filter($budgets, fn($b) => $b['status'] === 'pending')),
+                        'approved' => count(array_filter($budgets, fn($b) => $b['status'] === 'approved')),
+                        'total_amount' => array_sum(array_column($budgets, 'total'))
+                    ];
+                    ?>
+                    <div class="stat-card">
+                        <div class="stat-card__number"><?= $stats['total'] ?></div>
+                        <div class="stat-card__label">Total Presupuestos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card__number"><?= $stats['pending'] ?></div>
+                        <div class="stat-card__label">Pendientes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card__number"><?= $stats['approved'] ?></div>
+                        <div class="stat-card__label">Aprobados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card__number"><?= number_format($stats['total_amount'], 0, ',', '.') ?> €</div>
+                        <div class="stat-card__label">Valor Total</div>
+                    </div>
+                </div>
             <?php endif; ?>
         </div>
-    </div>
+    </main>
 
-    <!-- Modales -->
-    <div id="notesModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Apuntes del Presupuesto</h3>
-                <button class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div id="notesHistory"></div>
-                <form id="addNoteForm">
-                    <div class="form-group">
-                        <label for="noteCategory">Categoría:</label>
-                        <select id="noteCategory" required>
-                            <option value="📞">📞 Llamada</option>
-                            <option value="📧">📧 Email</option>
-                            <option value="🤝">🤝 Reunión</option>
-                            <option value="📝">📝 Nota</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="noteText">Apunte:</label>
-                        <textarea id="noteText" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Añadir Apunte</button>
-                </form>
-            </div>
-        </div>
-    </div>
+    <script>
+        function filterBudgets(status) {
+            const rows = document.querySelectorAll('.table__row[data-status]');
+            
+            rows.forEach(row => {
+                if (status === '' || row.dataset.status === status) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
 
-    <div id="tariffModal" class="modal">
-        <div class="modal-content modal-fullscreen">
-            <div class="modal-header">
-                <h3>Visualización de Tarifa</h3>
-                <button class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div id="tariffContent"></div>
-            </div>
-        </div>
-    </div>
-
-    <script src="assets/js/main.js"></script>
-    <script src="assets/js/budgets.js"></script>
+        function deleteBudget(uuid) {
+            if (confirm('¿Eliminar este presupuesto? Esta acción no se puede deshacer.')) {
+                window.location.href = `delete-budget.php?uuid=${uuid}`;
+            }
+        }
+    </script>
 </body>
 </html>
