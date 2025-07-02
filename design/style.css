@@ -1,5 +1,5 @@
-/* CSS del Design System */
-/* {"_META_file_path_": "design/style.css"} */
+/* CSS del Design System con Custom Select */
+/* {"_META_file_path_": "design/style2.css"} */
 
 :root {
     --primary-green: #109c61;
@@ -9,6 +9,8 @@
     --warning-color: #ffc107;
     --success-color: #28a745;
     --light-gray: #f5f5f5;
+    --light-primary: #e8f5e8;
+    --light-secondary: #fff3e0;
     --medium-gray: #e0e0e0;
     --dark-gray: #333;
     --white: #ffffff;
@@ -126,20 +128,25 @@ hr {
     text-align: center;
 }
 
+.btn--tariffs,
 .btn--primary {
     background: var(--secondary-orange);
     color: var(--white);
 }
+
+
 
 .btn--primary:hover {
     background: #d4841a;
     transform: translateY(-1px);
 }
 
+.btn--budgets,
 .btn--secondary {
     background: var(--primary-green);
     color: var(--white);
 }
+
 
 .btn--secondary:hover {
     background: #0e8a54;
@@ -156,6 +163,7 @@ hr {
     transform: translateY(-1px);
 }
 
+.btn--templates,
 .btn--info {
     background: var(--info-color);
     color: var(--white);
@@ -399,25 +407,33 @@ hr {
     gap: 1rem;
 }
 
-/* Tablas Común a todas (desktop) */
+/* Tablas Común a todas (desktop) - Con anchos fijos coordinados */
 .table-header--tariffs,
 .table-header--budgets,
 .table-header--templates,
 .table-row--tariffs,
 .table-row--budgets,
 .table-row--templates {
-    grid-template-columns: 8fr 1fr 3fr 2fr 2fr 3fr 5fr;
     display: grid;
     align-items: center;
-    text-align: center;
     gap: 1rem;
     padding: 0.1rem;
 }
 
+/* Grid específico para cada tabla */
 .table-header--tariffs,
+.table-row--tariffs {
+    grid-template-columns: 8fr 1fr 3fr 2fr 2fr 3fr 5fr;
+}
+
 .table-header--budgets,
-.table-header--templates {
-    font-weight: bold;
+.table-row--budgets {
+    grid-template-columns: 8fr 1fr 3fr 2fr 2fr 3fr 5fr;
+}
+
+.table-header--templates,
+.table-row--templates {
+    grid-template-columns: 8fr 1fr 1fr 1fr 2fr 3fr 5fr;
 }
 
 .table-header--tariffs,
@@ -426,32 +442,86 @@ hr {
     background: var(--secondary-orange);
     color: var(--white);
     font-weight: bold;
+    text-align: center;
 }
 
-/* Nombre en Tabla Tarifas y Plantillas y Clinte (NIF/NIE) en Tabla Presupuestos */
+/* Nombre en Tabla Tarifas y Plantillas y Cliente (NIF/NIE) en Tabla Presupuestos - SIEMPRE A LA IZQUIERDA */
 .table-header--tariffs>div:nth-child(1), 
 .table-header--budgets>div:nth-child(1), 
-.table-header--templates>div:nth-child(1),
+.table-header--templates>div:nth-child(1) {
+    text-align: left;
+    padding: 0 12px;
+}
+
 .table-row--tariffs>div:nth-child(1), 
 .table-row--budgets>div:nth-child(1), 
 .table-row--templates>div:nth-child(1) {
     text-align: left;
     padding: 0 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
 }
 
-/* Tabla Presupuestos - Total */
-.table-header--budgets>div:nth-child(3), 
-.table-row--budgets>div:nth-child(3) {
+/* Tabla Presupuestos - Total HEADER a la derecha, contenido a la derecha */
+.table-header--budgets>div:nth-child(3) {
     text-align: right;
     padding: 0 12px;
 }
 
-/* Acciones */
-.table-row--tariffs>div:nth-child(7), 
-.table-row--budgets>div:nth-child(7), 
-.table-row--templates>div:nth-child(7) {
-    align-items: center;
+.table-row--budgets>div:nth-child(3) {
+    text-align: right;
     padding: 0 12px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+/* Todas las demás celdas centradas */
+.table-row--tariffs>div:nth-child(2),
+.table-row--tariffs>div:nth-child(3),
+.table-row--tariffs>div:nth-child(4),
+.table-row--tariffs>div:nth-child(5),
+.table-row--tariffs>div:nth-child(6),
+.table-row--tariffs>div:nth-child(7),
+.table-row--budgets>div:nth-child(2),
+.table-row--budgets>div:nth-child(4),
+.table-row--budgets>div:nth-child(5),
+.table-row--budgets>div:nth-child(6),
+.table-row--budgets>div:nth-child(7),
+.table-row--templates>div:nth-child(2),
+.table-row--templates>div:nth-child(3),
+.table-row--templates>div:nth-child(4),
+.table-row--templates>div:nth-child(5),
+.table-row--templates>div:nth-child(6),
+.table-row--templates>div:nth-child(7) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Elementos que necesitan flex horizontal en lugar de vertical */
+.table-row--tariffs>div:nth-child(3), /* Presupuestos */
+.table-row--budgets>div:nth-child(4), /* Tarifa */
+.table-row--tariffs>div:nth-child(4), /* Acceso */
+.table-row--budgets>div:nth-child(5), /* Estado */
+.table-row--tariffs>div:nth-child(5), /* Estado */
+.table-row--templates>div:nth-child(5), /* Estado */
+.table-row--tariffs>div:nth-child(7), /* Acciones */
+.table-row--budgets>div:nth-child(7), /* Acciones */
+.table-row--templates>div:nth-child(7) /* Acciones */ {
+    flex-direction: row;
+    gap: 8px;
+}
+
+/* Línea secundaria con tamaño reducido */
+.cell-line--secondary {
+    font-size: 0.875rem;
+    color: #666;
+    font-weight: normal;
 }
 
 
@@ -578,7 +648,7 @@ hr {
     padding: 0 12px;
     border-radius: 12px;
     border: 0 solid var(--medium-gray);
-    font-size: 14px;
+    font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
     text-align: center;
@@ -668,15 +738,58 @@ hr {
 .stat-card__number {
     font-size: 2.5rem;
     font-weight: bold;
-    color: var(--secondary-orange);
     margin-bottom: 0.5rem;
 }
 
+.stat-card--tariffs .stat-card__number {
+    color: var(--secondary-orange);
+}
+
+.stat-card--budgets .stat-card__number {
+    color: var(--primary-green);
+}
+
+.action-card--tariffs .action-card__icon svg {
+    color: var(--secondary-orange);
+}
+
+.action-card--budgets .action-card__icon svg {
+    color: var(--primary-green);
+}
+
+
+.stat-card--tariffs {
+    background: var(--light-secondary);
+    color: var(--secondary-orange);
+}
+
+.stat-card--budgets {
+    background: var(--light-primary);
+    color: var(--primary-green);
+}
+
+.stat-card--week {
+    background: var(--light-primary);
+    color: var(--primary-green);
+}
+
+.stat-card__icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.stat-card__icon svg,
+.action-card__icon svg {
+    width: 56px;
+    height: 56px;
+}
+
 .stat-card__label {
-    color: #666;
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    font-weight: 500;
 }
 
 /* Cards de acción */
@@ -696,12 +809,23 @@ hr {
     transition: transform 0.3s;
 }
 
+.action-card--tariffs {
+    background: var(--light-secondary);
+    color: var(--secondary-orange);
+}
+
+.action-card--budgets {
+    background: var(--light-primary);
+    color: var(--primary-green);
+}
+
+
 .action-card:hover {
     transform: translateY(-5px);
 }
 
 .action-card__icon {
-    font-size: 3rem;
+    font-size: 2.5rem;
     margin-bottom: 1rem;
 }
 
@@ -717,17 +841,367 @@ hr {
     line-height: 1.5;
 }
 
-/* Barra de acciones */
-.action-bar {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
+/* Barra de estadísticas */
+.stats-bar {
+    background: var(--light-gray);
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius);
     margin-bottom: 2rem;
+    border-left: 4px solid var(--primary-green);
+}
+
+.stats-text {
+    font-size: 0.9rem;
+    color: var(--dark-gray);
+    font-weight: 500;
+    line-height: 1.4;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     flex-wrap: wrap;
 }
 
+.stats-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: white;
+    min-width: 24px;
+}
 
+.stats-number.badge--success {
+    background: var(--success-color);
+}
 
+.stats-number.badge--danger {
+    background: var(--danger-color);
+}
+
+.stats-number.badge--info {
+    background: var(--info-color);
+}
+
+.stats-number.badge--warning {
+    background: var(--warning-color);
+    color: var(--dark-gray);
+}
+
+.stats-number.badge--secondary {
+    background: var(--medium-gray);
+    color: var(--dark-gray);
+}
+
+.stats-number.badge--black {
+    background: var(--black);
+}
+
+.stats-label {
+    font-size: 0.85rem;
+    margin-right: 1rem;
+}
+
+/* Barra de filtros */
+.filters-bar {
+    display: grid;
+    grid-template-columns: 2fr auto auto auto auto;
+    gap: 1rem;
+    align-items: center;
+    background: var(--white);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--medium-gray);
+    border-radius: var(--border-radius);
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--secondary-orange);
+}
+
+.search-input::placeholder {
+    color: #999;
+}
+
+.filter-select {
+    padding: 10px 12px;
+    border: 1px solid var(--medium-gray);
+    border-radius: var(--border-radius);
+    font-size: 14px;
+    background: white;
+    cursor: pointer;
+    min-width: 120px;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--secondary-orange);
+}
+
+.date-input {
+    padding: 10px 12px;
+    border: 1px solid var(--medium-gray);
+    border-radius: var(--border-radius);
+    font-size: 14px;
+    cursor: pointer;
+    min-width: 130px;
+}
+
+.date-input:focus {
+    outline: none;
+    border-color: var(--secondary-orange);
+}
+
+.btn--filter {
+    background: var(--primary-green);
+    color: var(--white);
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn--filter:hover {
+    background: #0e8a54;
+    transform: translateY(-1px);
+}
+
+.btn--clear {
+    background: transparent;
+    color: var(--dark-gray);
+    padding: 10px 20px;
+    border: 1px solid var(--medium-gray);
+    border-radius: var(--border-radius);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn--clear:hover {
+    background: var(--light-gray);
+    border-color: var(--dark-gray);
+}
+
+/* Header de página con título y botones */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.page-header h1 {
+    color: var(--black);
+    margin: 0;
+    font-size: 2rem;
+}
+
+.header-title__buttons {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Responsive para header de página */
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .header-title__buttons {
+        justify-content: center;
+    }
+}
+
+/* Custom Select para móvil y casos de overflow */
+.custom-select-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.custom-select-display {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    gap: 6px;
+    /* Mantener exactamente las mismas dimensiones que el badge original */
+    padding: 0 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: fit-content;
+    white-space: nowrap;
+    border: 0;
+}
+
+.custom-select-display svg {
+    width: 10px;
+    height: 10px;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+}
+
+.custom-select-wrapper.active .custom-select-display svg {
+    transform: rotate(180deg);
+}
+
+/* Popup modal para selects */
+.select-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+}
+
+.select-modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.select-modal {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    max-width: 320px;
+    width: 90%;
+    max-height: 70vh;
+    overflow: hidden;
+    transform: scale(0.9);
+    transition: transform 0.2s ease;
+}
+
+.select-modal-overlay.show .select-modal {
+    transform: scale(1);
+}
+
+.select-modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--light-gray);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.select-modal-title {
+    font-weight: 600;
+    color: var(--dark-gray);
+    font-size: 16px;
+}
+
+.select-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--dark-gray);
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.select-modal-options {
+    max-height: 50vh;
+    overflow-y: auto;
+}
+
+.custom-option {
+    padding: 12px 20px;
+    cursor: pointer;
+    font-size: 15px;
+    line-height: 1.3;
+    color: var(--black);
+    transition: background-color 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    text-transform: none;
+    font-weight: 400;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.custom-option:last-child {
+    border-bottom: none;
+}
+
+.custom-option:hover {
+    background-color: var(--light-gray);
+}
+
+.custom-option.selected {
+    background-color: white;
+    color: var(--black);
+    font-weight: 500;
+}
+
+.custom-option.selected::before {
+    content: '✓';
+    color: var(--black);
+    font-weight: bold;
+    font-size: 16px;
+    width: 16px;
+    text-align: left;
+}
+
+.custom-option:not(.selected)::before {
+    content: '';
+    width: 16px;
+}
+
+/* Scroll personalizado para el modal */
+.select-modal-options::-webkit-scrollbar {
+    width: 6px;
+}
+
+.select-modal-options::-webkit-scrollbar-track {
+    background: var(--light-gray);
+    border-radius: 3px;
+}
+
+.select-modal-options::-webkit-scrollbar-thumb {
+    background: var(--medium-gray);
+    border-radius: 3px;
+}
+
+.select-modal-options::-webkit-scrollbar-thumb:hover {
+    background: var(--dark-gray);
+}
 
 @media (max-width: 1024px) {
     .header-content {
@@ -755,79 +1229,193 @@ hr {
     }
 
     /* --------------------------
-       Ajustes de filas en cards
+       Cards móvil - Estructura corregida por tabla
        --------------------------*/
 
-    /* Por defecto todo alineado al centro */
-    .table-card__section,
-    .table-card__content {
-        text-align: center;
-        justify-content: center;
-        gap: 4rem;
-    }
-        
-    /* Primera fila (Nombre / Cliente) alineada izquierda */
+    /* Headers y secciones */
     .table-card__header,
-    .table-card--tariffs .table-card__content:first-of-type,
-    .table-card--budgets .table-card__content:first-of-type,
-    .table-card--templates .table-card__content:first-of-type {
-        text-align: left;
+    .table-card__section {
+        background: var(--secondary-orange);
+        color: var(--white);
+        font-weight: bold;
         padding: 6px 12px;
-    }
-
-
-    .table-card--budgets .table-card__section:nth-of-type(2),
-    .table-card--budgets .table-card__content:nth-of-type(2) {
-        padding: 6px 12px;
-        text-align: left;
-    }
-
-
-    /* Apuntes (icono) y Total */
-    /* Alinear título y contenido Total a la derecha */
-    .table-card--budgets .apuntes-total span:last-child,
-    .table-card--budgets .apuntes-total .total-amount {
-        text-align: right;
-    }
-    .table-card--budgets .apuntes-total {
-        display: grid;
-        grid-template-columns: 1fr 3fr;
-        gap: 1rem;
+        display: flex;
         align-items: center;
     }
-    
-    .table-card--budgets .apuntes-total span.total-amount {
-        text-align: right;
-        justify-self: end;
+
+    .table-card__header {
+        text-align: left;
+        justify-content: flex-start;
     }
 
+    .table-card__section {
+        text-align: center;
+        justify-content: space-around;
+    }
 
-    /* Tablet reorganización específica */
-        /* Móvil: Tarifas fila Presupuesto single column */
-        @media (max-width: 768px) {
-            .table-card--tariffs .table-card__section:nth-of-type(2),
-            .table-card--tariffs .table-card__content:nth-of-type(3) {
-                grid-template-columns: 1fr;
-            }
-        }
-    @media (min-width: 769px) {
-        /* Tarifa: Presupuesto + Acceso */
-        .table-card--tariffs .table-card__section:nth-of-type(2),
-        .table-card--tariffs .table-card__content:nth-of-type(3) {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+    /* Contenido general */
+    .table-card__content {
+        padding: 6px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        gap: 1rem;
+    }
+
+    /* Primera fila (Nombre/Cliente) siempre a la izquierda */
+    .table-card__content:first-of-type {
+        text-align: left;
+        justify-content: flex-start;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    /* TARIFAS - Estructura: Nombre | Presupuestos/Acceso | Estado/Autor | Acciones */
+    .table-card--tariffs .table-card__section:nth-child(3) {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .table-card--tariffs .table-card__content:nth-child(4) {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .table-card--tariffs .table-card__section:nth-child(5) {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .table-card--tariffs .table-card__content:nth-child(6) {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .table-card--tariffs .table-card__section:nth-child(7) {
+        justify-content: center;
+    }
+
+    .table-card--tariffs .table-card__content:nth-child(8) {
+        justify-content: center;
+    }
+
+    /* PRESUPUESTOS - Estructura: Cliente | Apuntes/Total | Tarifa/Estado/Autor | Acciones */
+    .table-card--budgets .table-card__section.apuntes-total {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+    
+    .table-card--budgets .table-card__content.apuntes-total {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        text-align: center;
+        align-items: center;
+    }
+
+    .table-card--budgets .table-card__section:nth-child(6) {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .table-card--budgets .table-card__content:nth-child(7) {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .table-card--budgets .table-card__section:nth-child(8) {
+        justify-content: center;
+    }
+
+    .table-card--budgets .table-card__content:nth-child(9) {
+        justify-content: center;
+    }
+
+    /* PLANTILLAS - Estructura: Nombre | Estado/Autor | Acciones */
+    .table-card--templates .table-card__section:nth-child(3) {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .table-card--templates .table-card__content:nth-child(4) {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .table-card--templates .table-card__section:nth-child(5) {
+        justify-content: center;
+    }
+
+    .table-card--templates .table-card__content:nth-child(6) {
+        justify-content: center;
+    }
+
+    /* Elementos específicos */
+    .budget-actions,
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .budget-count {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .table-card__icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .total-amount {
+        font-weight: 600;
+        color: var(--primary-green);
+        font-size: 1.2rem;
+    }
+
+    /* Texto en líneas separadas */
+    .table-card__content span:not(.badge):not(.total-amount),
+    .table-card__content .cell-line--secondary {
+        display: block;
+        margin-bottom: 2px;
+    }
+
+    /* Ajustes responsive para móvil */
+    @media (max-width: 768px) {
+        .table-card--tariffs .table-card__section:nth-child(3),
+        .table-card--tariffs .table-card__content:nth-child(4),
+        .table-card--tariffs .table-card__section:nth-child(5),
+        .table-card--tariffs .table-card__content:nth-child(6) {
+            grid-template-columns: 1fr;
         }
 
-        /* Tarifa: Estado + Autor + Acciones */
-        .table-card--tariffs .table-card__section:nth-of-type(3),
-        .table-card--tariffs .table-card__content:nth-of-type(4) {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+        .table-card--budgets .table-card__section:nth-child(6),
+        .table-card--budgets .table-card__content:nth-child(7) {
+            grid-template-columns: 1fr;
         }
 
-        /* Budgets Apuntes Total Tarifa */
-        .table-card--budgets .apuntes-total {
-            grid-template-columns: 1fr 2fr 1fr;
+        .table-card--templates .table-card__section:nth-child(3),
+        .table-card--templates .table-card__content:nth-child(4) {
+            grid-template-columns: 1fr;
         }
     }
 
@@ -845,9 +1433,19 @@ hr {
     }
 }
 
-/* Desktop - ocultar cards móvil */
-@media (min-width: 769px) {
+/* Desktop - ocultar cards móvil y mostrar tablas desktop */
+@media (min-width: 1025px) {
     .table-mobile {
         display: none;
+    }
+    
+    /* Asegurar que las tablas desktop se muestren */
+    .table-header--tariffs,
+    .table-header--budgets,
+    .table-header--templates,
+    .table-row--tariffs,
+    .table-row--budgets,
+    .table-row--templates {
+        display: grid;
     }
 }

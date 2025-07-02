@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- {"_META_file_path_": "design/index.html"} -->
-<!-- Design System - Estructura Simplificada -->
+<!-- {"_META_file_path_": "design/index2.html"} -->
+<!-- Design System - Estructura Simplificada con Custom Select -->
 <html lang="es">
 
 <head>
@@ -23,7 +23,9 @@
                     <a href="#" class="nav-item">Presupuestos</a>
                 </nav>
                 <div class="user-menu">
-                    <a href="#" class="logout-btn">Cerrar Sesión</a>
+                    <button class="log-out btn-icon btn-icon--black" title="Cerrar Sesión">
+                        <i data-lucide="log-out"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -140,11 +142,9 @@
 
             <div class="table-row--tariffs">
                 <div class="table-cell">
-                    <div class="cell-line cell-line--primary">
-                        <span class="badge badge--incomplete">Incompleta</span>
-                        Nombre de Tarifa
-                    </div>
-                    <div class="cell-line cell-line--secondary">30/6/2025 - Descripción de la Tarifa</div>
+                    <span class="badge badge--incomplete">Incompleta</span>
+                    <span>Nombre de Tarifa</span>
+                    <span class="cell-line--secondary">30/6/2025 - Descripción de la Tarifa</span>
                 </div>
                 <div class="table-cell"></div>
                 <div class="table-cell">
@@ -166,11 +166,11 @@
                         <option value="private" selected>Privado</option>
                     </select>
                 </div>
-                <select class="badge-select badge--success">
-                    <option value="private" selected>Activa</option>
-                    <option value="public">Inactiva</option>
-                </select>
                 <div class="table-cell">
+                    <select class="badge-select badge--success">
+                        <option value="active" selected>Activa</option>
+                        <option value="inactive">Inactiva</option>
+                    </select>
                 </div>
                 <div class="table-cell">
                     <span class="cell-line cell-line--primary">Carlos</span>
@@ -198,11 +198,9 @@
                     </div>
                     <div class="table-card__body">
                         <div class="table-card__content">
-                            <div class="cell-line cell-line--primary">
-                                <span class="badge badge--incomplete">Incompleta</span>
-                                Nombre de Tarifa
-                            </div>
-                            <div class="cell-line cell-line--secondary">30/6/2025 - Descripción de la Tarifa</div>
+                            <span class="badge badge--incomplete">Incompleta</span>
+                            <span>Nombre de Tarifa</span>
+                            <span class="cell-line--secondary">30/6/2025 - Descripción de la Tarifa</span>
                         </div>
 
                         <div class="table-card__section">
@@ -287,8 +285,8 @@
 
             <div class="table-row--budgets">
                 <div class="table-cell">
-                    <div class="cell-line cell-line--primary">Nombre Apellidos (12345678Z)</div>
-                    <div class="cell-line cell-line--secondary">30/6/2025 - 30/7/2025 (15 días restantes)</div>
+                    <span class="cell-line cell-line--primary">Nombre Apellidos (12345678Z)</span>
+                    <span class="cell-line cell-line--secondary">30/6/2025 - 30/7/2025 (15 días restantes)</span>
                 </div>
                 <div class="table-cell">
                     <button class="btn-icon btn-icon--black notes-icon has-notes" title="Ver apuntes del presupuesto">
@@ -348,9 +346,8 @@
                     <div></div>
                     <div class="table-card__body">
                         <div class="table-card__content">
-                            <div class="cell-line cell-line--primary">Nombre Apellidos (12345678Z)</div>
-                            <div class="cell-line cell-line--secondary">30/6/2025 - 30/7/2025 (15 días restantes)
-                            </div>
+                            <span class="cell-line cell-line--primary">Nombre Apellidos (12345678Z)</span>
+                            <span class="cell-line cell-line--secondary">30/6/2025 - 30/7/2025 (15 días restantes)</span>
                         </div>
                         <div>
 
@@ -435,8 +432,8 @@
 
             <div class="table-row--templates">
                 <div class="table-cell">
-                    <div class="cell-line cell-line--primary">Nombre de Plantilla</div>
-                    <div class="cell-line cell-line--secondary">30/6/2025 - Descripción de la Plantilla</div>
+                    <span class="cell-line cell-line--primary">Nombre de Plantilla</span>
+                    <span class="cell-line cell-line--secondary">30/6/2025 - Descripción de la Plantilla</span>
                 </div>
                 <div class="table-cell"></div>
                 <div class="table-cell"></div>
@@ -473,9 +470,8 @@
                     </div>
                     <div class="table-card__body">
                         <div class="table-card__content">
-                            <div class="cell-line cell-line--primary">Nombre de Plantilla</div>
-                            <div class="cell-line cell-line--secondary">30/6/2025 - Descripción de la Plantilla
-                            </div>
+                            <span class="cell-line cell-line--primary">Nombre de Plantilla</span>
+                            <span class="cell-line cell-line--secondary">30/6/2025 - Descripción de la Plantilla</span>
                         </div>
 
                         <div class="table-card__section">
@@ -525,15 +521,15 @@
         <h1>Estadísticas Dashboard</h1>
         <hr>
         <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-card__number">24</div>
-                <div class="stat-card__label">Tarifas Creadas</div>
-            </div>
-            <div class="stat-card">
+            <div class="stat-card stat-card--budgets">
                 <div class="stat-card__number">156</div>
                 <div class="stat-card__label">Presupuestos Generados</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card stat-card--tariffs">
+                <div class="stat-card__number">24</div>
+                <div class="stat-card__label">Tarifas Creadas</div>
+            </div>
+            <div class="stat-card stat-card--week">
                 <div class="stat-card__number">8</div>
                 <div class="stat-card__label">Esta Semana</div>
             </div>
@@ -542,39 +538,102 @@
         <h1>Cards de Acción</h1>
         <hr>
         <div class="action-cards">
-            <div class="action-card">
-                <div class="action-card__icon">📊</div>
-                <h3 class="action-card__title">Gestionar Tarifas</h3>
+            <div class="action-card action-card--tariffs">
+                <div class="action-card__icon">
+                    <i data-lucide="file-text"></i>
+                </div>
+                <h3 class="action-card__title">Tarifas</h3>
                 <p class="action-card__description">Crea, edita y organiza tus tarifas de precios</p>
-                <button class="btn btn--primary">Ir a Tarifas</button>
+                <button class="btn btn--tariffs">Ir a Tarifas</button>
             </div>
-            <div class="action-card">
-                <div class="action-card__icon">📋</div>
-                <h3 class="action-card__title">Ver Presupuestos</h3>
+            <div class="action-card action-card--budgets">
+                <div class="action-card__icon">
+                    <i data-lucide="clipboard-list"></i>
+                </div>
+                <h3 class="action-card__title">Presupuestos</h3>
                 <p class="action-card__description">Consulta todos los presupuestos generados</p>
-                <button class="btn btn--secondary">Ver Presupuestos</button>
+                <button class="btn btn--budgets">Ver Presupuestos</button>
             </div>
-            <div class="action-card">
-                <div class="action-card__icon">✨</div>
+            <div class="action-card action-card--tariffs">
+                <div class="action-card__icon">
+                    <i data-lucide="plus-circle"></i>
+                </div>
                 <h3 class="action-card__title">Crear Nueva Tarifa</h3>
                 <p class="action-card__description">Comienza creando una nueva tarifa de precios</p>
-                <button class="btn btn--info">Nueva Tarifa</button>
+                <button class="btn btn--tariffs">Nueva Tarifa</button>
+            </div>
+        </div>
+
+        <h1>Header de Página</h1>
+        <hr>
+        <div class="spacing">
+            <div class="page-header">
+                <h1>Crear Tarifa</h1>
+                <div class="header-title__buttons">
+                    <button class="btn btn--tariffs">Tarifas</button>
+                    <button class="btn btn--tariffs">Guardar Tarifa</button>
+                    <button class="btn btn--templates">Plantillas</button>
+                    <button class="btn btn--templates">Guardar como Plantilla</button>
+                </div>
+            </div>
+        </div>
+
+        <h1>Barra de Estadísticas</h1>
+        <hr>
+        <div class="spacing">
+            <div class="stats-bar">
+                <div class="stats-text">
+                    <strong>42 Presupuestos: </strong>
+                    <span class="stats-number badge--success">8</span>
+                    <span class="stats-label">Aprobados</span>
+                    <span class="stats-number badge--danger">12</span>
+                    <span class="stats-label">Rechazados</span>
+                    <span class="stats-number badge--info">10</span>
+                    <span class="stats-label">Enviados</span>
+                    <span class="stats-number badge--black">4</span>
+                    <span class="stats-label">Expirados</span>
+                    <span class="stats-number badge--warning">1</span>
+                    <span class="stats-label">Pendientes</span>
+                    <span class="stats-number badge--secondary">7</span> 
+                    <span class="stats-label">Borradores</span>
+                </div>
+            </div>
+        </div>
+
+        <h1>Barra de Filtros</h1>
+        <hr>
+        <div class="spacing">
+            <div class="filters-bar">
+                <input type="text" class="search-input" placeholder="Buscar por cliente...">
+                <select class="filter-select">
+                    <option>Todos los estados</option>
+                    <option>Borrador</option>
+                    <option>Pendiente</option>
+                    <option>Enviado</option>
+                    <option>Aprobado</option>
+                    <option>Rechazado</option>
+                    <option>Expirado</option>
+                </select>
+                <input type="date" class="date-input">
+                <input type="date" class="date-input">
+                <div class="filter-buttons">
+                    <button class="btn--filter">Filtrar</button>
+                    <button class="btn--clear">Limpiar</button>
+                </div>
             </div>
         </div>
 
         <h1>Barra de Acciones</h1>
         <hr>
         <div class="action-bar">
-            <button class="btn btn--primary">Crear Tarifa</button>
-            <button class="btn btn--secondary">Exportar</button>
-            <button class="btn btn--info">Filtros</button>
+            <button class="btn btn--tariffs">Tarifas</button>
+            <button class="btn btn--budgets">Presupuetos</button>
+            <button class="btn btn--templates">Plantillas</button>
         </div>
     </div>
 
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <script>
-        lucide.createIcons();
-    </script>
+    <script src="script.js"></script>
 </body>
 
 </html>
