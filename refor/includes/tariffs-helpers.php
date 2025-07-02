@@ -23,17 +23,34 @@ function getTariffsWithData() {
 }
 
 /**
+ * Obtiene una tarifa por ID
+ */
+function getTariffById($id) {
+    $pdo = getConnection();
+    $stmt = $pdo->prepare("SELECT * FROM tariffs WHERE id = ? AND user_id = ?");
+    $stmt->execute([$id, $_SESSION['user_id']]);
+    return $stmt->fetch();
+}
+
+/**
  * Verifica si una tarifa está completa
  */
 function isTariffComplete($tariff) {
     $requiredFields = [
         'title', 'name', 'nif', 'address', 'contact', 
-        'logo_url', 'template', 'primary_color', 'secondary_color',
-        'summary_note', 'conditions_note', 'legal_note', 'json_tariff_data'
+        'json_tariff_data'
     ];
     
     foreach ($requiredFields as $field) {
         if (empty($tariff[$field])) {
+            return false;
+        }
+    }
+    
+    // Verificar que json_tariff_data sea válido
+    if ($tariff['json_tariff_data']) {
+        $data = json_decode($tariff['json_tariff_data'], true);
+        if (json_last_error() !== JSON_ERROR_NONE || empty($data)) {
             return false;
         }
     }
@@ -87,7 +104,7 @@ function duplicateTariff($tariffId) {
     try {
         $pdo->beginTransaction();
         
-        // Crear duplicado
+        // Generar nuevo UUID
         $newUuid = generateUUID();
         $newTitle = $original['title'] . ' (Copia)';
         
@@ -118,44 +135,49 @@ function duplicateTariff($tariffId) {
             $_SESSION['user_id']
         ]);
         
-        $newId = $pdo->lastInsertId();
+        $newTariffId = $pdo->lastInsertId();
         $pdo->commit();
-        
-        return $newId;
+        return $newTariffId;
         
     } catch (Exception $e) {
         $pdo->rollback();
-        return false;
+        throw $e;
     }
 }
 
 /**
  * Elimina una tarifa
  */
-function deleteTariff($tariffId) {
+function deleteTariff($id) {
     $pdo = getConnection();
     
     try {
-        $pdo->beginTransaction();
-        
-        // Verificar que no tenga presupuestos
+        // Verificar que no tiene presupuestos asociados
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM budgets WHERE tariff_id = ?");
-        $stmt->execute([$tariffId]);
+        $stmt->execute([$id]);
         $budgetCount = $stmt->fetchColumn();
         
         if ($budgetCount > 0) {
-            throw new Exception("No se puede eliminar una tarifa con presupuestos asociados");
+            throw new Exception("No se puede eliminar la tarifa porque tiene presupuestos asociados");
         }
         
         // Eliminar tarifa
         $stmt = $pdo->prepare("DELETE FROM tariffs WHERE id = ? AND user_id = ?");
-        $result = $stmt->execute([$tariffId, $_SESSION['user_id']]);
+        $stmt->execute([$id, $_SESSION['user_id']]);
         
-        $pdo->commit();
-        return $result;
+        return $stmt->rowCount() > 0;
         
     } catch (Exception $e) {
-        $pdo->rollback();
         throw $e;
     }
+}
+
+/**
+ * Obtiene el conteo de presupuestos por tarifa
+ */
+function getBudgetCountByTariff($tariff_id) {
+    $pdo = getConnection();
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM budgets WHERE tariff_id = ?");
+    $stmt->execute([$tariff_id]);
+    return $stmt->fetchColumn();
 }

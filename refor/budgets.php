@@ -1,234 +1,318 @@
 <?php
 // {"_META_file_path_": "refor/budgets.php"}
-// Página de gestión de presupuestos
+// Página de presupuestos con diseño exacto del sistema
 
-require_once 'config.php';
-require_once 'auth.php';
+require_once 'includes/config.php';
+require_once 'includes/budgets-helpers.php';
+
 requireAuth();
 
+// Obtener presupuestos con datos adicionales
 $pdo = getConnection();
-$stmt = $pdo->prepare("
-    SELECT b.*, t.title as tariff_name 
-    FROM budgets b 
+$budgets = $pdo->prepare("
+    SELECT b.*, 
+           t.title as tariff_title,
+           u.name as author_name
+    FROM budgets b
     LEFT JOIN tariffs t ON b.tariff_id = t.id 
+    LEFT JOIN users u ON b.user_id = u.id
     WHERE b.user_id = ?
-    ORDER BY b.created_at DESC 
-    LIMIT 50
+    ORDER BY b.created_at DESC
 ");
-$stmt->execute([$_SESSION['user_id']]);
-$budgets = $stmt->fetchAll();
+$budgets->execute([$_SESSION['user_id']]);
+$budgets = $budgets->fetchAll();
 
-function getStatusInfo($status) {
-    $statuses = [
-        'draft' => ['text' => 'Borrador', 'class' => 'neutral'],
-        'sent' => ['text' => 'Enviado', 'class' => 'info'],
-        'pending' => ['text' => 'Pendiente', 'class' => 'warning'],
-        'approved' => ['text' => 'Aprobado', 'class' => 'success'],
-        'rejected' => ['text' => 'Rechazado', 'class' => 'error'],
-        'expired' => ['text' => 'Expirado', 'class' => 'error']
-    ];
-    
-    return $statuses[$status] ?? ['text' => ucfirst($status), 'class' => 'neutral'];
+// Obtener estadísticas
+$stats = $pdo->prepare("
+    SELECT 
+        COUNT(*) as total,
+        SUM(CASE WHEN status = 'approved' THEN 1 ELSE 0 END) as approved,
+        SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) as rejected,
+        SUM(CASE WHEN status = 'sent' THEN 1 ELSE 0 END) as sent,
+        SUM(CASE WHEN status = 'expired' THEN 1 ELSE 0 END) as expired,
+        SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending,
+        SUM(CASE WHEN status = 'draft' THEN 1 ELSE 0 END) as draft
+    FROM budgets 
+    WHERE user_id = ?
+");
+$stats->execute([$_SESSION['user_id']]);
+$stats = $stats->fetch();
+
+// Función para formatear precio
+function formatPrice($amount) {
+    return number_format($amount, 2, ',', '.') . ' €';
 }
 
-$pageTitle = "Presupuestos";
-$activeNav = "budgets";
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $pageTitle ?> - Budget Generator</title>
-    <link rel="stylesheet" href="assets/css/design-system.css">
+    <title>Presupuestos - Generador de Presupuestos</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 <body>
-    <?php include 'components/header.php'; ?>
-
-    <main class="main-content">
-        <div class="page-header">
-            <div class="page-header__content">
-                <h1 class="page-header__title"><?= $pageTitle ?></h1>
-                <p class="page-header__subtitle">Consulta y gestiona todos tus presupuestos</p>
-            </div>
-            <div class="page-header__actions">
-                <a href="tariffs.php" class="btn btn--outline">
-                    <span class="btn__icon">📊</span>
-                    Ver Tarifas
-                </a>
+    <div class="container">
+    <?php include 'includes/header.php'; ?>
+    
+        <!-- Page Header -->
+        <div class="spacing">
+            <div class="page-header">
+                <h1>Presupuestos</h1>
+                <div class="header-title__buttons">
+                    <a href="create-tariff.php" class="btn btn--tariffs">Nueva Tarifa</a>
+                </div>
             </div>
         </div>
 
-        <?php if (isset($_GET['success'])): ?>
-            <div class="alert alert--success">
-                <div class="alert__icon">✓</div>
-                <div class="alert__content">
-                    <div class="alert__title">¡Presupuesto generado!</div>
-                    <div class="alert__message">El presupuesto se ha creado correctamente</div>
+        <!-- Estadísticas -->
+        <div class="spacing">
+            <div class="stats-bar">
+                <div class="stats-badges">
+                    <span class="stats-total"><?= $stats['total'] ?> Presupuestos:</span>
+                    
+                    <span class="stats-badge stats-badge--success">
+                        <span class="stats-number badge--success"><?= $stats['approved'] ?></span>
+                        <span>Aprobados </span>
+                    </span>
+                    <span class="stats-badge stats-badge--danger">
+                        <span class="stats-number badge--danger"><?= $stats['rejected'] ?></span>
+                        <span>Rechazados </span>
+                    </span>
+                    <span class="stats-badge stats-badge--info">
+                        <span class="stats-number badge--info"><?= $stats['sent'] ?></span>
+                        <span>Enviados </span>
+                    </span>
+                    <span class="stats-badge stats-badge--black">
+                        <span class="stats-number badge--black"><?= $stats['expired'] ?></span>
+                        <span>Expirados</span>
+                    </span>
+                    <span class="stats-badge stats-badge--warning">
+                        <span class="stats-number badge--warning"><?= $stats['pending'] ?></span>
+                        <span>Pendientes </span>
+                    </span>
+                    <span class="stats-badge stats-badge--secondary">
+                        <span class="stats-number badge--secondary"><?= $stats['draft'] ?></span>
+                        <span>Borradores </span>
+                    </span>
                 </div>
             </div>
-        <?php endif; ?>
 
-        <div class="content-section">
-            <?php if (empty($budgets)): ?>
-                <div class="empty-state">
-                    <div class="empty-state__icon">📋</div>
-                    <h2 class="empty-state__title">No hay presupuestos</h2>
-                    <p class="empty-state__description">
-                        Crea tu primera tarifa para poder generar presupuestos
-                    </p>
-                    <a href="tariffs.php" class="btn btn--primary">
-                        Ver Tarifas
-                    </a>
+        <div class="spacing">
+            <div class="filters-bar budgets">
+                <input type="text" class="search-input" placeholder="Buscar por cliente...">
+                <select class="filter-select">
+                    <option>Estados</option>
+                    <option value="draft">Borrador</option>
+                    <option value="pending">Pendiente</option>
+                    <option value="sent">Enviado</option>
+                    <option value="approved">Aprobado</option>
+                    <option value="rejected">Rechazado</option>
+                    <option value="expired">Expirado</option>
+                </select>
+                <input type="text" class="search-input" placeholder="Buscar por usuario...">
+                <input type="date" class="date-input">
+                <input type="date" class="date-input">
+                <div class="filter-buttons">
+                    <button class="btn--filter">Filtrar</button>
+                    <button class="btn--clear">Limpiar</button>
                 </div>
-            <?php else: ?>
-                <div class="card">
-                    <div class="card__header">
-                        <h2 class="card__title">Últimos Presupuestos</h2>
-                        <div class="card__actions">
-                            <select class="form-select form-select--sm" onchange="filterBudgets(this.value)">
-                                <option value="">Todos los estados</option>
-                                <option value="draft">Borradores</option>
-                                <option value="sent">Enviados</option>
-                                <option value="pending">Pendientes</option>
-                                <option value="approved">Aprobados</option>
-                                <option value="rejected">Rechazados</option>
-                                <option value="expired">Expirados</option>
+            </div>
+
+            <!-- Tabla Presupuestos -->
+            <div class="table-responsive">
+                <!-- Desktop Tabla Presupuestos -->
+                <div class="table-header--budgets">
+                    <div>Cliente (NIF/NIE)</div>
+                    <div>Apuntes</div>
+                    <div>Total</div>
+                    <div>Tarifa</div>
+                    <div>Estado</div>
+                    <div>Usuario</div>
+                    <div>Acciones</div>
+                </div>
+                
+                <?php foreach ($budgets as $budget): ?>
+                    <?php $daysRemaining = getDaysRemaining($budget['end_date']); ?>
+                    <div class="table-row--budgets">
+                        <!-- Cliente -->
+                        <div class="table-cell">
+                            <span><?= htmlspecialchars($budget['client_name']) ?>
+                            <span class="cell-line--secondary">
+                                (<?= htmlspecialchars($budget['client_nif_nie'] ?? 'Sin NIF/NIE') ?>)
+                            </span></span>
+                            <span class="cell-line--secondary">
+                                <?= $budget['start_date'] ? date('d/m/Y', strtotime($budget['start_date'])) : 'Sin fecha' ?> - 
+                                <?= $budget['end_date'] ? date('d/m/Y', strtotime($budget['end_date'])) : 'Sin fecha' ?> 
+                                (<?= $daysRemaining ?> días restantes)
+                            </span>
+                        </div>
+                        
+                        <!-- Apuntes -->
+                        <div class="table-cell">
+                            <button class="btn-icon btn-icon--black" title="Editar apuntes">
+                                <i data-lucide="edit-3"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Total -->
+                        <div class="table-cell">
+                            <span class="total-amount"><?= formatPrice($budget['total']) ?></span>
+                        </div>
+                        
+                        <!-- Tarifa -->
+                        <div class="table-cell">
+                            <button class="btn-icon btn-icon--black" title="Ver tarifa">
+                                <i data-lucide="eye"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Estado -->
+                        <div class="table-cell">
+                            <select class="badge-select badge--<?= $budget['status'] === 'approved' ? 'success' : ($budget['status'] === 'rejected' ? 'danger' : ($budget['status'] === 'sent' ? 'info' : 'warning')) ?>"
+                                    data-budget-id="<?= $budget['id'] ?>" 
+                                    data-action="toggle-status">
+                                <option value="draft" <?= $budget['status'] === 'draft' ? 'selected' : '' ?>>Borrador</option>
+                                <option value="pending" <?= $budget['status'] === 'pending' ? 'selected' : '' ?>>Pendiente</option>
+                                <option value="sent" <?= $budget['status'] === 'sent' ? 'selected' : '' ?>>Enviado</option>
+                                <option value="approved" <?= $budget['status'] === 'approved' ? 'selected' : '' ?>>Aprobado</option>
+                                <option value="rejected" <?= $budget['status'] === 'rejected' ? 'selected' : '' ?>>Rechazado</option>
+                                <option value="expired" <?= $budget['status'] === 'expired' ? 'selected' : '' ?>>Expirado</option>
                             </select>
                         </div>
+                        
+                        <!-- Usuario -->
+                        <div class="table-cell">
+                            <span><?= htmlspecialchars($budget['author_name'] ?? 'Usuario') ?></span>
+                        </div>
+                        
+                        <!-- Acciones -->
+                        <div class="table-cell">
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-icon--black" title="Ver presupuesto">
+                                    <i data-lucide="file-text"></i>
+                                </button>
+                                <button class="btn-icon btn-icon--black" title="Enviar por email">
+                                    <i data-lucide="mail"></i>
+                                </button>
+                                <button class="btn-icon btn-icon--black" title="Editar presupuesto">
+                                    <i data-lucide="pencil"></i>
+                                </button>
+                                <button class="btn-icon btn-icon--black" title="Duplicar presupuesto">
+                                    <i data-lucide="copy"></i>
+                                </button>
+                                <button class="btn-icon btn-icon--red" title="Eliminar presupuesto">
+                                    <i data-lucide="trash-2"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
+                <?php endforeach; ?>
+                
+                <!-- Mobile Cards -->
+                <div class="table-mobile">
+                    <?php foreach ($budgets as $budget): ?>
+                        <?php $daysRemaining = getDaysRemaining($budget['end_date']); ?>
+                        <div class="table-card table-card--budgets">
+                            <!-- Header -->
+                            <div class="table-card__header">
+                                <span>Cliente (NIF/NIE)</span>
+                            </div>
+                            <div class="table-card__body">
+                                <div class="table-card__content">
+                                    <span><?= htmlspecialchars($budget['client_name']) ?></span>
+                                    <span class="cell-line--secondary">
+                                        (<?= htmlspecialchars($budget['client_nif_nie'] ?? 'Sin NIF/NIE') ?>)
+                                    </span>
+                                </div>
 
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead class="table__head">
-                                <tr>
-                                    <th>Cliente</th>
-                                    <th>Tarifa</th>
-                                    <th>Total</th>
-                                    <th>Estado</th>
-                                    <th>Fecha</th>
-                                    <th class="table__actions">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody class="table__body">
-                                <?php foreach ($budgets as $budget): ?>
-                                    <?php 
-                                        $statusInfo = getStatusInfo($budget['status']);
-                                    ?>
-                                    <tr class="table__row" data-status="<?= $budget['status'] ?>">
-                                        <td class="table__cell">
-                                            <div class="table__cell-content">
-                                                <div class="table__cell-title"><?= htmlspecialchars($budget['client_name']) ?></div>
-                                                <div class="table__cell-subtitle"><?= htmlspecialchars($budget['client_email'] ?? '') ?></div>
-                                            </div>
-                                        </td>
-                                        <td class="table__cell">
-                                            <div class="table__cell-content">
-                                                <div class="table__cell-title"><?= htmlspecialchars($budget['tariff_name'] ?? 'Sin tarifa') ?></div>
-                                                <div class="table__cell-subtitle">UUID: <?= substr($budget['uuid'], 0, 8) ?>...</div>
-                                            </div>
-                                        </td>
-                                        <td class="table__cell">
-                                            <div class="table__amount">
-                                                <?= number_format($budget['total'], 2, ',', '.') ?> €
-                                            </div>
-                                        </td>
-                                        <td class="table__cell">
-                                            <span class="badge badge--<?= $statusInfo['class'] ?>">
-                                                <?= $statusInfo['text'] ?>
-                                            </span>
-                                        </td>
-                                        <td class="table__cell">
-                                            <time class="table__date">
-                                                <?= date('d/m/Y H:i', strtotime($budget['created_at'])) ?>
-                                            </time>
-                                        </td>
-                                        <td class="table__cell table__actions">
-                                            <div class="btn-group">
-                                                <a href="budget-view.php?uuid=<?= $budget['uuid'] ?>" 
-                                                   class="btn btn--sm btn--primary" 
-                                                   title="Ver Presupuesto">
-                                                    Ver
-                                                </a>
-                                                <?php if ($budget['status'] === 'draft'): ?>
-                                                    <a href="budget-form.php?edit=<?= $budget['uuid'] ?>" 
-                                                       class="btn btn--sm btn--secondary" 
-                                                       title="Editar">
-                                                        Editar
-                                                    </a>
-                                                <?php endif; ?>
-                                                <?php if ($budget['pdf_url']): ?>
-                                                    <a href="<?= $budget['pdf_url'] ?>" 
-                                                       class="btn btn--sm btn--outline" 
-                                                       title="Descargar PDF" 
-                                                       target="_blank">
-                                                        PDF
-                                                    </a>
-                                                <?php endif; ?>
-                                                <button type="button" 
-                                                        class="btn btn--sm btn--danger" 
-                                                        onclick="deleteBudget('<?= $budget['uuid'] ?>')"
-                                                        title="Eliminar">
-                                                    Eliminar
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                                <!-- Apuntes y Total -->
+                                <div class="table-card__section apuntes-total">
+                                    <span>Apuntes</span>
+                                    <span>Total</span>
+                                </div>
 
-                <!-- Estadísticas rápidas -->
-                <div class="stats-grid">
-                    <?php
-                    $stats = [
-                        'total' => count($budgets),
-                        'pending' => count(array_filter($budgets, fn($b) => $b['status'] === 'pending')),
-                        'approved' => count(array_filter($budgets, fn($b) => $b['status'] === 'approved')),
-                        'total_amount' => array_sum(array_column($budgets, 'total'))
-                    ];
-                    ?>
-                    <div class="stat-card">
-                        <div class="stat-card__number"><?= $stats['total'] ?></div>
-                        <div class="stat-card__label">Total Presupuestos</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-card__number"><?= $stats['pending'] ?></div>
-                        <div class="stat-card__label">Pendientes</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-card__number"><?= $stats['approved'] ?></div>
-                        <div class="stat-card__label">Aprobados</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-card__number"><?= number_format($stats['total_amount'], 0, ',', '.') ?> €</div>
-                        <div class="stat-card__label">Valor Total</div>
-                    </div>
+                                <div class="table-card__content apuntes-total">
+                                    <div>
+                                        <button class="btn-icon btn-icon--black" title="Editar apuntes">
+                                            <i data-lucide="edit-3"></i>
+                                        </button>
+                                        <span class="cell-line--secondary">
+                                            <?= date('d/m/Y', strtotime($budget['start_date'])) ?> - 
+                                            <?= date('d/m/Y', strtotime($budget['end_date'])) ?> 
+                                            (<?= $daysRemaining ?> días restantes)
+                                        </span>
+                                    </div>
+                                    <span class="total-amount"><?= formatPrice($budget['total']) ?></span>
+                                </div>
+
+                                <!-- Tarifa, Estado y Usuario -->
+                                <div class="table-card__section">
+                                    <span>Tarifa</span>
+                                    <span>Estado</span>
+                                    <span>Usuario</span>
+                                </div>
+
+                                <div class="table-card__content">
+                                    <button class="btn-icon btn-icon--black" title="Ver tarifa">
+                                        <i data-lucide="eye"></i>
+                                    </button>
+                                    <select class="badge-select badge--<?= $budget['status'] === 'approved' ? 'success' : ($budget['status'] === 'rejected' ? 'danger' : ($budget['status'] === 'sent' ? 'info' : 'warning')) ?>"
+                                            data-budget-id="<?= $budget['id'] ?>" 
+                                            data-action="toggle-status">
+                                        <option value="draft" <?= $budget['status'] === 'draft' ? 'selected' : '' ?>>Borrador</option>
+                                        <option value="pending" <?= $budget['status'] === 'pending' ? 'selected' : '' ?>>Pendiente</option>
+                                        <option value="sent" <?= $budget['status'] === 'sent' ? 'selected' : '' ?>>Enviado</option>
+                                        <option value="approved" <?= $budget['status'] === 'approved' ? 'selected' : '' ?>>Aprobado</option>
+                                        <option value="rejected" <?= $budget['status'] === 'rejected' ? 'selected' : '' ?>>Rechazado</option>
+                                        <option value="expired" <?= $budget['status'] === 'expired' ? 'selected' : '' ?>>Expirado</option>
+                                    </select>
+                                    <span><?= htmlspecialchars($budget['author_name'] ?? 'Usuario') ?></span>
+                                </div>
+
+                                <!-- Acciones -->
+                                <div class="table-card__section">
+                                    <span>Acciones</span>
+                                </div>
+
+                                <div class="table-card__content">
+                                    <div class="action-buttons">
+                                        <button class="btn-icon btn-icon--black" title="Ver presupuesto">
+                                            <i data-lucide="file-text"></i>
+                                        </button>
+                                        <button class="btn-icon btn-icon--black" title="Enviar por email">
+                                            <i data-lucide="mail"></i>
+                                        </button>
+                                        <button class="btn-icon btn-icon--black" title="Editar presupuesto">
+                                            <i data-lucide="pencil"></i>
+                                        </button>
+                                        <button class="btn-icon btn-icon--black" title="Duplicar presupuesto">
+                                            <i data-lucide="copy"></i>
+                                        </button>
+                                        <button class="btn-icon btn-icon--red" title="Eliminar presupuesto">
+                                            <i data-lucide="trash-2"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
-            <?php endif; ?>
+            </div>
         </div>
-    </main>
+    </div>
 
+    <script src="assets/js/budgets.js"></script>
+    <script src="design/script.js"></script>
     <script>
-        function filterBudgets(status) {
-            const rows = document.querySelectorAll('.table__row[data-status]');
-            
-            rows.forEach(row => {
-                if (status === '' || row.dataset.status === status) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        }
-
-        function deleteBudget(uuid) {
-            if (confirm('¿Eliminar este presupuesto? Esta acción no se puede deshacer.')) {
-                window.location.href = `delete-budget.php?uuid=${uuid}`;
+        lucide.createIcons();
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof BudgetsManager !== 'undefined') {
+                new BudgetsManager();
             }
-        }
+        });
     </script>
 </body>
 </html>
