@@ -262,8 +262,6 @@
                                 </button>
                             </div>
                         </div>
-
-
                     </div>
                 </div>
             </div>
@@ -347,7 +345,8 @@
                     <div class="table-card__body">
                         <div class="table-card__content">
                             <span class="cell-line cell-line--primary">Nombre Apellidos (12345678Z)</span>
-                            <span class="cell-line cell-line--secondary">30/6/2025 - 30/7/2025 (15 días restantes)</span>
+                            <span class="cell-line cell-line--secondary">30/6/2025 - 30/7/2025 (15 días
+                                restantes)</span>
                         </div>
                         <div>
 
@@ -568,6 +567,440 @@
         <hr>
         <div class="spacing">
             <div class="page-header">
+                <h1>Tarifa</h1>
+                <div class="header-title__buttons">
+                    <button class="btn btn--tariffs">Nueva Tarifa</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="spacing">
+            <div class="filters-bar">
+                <input type="text" class="search-input" placeholder="Buscar por cliente...">
+                <select class="filter-select">
+                    <option>Todos los estados</option>
+                    <option>Borrador</option>
+                    <option>Pendiente</option>
+                    <option>Enviado</option>
+                    <option>Aprobado</option>
+                    <option>Rechazado</option>
+                    <option>Expirado</option>
+                </select>
+                <input type="date" class="date-input">
+                <input type="date" class="date-input">
+                <div class="filter-buttons">
+                    <button class="btn--filter">Filtrar</button>
+                    <button class="btn--clear">Limpiar</button>
+                </div>
+            </div>
+
+            <!-- Tabla Tarifas -->
+            <div class="table-responsive">
+                <!-- Desktop Tabla Tarifas -->
+                <div class="table-header--tariffs">
+                    <div>Nombre</div>
+                    <div></div>
+                    <div>Presupuestos</div>
+                    <div>Acceso</div>
+                    <div>Estado</div>
+                    <div>Autor</div>
+                    <div>Acciones</div>
+                </div>
+
+                <div class="table-row--tariffs">
+                    <div class="table-cell">
+                        <span class="badge badge--incomplete">Incompleta</span>
+                        <span>Nombre de Tarifa</span>
+                        <span class="cell-line--secondary">30/6/2025 - Descripción de la Tarifa</span>
+                    </div>
+                    <div class="table-cell"></div>
+                    <div class="table-cell">
+                        <div class="budget-actions">
+                            <button class="btn-icon btn-icon--black"
+                                title="Generar presupuesto a partir de esta tarifa">
+                                <i data-lucide="file-input"></i>
+                            </button>
+                            <div class="budget-count">
+                                <button class="btn-icon btn-icon--black"
+                                    title="Ver presupuestos generados con esta tarifa">
+                                    <i data-lucide="list"></i>
+                                </button>
+                                <span class="count-number">234</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <select class="badge-select badge--danger">
+                            <option value="public">Público</option>
+                            <option value="private" selected>Privado</option>
+                        </select>
+                    </div>
+                    <div class="table-cell">
+                        <select class="badge-select badge--success">
+                            <option value="active" selected>Activa</option>
+                            <option value="inactive">Inactiva</option>
+                        </select>
+                    </div>
+                    <div class="table-cell">
+                        <span class="cell-line cell-line--primary">Carlos</span>
+                    </div>
+                    <div class="table-cell">
+                        <div class="action-buttons">
+                            <button class="btn-icon btn-icon--black" title="Editar Tarifa">
+                                <i data-lucide="pencil"></i>
+                            </button>
+                            <button class="btn-icon btn-icon--black" title="Duplicar Tarifa">
+                                <i data-lucide="copy"></i>
+                            </button>
+                            <button class="btn-icon btn-icon--red" title="Borrar Tarifa">
+                                <i data-lucide="trash-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Móvil Tabla Tarifas-->
+                <div class="table-mobile">
+                    <div class="table-card table-card--tariffs">
+                        <div class="table-card__header">
+                            <span>Nombre</span>
+                        </div>
+                        <div class="table-card__body">
+                            <div class="table-card__content">
+                                <span class="badge badge--incomplete">Incompleta</span>
+                                <span>Nombre de Tarifa</span>
+                                <span class="cell-line--secondary">30/6/2025 - Descripción de la Tarifa</span>
+                            </div>
+
+                            <div class="table-card__section">
+                                <span>Presupuestos</span>
+                                <span>Acceso</span>
+                            </div>
+
+                            <div class="table-card__content">
+                                <div class="budget-actions">
+                                    <button class="btn-icon btn-icon--black"
+                                        title="Generar presupuesto a partir de esta tarifa">
+                                        <i data-lucide="file-input"></i>
+                                    </button>
+                                    <div class="budget-count">
+                                        <button class="btn-icon btn-icon--black"
+                                            title="Ver presupuestos generados con esta tarifa">
+                                            <i data-lucide="list"></i>
+                                        </button>
+                                        <span class="count-number">234</span>
+                                    </div>
+                                </div>
+                                <div class="table-cell">
+                                    <select class="badge-select badge--danger">
+                                        <option value="public">Público</option>
+                                        <option value="private" selected>Privado</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="table-card__section">
+                                <span>Estado</span>
+                                <span>Autor</span>
+                            </div>
+
+                            <div class="table-card__content">
+                                <div class="table-cell">
+                                    <select class="badge-select badge--success">
+                                        <option value="active" selected>Activa</option>
+                                        <option value="inactive">Inactiva</option>
+                                    </select>
+                                </div>
+                                <span class="cell-line cell-line--primary">Carlos</span>
+                            </div>
+
+                            <div class="table-card__section">
+                                <span>Acciones</span>
+                            </div>
+
+                            <div class="table-card__content">
+                                <div class="action-buttons">
+                                    <button class="btn-icon btn-icon--black" title="Editar tarifa">
+                                        <i data-lucide="pencil"></i>
+                                    </button>
+                                    <button class="btn-icon btn-icon--black" title="Duplicar tarifa">
+                                        <i data-lucide="copy"></i>
+                                    </button>
+                                    <button class="btn-icon btn-icon--red" title="Borrar tarifa">
+                                        <i data-lucide="trash-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+        <br>
+        </br>
+        </br>
+        </br>
+        </br>
+        <div class="container">
+            <h1>Header</h1>
+            <hr>
+            <div class="header">
+                <div class="header-content">
+                    <div class="logo">Generador de Presupuestos</div>
+                    <nav class="main-nav">
+                        <a href="#" class="nav-item active">Dashboard</a>
+                        <a href="#" class="nav-item">Tarifas</a>
+                        <a href="#" class="nav-item">Presupuestos</a>
+                    </nav>
+                    <div class="user-menu">
+                        <button class="log-out btn-icon btn-icon--black" title="Cerrar Sesión">
+                            <i data-lucide="log-out"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+        </br>
+
+        <div class="spacing">
+            <div class="page-header">
+                <h1>Presupuestos</h1>
+                <div class="header-title__buttons">
+                    <button class="btn btn--tariffs">Nueva Tarifa</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="spacing">
+            <div class="stats-bar">
+                <div class="stats-text">
+                    <strong>42 Presupuestos: </strong>
+                    <span class="stats-number badge--success">8</span>
+                    <span class="stats-label">Aprobados</span>
+                    <span class="stats-number badge--danger">12</span>
+                    <span class="stats-label">Rechazados</span>
+                    <span class="stats-number badge--info">10</span>
+                    <span class="stats-label">Enviados</span>
+                    <span class="stats-number badge--black">4</span>
+                    <span class="stats-label">Expirados</span>
+                    <span class="stats-number badge--warning">1</span>
+                    <span class="stats-label">Pendientes</span>
+                    <span class="stats-number badge--secondary">7</span>
+                    <span class="stats-label">Borradores</span>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="spacing">
+            <div class="filters-bar">
+                <input type="text" class="search-input" placeholder="Buscar por cliente...">
+                <select class="filter-select">
+                    <option>Todos los estados</option>
+                    <option>Borrador</option>
+                    <option>Pendiente</option>
+                    <option>Enviado</option>
+                    <option>Aprobado</option>
+                    <option>Rechazado</option>
+                    <option>Expirado</option>
+                </select>
+                <input type="date" class="date-input">
+                <input type="date" class="date-input">
+                <div class="filter-buttons">
+                    <button class="btn--filter">Filtrar</button>
+                    <button class="btn--clear">Limpiar</button>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+            <!-- Tabla Presupuestos -->
+            <div class="table-responsive">
+                <!-- Desktop Tabla Presupuestos -->
+                <div class="table-header--budgets">
+                    <div>Cliente (NIF/NIE)</div>
+                    <div></div>
+                    <div>Total</div>
+                    <div>Tarifa</div>
+                    <div>Estado</div>
+                    <div>Usuario</div>
+                    <div>Acciones</div>
+                </div>
+
+                <div class="table-row--budgets">
+                    <div class="table-cell">
+                        <span class="cell-line cell-line--primary">Nombre Apellidos (12345678Z)</span>
+                        <span class="cell-line cell-line--secondary">30/6/2025 - 30/7/2025 (15 días restantes)</span>
+                    </div>
+                    <div class="table-cell">
+                        <button class="btn-icon btn-icon--black notes-icon has-notes"
+                            title="Ver apuntes del presupuesto">
+                            <i data-lucide="notebook-pen"></i>
+                        </button>
+                    </div>
+                    <div class="table-cell">
+                        <span class="total-amount" title="Base: 1.020,30€ | IVA: 214,26€ | Total: 1.234,56€">1.234,56
+                            €</span>
+                    </div>
+                    <div class="table-cell">
+                        <button class="btn-icon btn-icon--black" title="Ver tarifa del presupuesto">
+                            <i data-lucide="eye"></i>
+                        </button>
+                    </div>
+                    <div class="table-cell">
+                        <select class="badge-select badge--danger">
+                            <option value="draft">Borrador</option>
+                            <option value="pending" selected>Pendiente</option>
+                            <option value="sent">Enviado</option>
+                            <option value="approved">Aprobado</option>
+                            <option value="rejected">Rechazado</option>
+                            <option value="expired">Expirado</option>
+                        </select>
+                    </div>
+                    <div class="table-cell">
+                        <span class="cell-line cell-line--primary">Carlos</span>
+                    </div>
+                    <div class="table-cell">
+                        <div class="action-buttons">
+                            <button class="btn-icon btn-icon--black" title="Ver PDF del presupuesto">
+                                <i data-lucide="file-check"></i>
+                            </button>
+                            <button class="btn-icon btn-icon--black disabled" title="Crear PDF a partir de presupuesto"
+                                disabled>
+                                <i data-lucide="file-stack"></i>
+                            </button>
+                            <button class="btn-icon btn-icon--black" title="Editar Presupuesto">
+                                <i data-lucide="pencil"></i>
+                            </button>
+                            <button class="btn-icon btn-icon--black" title="Duplicar Presupuesto">
+                                <i data-lucide="copy"></i>
+                            </button>
+                            <button class="btn-icon btn-icon--red" title="Borrar Presupuesto">
+                                <i data-lucide="trash-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Móvil Tabla Presupuestos -->
+                <div class="table-mobile">
+                    <div class="table-card table-card--budgets">
+                        <div class="table-card__header">
+                            <span>Cliente (NIF/NIE)</span>
+                        </div>
+                        <div></div>
+                        <div class="table-card__body">
+                            <div class="table-card__content">
+                                <span class="cell-line cell-line--primary">Nombre Apellidos (12345678Z)</span>
+                                <span class="cell-line cell-line--secondary">30/6/2025 - 30/7/2025 (15 días
+                                    restantes)</span>
+                            </div>
+                            <div>
+
+                            </div>
+                            <div class="table-card__section apuntes-total">
+                                <span>Apuntes</span>
+                                <span>Total</span>
+                            </div>
+
+                            <div class="table-card__content apuntes-total">
+                                <div class="table-card__icon">
+                                    <button class="btn-icon btn-icon--black notes-icon has-notes"
+                                        title="Ver apuntes del presupuesto">
+                                        <i data-lucide="notebook-pen"></i>
+                                    </button>
+                                </div>
+                                <span class="total-amount">1.234,56 €</span>
+                            </div>
+
+                            <div class="table-card__section">
+                                <span>Tarifa</span>
+                                <span>Estado</span>
+                                <span>Autor</span>
+                            </div>
+
+                            <div class="table-card__content">
+                                <button class="btn-icon btn-icon--black" title="Ver tarifa del presupuesto">
+                                    <i data-lucide="eye"></i>
+                                </button>
+                                <select class="badge-select badge--danger">
+                                    <option value="draft">Borrador</option>
+                                    <option value="pending" selected>Pendiente</option>
+                                    <option value="sent">Enviado</option>
+                                    <option value="approved">Aprobado</option>
+                                    <option value="rejected">Rechazado</option>
+                                    <option value="expired">Expirado</option>
+                                </select>
+                                <span class="cell-line cell-line--primary">Carlos</span>
+                            </div>
+
+                            <div class="table-card__section">
+                                <span>Acciones</span>
+                            </div>
+
+                            <div class="table-card__content">
+                                <div class="action-buttons">
+                                    <button class="btn-icon btn-icon--black" title="Ver PDF del presupuesto">
+                                        <i data-lucide="file-check"></i>
+                                    </button>
+                                    <button class="btn-icon btn-icon--black" title="Crear PDF a partir de presupuesto">
+                                        <i data-lucide="file-stack"></i>
+                                    </button>
+                                    <button class="btn-icon btn-icon--black" title="Editar Presupuesto">
+                                        <i data-lucide="pencil"></i>
+                                    </button>
+                                    <button class="btn-icon btn-icon--black" title="Duplicar Presupuesto">
+                                        <i data-lucide="copy"></i>
+                                    </button>
+                                    <button class="btn-icon btn-icon--red" title="Borrar Presupuesto">
+                                        <i data-lucide="trash-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+        <br>
+
+        </br>
+        </br>
+        </br>
+        </br>
+        <div class="spacing">
+            <div class="page-header">
                 <h1>Crear Tarifa</h1>
                 <div class="header-title__buttons">
                     <button class="btn btn--tariffs">Tarifas</button>
@@ -594,7 +1027,7 @@
                     <span class="stats-label">Expirados</span>
                     <span class="stats-number badge--warning">1</span>
                     <span class="stats-label">Pendientes</span>
-                    <span class="stats-number badge--secondary">7</span> 
+                    <span class="stats-number badge--secondary">7</span>
                     <span class="stats-label">Borradores</span>
                 </div>
             </div>
