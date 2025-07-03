@@ -1,6 +1,6 @@
 <?php
-// {"_META_file_path_": "index.php"}
-// Redirección simple sin router
+// {"_META_file_path_": "refor/index.php"}
+// Punto de entrada - redirección simple
 
-header('Location: public/login.php');
+header('Location: dashboard.php');
 exit;
