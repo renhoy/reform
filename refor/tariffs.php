@@ -337,8 +337,8 @@ $tariffs = getTariffsWithData();
         </div>
     </div>
 
+    <script src="assets/js/badge-select.js"></script>
     <script src="assets/js/tariffs.js"></script>
-    <script src="design/script.js"></script>
     <script>
         lucide.createIcons();
         document.addEventListener('DOMContentLoaded', function() {

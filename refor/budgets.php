@@ -101,7 +101,7 @@ function formatPrice($amount) {
             </div>
 
         <div class="spacing">
-            <div class="filters-bar budgets">
+            <div class="filters-bar--budgets">
                 <input type="text" class="search-input" placeholder="Buscar por cliente...">
                 <select class="filter-select">
                     <option>Estados</option>
@@ -304,8 +304,8 @@ function formatPrice($amount) {
         </div>
     </div>
 
+    <script src="assets/js/badge-select.js"></script>
     <script src="assets/js/budgets.js"></script>
-    <script src="design/script.js"></script>
     <script>
         lucide.createIcons();
         document.addEventListener('DOMContentLoaded', function() {
