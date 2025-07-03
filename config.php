@@ -10,7 +10,7 @@ define('DB_PASS', 'root');
 define('DB_PORT', 8889); // Puerto MAMP
 
 // Configuración de rutas
-define('BASE_URL', 'http://localhost:8888/refor');
+define('BASE_URL', 'http://localhost:8888');
 define('UPLOAD_DIR', __DIR__ . '/uploads/');
 
 // Configuración de sesión

@@ -12,7 +12,7 @@ define('DB_PASS', 'root');
 define('DB_PORT', '8889');
 
 // Configuración de rutas
-define('BASE_URL', '/refor/');
+define('BASE_URL', '/');
 define('ASSETS_URL', BASE_URL . 'assets/');
 
 try {

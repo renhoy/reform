@@ -50,7 +50,7 @@ function formatPrice($amount) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Presupuestos - Generador de Presupuestos</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="<?= asset('css/style.css') ?>">
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 <body>
@@ -313,8 +313,8 @@ function formatPrice($amount) {
         </div>
     </div>
 
-    <script src="assets/js/badge-select.js"></script>
-    <script src="assets/js/budgets.js"></script>
+    <script src="<?= asset('js/badge-select.js') ?>"></script>
+    <script src="<?= asset('js/budgets.js') ?>"></script>
     <script>
         lucide.createIcons();
         document.addEventListener('DOMContentLoaded', function() {
