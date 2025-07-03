@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- {"_META_file_path_": "design/index2.html"} -->
-<!-- Design System - Estructura Simplificada con Custom Select -->
+<!-- {"_META_file_path_": "design/tarifas.html"} -->
+<!-- Página de Tarifas - Adaptada a los nuevos cambios -->
 <html lang="es">
 
 <head>
@@ -11,27 +11,22 @@
 </head>
 
 <body>
-
-        <div class="container">
-            <div class="header">
-                <div class="header-content">
-                    <div class="logo">Generador de Presupuestos</div>
-                    <nav class="main-nav">
-                        <a href="#" class="nav-item">Dashboard</a>
-                        <a href="#" class="nav-item active">Tarifas</a>
-                        <a href="#" class="nav-item">Presupuestos</a>
-                    </nav>
-                    <div class="user-menu">
-                        <button class="log-out btn-icon btn-icon--black" title="Cerrar Sesión">
-                            <i data-lucide="log-out"></i>
-                        </button>
-                    </div>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="logo">Generador de Presupuestos</div>
+                <nav class="main-nav">
+                    <a href="#" class="nav-item">Dashboard</a>
+                    <a href="#" class="nav-item active">Tarifas</a>
+                    <a href="#" class="nav-item">Presupuestos</a>
+                </nav>
+                <div class="user-menu">
+                    <button class="log-out btn-icon btn-icon--black" title="Cerrar Sesión">
+                        <i data-lucide="log-out"></i>
+                    </button>
                 </div>
             </div>
-        
-
-        <br>
-        </br>
+        </div>
 
         <div class="spacing">
             <div class="page-header">
@@ -43,764 +38,389 @@
         </div>
 
         <div class="spacing">
-            <div class="filters-bar">
-                <input type="text" class="search-input" placeholder="Buscar por cliente...">
-                <select class="filter-select">
-                    <option>Todos los estados</option>
-                    <option>Borrador</option>
-                    <option>Pendiente</option>
-                    <option>Enviado</option>
-                    <option>Aprobado</option>
-                    <option>Rechazado</option>
-                    <option>Expirado</option>
-                </select>
-                <input type="date" class="date-input">
-                <input type="date" class="date-input">
-                <div class="filter-buttons">
-                    <button class="btn--filter">Filtrar</button>
-                    <button class="btn--clear">Limpiar</button>
+            <div class="filters-container">
+                <!-- Buscador -->
+                <div class="search-row">
+                    <input type="text" class="search-input" placeholder="Buscar...">
+                </div>
+                
+                <!-- Filtros -->
+                <div class="filters-group tariffs">
+                    <input type="date" class="date-input" placeholder="Fecha inicio">
+                    <input type="date" class="date-input" placeholder="Fecha fin">
+                    <select class="filter-select">
+                        <option value="">Acceso</option>
+                        <option>Público</option>
+                        <option>Privado</option>
+                    </select>
+                    <select class="filter-select">
+                        <option value="">Estados</option>
+                        <option>Activa</option>
+                        <option>Inactiva</option>
+                    </select>
+                    <div class="filter-buttons">
+                        <button type="button" class="btn--filter">Filtrar</button>
+                        <button type="button" class="btn--clear">Limpiar</button>
+                    </div>
                 </div>
             </div>
 
+            <!-- Vista de escritorio - Tabla de Tarifas -->
+            <div class="table-responsive">
+                <div class="table-header--tariffs">
+                    <div>Nombre</div>
+                    <div></div>
+                    <div>Presupuestos</div>
+                    <div>Acceso</div>
+                    <div>Estado</div>
+                    <div>Autor</div>
+                    <div>Acciones</div>
+                </div>
 
+                <!-- Tarifa 1 -->
+                <div class="table-row--tariffs">
+                    <div class="table-cell">
+                        <span class="cell-line cell-line--primary"><span class="badge badge--incomplete">Incompleta</span> Nombre de Tarifa</span>
+                        <span class="cell-line cell-line--secondary">30/6/2025 - Descripción de la Tarifa</span>
+                    </div>
+                    <div class="table-cell"></div>
+                    <div class="table-cell">
+                        <div class="budget-actions">
+                            <button class="btn-icon btn-icon--black" title="Generar presupuesto a partir de esta tarifa">
+                                <i data-lucide="file-input"></i>
+                            </button>
+                            <div class="budget-count">
+                                <button class="btn-icon btn-icon--black" title="Ver presupuestos generados con esta tarifa">
+                                    <i data-lucide="list"></i>
+                                </button>
+                                <span class="count-number">234</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <select class="badge-select badge--danger">
+                            <option value="public">Público</option>
+                            <option value="private" selected>Privado</option>
+                        </select>
+                    </div>
+                    <div class="table-cell">
+                        <select class="badge-select badge--success">
+                            <option value="active" selected>Activa</option>
+                            <option value="inactive">Inactiva</option>
+                        </select>
+                    </div>
+                    <div class="table-cell">
+                        <span class="cell-line cell-line--primary">Carlos</span>
+                    </div>
+                    <div class="table-cell">
+                        <div class="action-buttons">
+                            <button class="btn-icon btn-icon--black" title="Editar Tarifa">
+                                <i data-lucide="pencil"></i>
+                            </button>
+                            <button class="btn-icon btn-icon--black" title="Duplicar Tarifa">
+                                <i data-lucide="copy"></i>
+                            </button>
+                            <button class="btn-icon btn-icon--red" title="Borrar Tarifa">
+                                <i data-lucide="trash-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
- <!-- Tabla Tarifas -->
-<div class="table-responsive">
-  <!-- Desktop Tabla Tarifas -->
-  <div class="table-header--tariffs">
-      <div>Nombre</div>
-      <div></div>
-      <div>Presupuestos</div>
-      <div>Acceso</div>
-      <div>Estado</div>
-      <div>Autor</div>
-      <div>Acciones</div>
-  </div>
+                <!-- Tarifa 2 -->
+                <div class="table-row--tariffs">
+                    <div class="table-cell">
+                        <span class="cell-line cell-line--primary">Tarifa Básica</span>
+                        <span class="cell-line cell-line--secondary">1/7/2025 - Servicios básicos incluidos</span>
+                    </div>
+                    <div class="table-cell"></div>
+                    <div class="table-cell">
+                        <div class="budget-actions">
+                            <button class="btn-icon btn-icon--black" title="Generar presupuesto a partir de esta tarifa">
+                                <i data-lucide="file-input"></i>
+                            </button>
+                            <div class="budget-count">
+                                <button class="btn-icon btn-icon--black" title="Ver presupuestos generados con esta tarifa">
+                                    <i data-lucide="list"></i>
+                                </button>
+                                <span class="count-number">150</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <select class="badge-select badge--success">
+                            <option value="public" selected>Público</option>
+                            <option value="private">Privado</option>
+                        </select>
+                    </div>
+                    <div class="table-cell">
+                        <select class="badge-select badge--success">
+                            <option value="active" selected>Activa</option>
+                            <option value="inactive">Inactiva</option>
+                        </select>
+                    </div>
+                    <div class="table-cell">
+                        <span class="cell-line cell-line--primary">Ana</span>
+                    </div>
+                    <div class="table-cell">
+                        <div class="action-buttons">
+                            <button class="btn-icon btn-icon--black" title="Editar Tarifa">
+                                <i data-lucide="pencil"></i>
+                            </button>
+                            <button class="btn-icon btn-icon--black" title="Duplicar Tarifa">
+                                <i data-lucide="copy"></i>
+                            </button>
+                            <button class="btn-icon btn-icon--red" title="Borrar Tarifa">
+                                <i data-lucide="trash-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
-  <div class="table-row--tariffs">
-      <div class="table-cell">
-        <span><span class="badge badge--incomplete">Incompleta</span>
-          Nombre de Tarifa</span>
-          <span class="cell-line--secondary">30/6/2025 - Descripción de la Tarifa</span>
-      </div>
-      <div class="table-cell"></div>
-      <div class="table-cell">
-          <div class="budget-actions">
-              <button class="btn-icon btn-icon--black" title="Generar presupuesto a partir de esta tarifa">
-                  <i data-lucide="file-input"></i>
-              </button>
-              <div class="budget-count">
-                  <button class="btn-icon btn-icon--black" title="Ver presupuestos generados con esta tarifa">
-                      <i data-lucide="list"></i>
-                  </button>
-                  <span class="count-number">234</span>
-              </div>
-          </div>
-      </div>
-      <div class="table-cell">
-          <select class="badge-select badge--danger">
-              <option value="public">Público</option>
-              <option value="private" selected>Privado</option>
-          </select>
-      </div>
-      <div class="table-cell">
-          <select class="badge-select badge--success">
-              <option value="active">Activa</option>
-              <option value="inactive" selected>Inactiva</option>
-          </select>
-      </div>
-      <div class="table-cell">
-          <span class="cell-line cell-line--primary">Carlos</span>
-      </div>
-      <div class="table-cell">
-          <div class="action-buttons">
-              <button class="btn-icon btn-icon--black" title="Editar Tarifa">
-                  <i data-lucide="pencil"></i>
-              </button>
-              <button class="btn-icon btn-icon--black" title="Duplicar Tarifa">
-                  <i data-lucide="copy"></i>
-              </button>
-              <button class="btn-icon btn-icon--red" title="Borrar Tarifa">
-                  <i data-lucide="trash-2"></i>
-              </button>
-          </div>
-      </div>
-  </div>
+                <!-- Tarifa 3 -->
+                <div class="table-row--tariffs">
+                    <div class="table-cell">
+                        <span class="cell-line cell-line--primary"><span class="badge badge--incomplete">Incompleta</span> Tarifa Premium</span>
+                        <span class="cell-line cell-line--secondary">5/7/2025 - Servicios premium avanzados</span>
+                    </div>
+                    <div class="table-cell"></div>
+                    <div class="table-cell">
+                        <div class="budget-actions">
+                            <button class="btn-icon btn-icon--black" title="Generar presupuesto a partir de esta tarifa">
+                                <i data-lucide="file-input"></i>
+                            </button>
+                            <div class="budget-count">
+                                <button class="btn-icon btn-icon--black" title="Ver presupuestos generados con esta tarifa">
+                                    <i data-lucide="list"></i>
+                                </button>
+                                <span class="count-number">89</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <select class="badge-select badge--danger">
+                            <option value="public">Público</option>
+                            <option value="private" selected>Privado</option>
+                        </select>
+                    </div>
+                    <div class="table-cell">
+                        <select class="badge-select badge--danger">
+                            <option value="active">Activa</option>
+                            <option value="inactive" selected>Inactiva</option>
+                        </select>
+                    </div>
+                    <div class="table-cell">
+                        <span class="cell-line cell-line--primary">María</span>
+                    </div>
+                    <div class="table-cell">
+                        <div class="action-buttons">
+                            <button class="btn-icon btn-icon--black" title="Editar Tarifa">
+                                <i data-lucide="pencil"></i>
+                            </button>
+                            <button class="btn-icon btn-icon--black" title="Duplicar Tarifa">
+                                <i data-lucide="copy"></i>
+                            </button>
+                            <button class="btn-icon btn-icon--red" title="Borrar Tarifa">
+                                <i data-lucide="trash-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-  <div class="table-row--tariffs">
-      <div class="table-cell">
-          <span>Tarifa Básica</span>
-          <span class="cell-line--secondary">1/7/2025 - Servicios básicos incluidos</span>
-      </div>
-      <div class="table-cell"></div>
-      <div class="table-cell">
-          <div class="budget-actions">
-              <button class="btn-icon btn-icon--black" title="Generar presupuesto a partir de esta tarifa">
-                  <i data-lucide="file-input"></i>
-              </button>
-              <div class="budget-count">
-                  <button class="btn-icon btn-icon--black" title="Ver presupuestos generados con esta tarifa">
-                      <i data-lucide="list"></i>
-                  </button>
-                  <span class="count-number">150</span>
-              </div>
-          </div>
-      </div>
-      <div class="table-cell">
-          <select class="badge-select badge--success">
-              <option value="public" selected>Público</option>
-              <option value="private">Privado</option>
-          </select>
-      </div>
-      <div class="table-cell">
-          <select class="badge-select badge--success">
-              <option value="active" selected>Activa</option>
-              <option value="inactive">Inactiva</option>
-          </select>
-      </div>
-      <div class="table-cell">
-          <span class="cell-line cell-line--primary">Ana</span>
-      </div>
-      <div class="table-cell">
-          <div class="action-buttons">
-              <button class="btn-icon btn-icon--black" title="Editar Tarifa">
-                  <i data-lucide="pencil"></i>
-              </button>
-              <button class="btn-icon btn-icon--black" title="Duplicar Tarifa">
-                  <i data-lucide="copy"></i>
-              </button>
-              <button class="btn-icon btn-icon--red" title="Borrar Tarifa">
-                  <i data-lucide="trash-2"></i>
-              </button>
-          </div>
-      </div>
-  </div>
-
-  <div class="table-row--tariffs">
-      <div class="table-cell">
-        <span><span class="badge badge--incomplete">Incompleta</span>
-          Tarifa Premium</>
-          <span class="cell-line--secondary">5/7/2025 - Servicios premium avanzados</span>
-      </div>
-      <div class="table-cell"></div>
-      <div class="table-cell">
-          <div class="budget-actions">
-              <button class="btn-icon btn-icon--black" title="Generar presupuesto a partir de esta tarifa">
-                  <i data-lucide="file-input"></i>
-              </button>
-              <div class="budget-count">
-                  <button class="btn-icon btn-icon--black" title="Ver presupuestos generados con esta tarifa">
-                      <i data-lucide="list"></i>
-                  </button>
-                  <span class="count-number">89</span>
-              </div>
-          </div>
-      </div>
-      <div class="table-cell">
-          <select class="badge-select badge--danger">
-              <option value="public">Público</option>
-              <option value="private" selected>Privado</option>
-          </select>
-      </div>
-      <div class="table-cell">
-          <select class="badge-select badge--danger">
-              <option value="active">Activa</option>
-              <option value="inactive" selected>Inactiva</option>
-          </select>
-      </div>
-      <div class="table-cell">
-          <span class="cell-line cell-line--primary">María</span>
-      </div>
-      <div class="table-cell">
-          <div class="action-buttons">
-              <button class="btn-icon btn-icon--black" title="Editar Tarifa">
-                  <i data-lucide="pencil"></i>
-              </button>
-              <button class="btn-icon btn-icon--black" title="Duplicar Tarifa">
-                  <i data-lucide="copy"></i>
-              </button>
-              <button class="btn-icon btn-icon--red" title="Borrar Tarifa">
-                  <i data-lucide="trash-2"></i>
-              </button>
-          </div>
-      </div>
-  </div>
-
-  <div class="table-row--tariffs">
-      <div class="table-cell">
-          <span>Tarifa Estándar</span>
-          <span class="cell-line--secondary">10/7/2025 - Paquete estándar con extras</span>
-      </div>
-      <div class="table-cell"></div>
-      <div class="table-cell">
-          <div class="budget-actions">
-              <button class="btn-icon btn-icon--black" title="Generar presupuesto a partir de esta tarifa">
-                  <i data-lucide="file-input"></i>
-              </button>
-              <div class="budget-count">
-                  <button class="btn-icon btn-icon--black" title="Ver presupuestos generados con esta tarifa">
-                      <i data-lucide="list"></i>
-                  </button>
-                  <span class="count-number">320</span>
-              </div>
-          </div>
-      </div>
-      <div class="table-cell">
-          <select class="badge-select badge--success">
-              <option value="public" selected>Público</option>
-              <option value="private">Privado</option>
-          </select>
-      </div>
-      <div class="table-cell">
-          <select class="badge-select badge--success">
-              <option value="active" selected>Activa</option>
-              <option value="inactive">Inactiva</option>
-          </select>
-      </div>
-      <div class="table-cell">
-          <span class="cell-line cell-line--primary">Pedro</span>
-      </div>
-      <div class="table-cell">
-          <div class="action-buttons">
-              <button class="btn-icon btn-icon--black" title="Editar Tarifa">
-                  <i data-lucide="pencil"></i>
-              </button>
-              <button class="btn-icon btn-icon--black" title="Duplicar Tarifa">
-                  <i data-lucide="copy"></i>
-              </button>
-              <button class="btn-icon btn-icon--red" title="Borrar Tarifa">
-                  <i data-lucide="trash-2"></i>
-              </button>
-          </div>
-      </div>
-  </div>
-
-  <div class="table-row--tariffs">
-      <div class="table-cell">
-        <span><span class="badge badge--incomplete">Incompleta</span>
-          Tarifa Especial</span>
-          <span class="cell-line--secondary">15/7/2025 - Oferta temporal limitada</span>
-      </div>
-      <div class="table-cell"></div>
-      <div class="table-cell">
-          <div class="budget-actions">
-              <button class="btn-icon btn-icon--black" title="Generar presupuesto a partir de esta tarifa">
-                  <i data-lucide="file-input"></i>
-              </button>
-              <div class="budget-count">
-                  <button class="btn-icon btn-icon--black" title="Ver presupuestos generados con esta tarifa">
-                      <i data-lucide="list"></i>
-                  </button>
-                  <span class="count-number">4</span>
-              </div>
-          </div>
-      </div>
-      <div class="table-cell">
-          <select class="badge-select badge--danger">
-              <option value="public">Público</option>
-              <option value="private" selected>Privado</option>
-          </select>
-      </div>
-      <div class="table-cell">
-          <select class="badge-select badge--success">
-              <option value="active" >Activa</option>
-              <option value="inactive" selected>Inactiva</option>
-          </select>
-      </div>
-      <div class="table-cell">
-          <span class="cell-line cell-line--primary">Sofía</span>
-      </div>
-      <div class="table-cell">
-          <div class="action-buttons">
-              <button class="btn-icon btn-icon--black" title="Editar Tarifa">
-                  <i data-lucide="pencil"></i>
-              </button>
-              <button class="btn-icon btn-icon--black" title="Duplicar Tarifa">
-                  <i data-lucide="copy"></i>
-              </button>
-              <button class="btn-icon btn-icon--red" title="Borrar Tarifa">
-                  <i data-lucide="trash-2"></i>
-              </button>
-          </div>
-      </div>
-  </div>
-
-  <div class="table-row--tariffs">
-      <div class="table-cell">
-          <span>Tarifa Avanzada</span>
-          <span class="cell-line--secondary">20/7/2025 - Soluciones personalizadas</span>
-      </div>
-      <div class="table-cell"></div>
-      <div class="table-cell">
-          <div class="budget-actions">
-              <button class="btn-icon btn-icon--black" title="Generar presupuesto a partir de esta tarifa">
-                  <i data-lucide="file-input"></i>
-              </button>
-              <div class="budget-count">
-                  <button class="btn-icon btn-icon--black" title="Ver presupuestos generados con esta tarifa">
-                      <i data-lucide="list"></i>
-                  </button>
-                  <span class="count-number">178</span>
-              </div>
-          </div>
-      </div>
-      <div class="table-cell">
-          <select class="badge-select badge--success">
-              <option value="public" selected>Público</option>
-              <option value="private">Privado</option>
-          </select>
-      </div>
-      <div class="table-cell">
-          <select class="badge-select badge--danger">
-              <option value="active">Activa</option>
-              <option value="inactive" selected>Inactiva</option>
-          </select>
-      </div>
-      <div class="table-cell">
-          <span class="cell-line cell-line--primary">Elena</span>
-      </div>
-      <div class="table-cell">
-          <div class="action-buttons">
-              <button class="btn-icon btn-icon--black" title="Editar Tarifa">
-                  <i data-lucide="pencil"></i>
-              </button>
-              <button class="btn-icon btn-icon--black" title="Duplicar Tarifa">
-                  <i data-lucide="copy"></i>
-              </button>
-              <button class="btn-icon btn-icon--red" title="Borrar Tarifa">
-                  <i data-lucide="trash-2"></i>
-              </button>
-          </div>
-      </div>
-  </div>
-
-  <!-- Móvil Tabla Tarifas -->
-  <div class="table-mobile">
-      <div class="table-card table-card--tariffs">
-          <div class="table-card__header">
-              <span>Nombre</span>
-          </div>
-          <div class="table-card__body">
-              <div class="table-card__content">
-                  <span>Tarifa Básica 100</span>
-                  <span class="cell-line--secondary">30/6/2025 - Descripción de la Tarifa</span>
-              </div>
-
-              <div class="table-card__section">
-                  <span>Presupuestos</span>
-                  <span>Acceso</span>
-              </div>
-
-              <div class="table-card__content">
-                  <div class="budget-actions">
-                      <button class="btn-icon btn-icon--black" title="Generar presupuesto a partir de esta tarifa">
-                          <i data-lucide="file-input"></i>
-                      </button>
-                      <div class="budget-count">
-                          <button class="btn-icon btn-icon--black" title="Ver presupuestos generados con esta tarifa">
-                              <i data-lucide="list"></i>
-                          </button>
-                          <span class="count-number">234</span>
-                      </div>
-                  </cev>
-                  <div class="table-cell">
-                      <select class="badge-select badge--danger">
-                          <option value="public">Público</option>
-                          <option value="private" selected>Privado</option>
-                      </select>
-                  </div>
-              </div>
-
-              <div class="table-card__section">
-                  <span>Estado</span>
-                  <span>Autor</span>
-              </div>
-
-              <div class="table-card__content">
-                  <div class="table-cell">
-                      <select class="badge-select badge--success">
-                          <option value="active" selected>Activa</option>
-                          <option value="inactive">Inactiva</option>
-                      </select>
-                  </div>
-                  <span class="cell-line cell-line--primary">Carlos</span>
-              </div>
-
-              <div class="table-card__section">
-                  <span>Acciones</span>
-              </div>
-
-              <div class="table-card__content">
-                  <div class="action-buttons">
-                      <button class="btn-icon btn-icon--black" title="Editar tarifa">
-                          <i data-lucide="pencil"></i>
-                      </button>
-                      <button class="btn-icon btn-icon--black" title="Duplicar tarifa">
-                          <i data-lucide="copy"></i>
-                      </button>
-                      <button class="btn-icon btn-icon--red" title="Borrar tarifa">
-                          <i data-lucide="trash-2"></i>
-                      </button>
-                  </div>
-              </div>
-          </div>
-      </div>
-
-      <div class="table-card table-card--tariffs">
-          <div class="table-card__header">
-              <span>Nombre</span>
-          </div>
-          <div class="table-card__body">
-              <div class="table-card__content">
-                  <span>Tarifa Básica</span>
-                  <span class="cell-line--secondary">1/7/2025 - Servicios básicos incluidos</span>
-              </div>
-
-              <div class="table-card__section">
-                  <span>Presupuestos</span>
-                  <span>Acceso</span>
-              </div>
-
-              <div class="table-card__content">
-                  <div class="budget-actions">
-                      <button class="btn-icon btn-icon--black" title="Generar presupuesto a partir de esta tarifa">
-                          <i alterations="file-input"></i>
-                      </button>
-                      <div class="budget-count">
-                          <button class="btn-icon btn-icon--black" title="Ver presupuestos generados con esta tarifa">
-                              <i data-lucide="list"></i>
-                          </button>
-                          <span class="count-number">150</span>
-                      </div>
-                  </div>
-                  <div class="table-cell">
-                      <select class="badge-select badge--success">
-                          <option value="public" selected>Público</option>
-                          <option value="private">Privado</option>
-                      </select>
-                  </div>
-              </div>
-
-              <div class="table-card__section">
-                  <span>Estado</span>
-                  <span>Autor</span>
-              </div>
-
-              <div class="table-card__content">
-                  <div class="table-cell">
-                      <select class="badge-select badge--success">
-                          <option value="active" selected>Activa</option>
-                          <option value="inactive">Inactiva</option>
-                      </select>
-                  </div>
-                  <span class="cell-line cell-line--primary">Ana</span>
-              </div>
-
-              <div class="table-card__section">
-                  <span>Acciones</span>
-              </div>
-
-              <div class="table-card__content">
-                  <div class="action-buttons">
-                      <button class="btn-icon btn-icon--black" title="Editar tarifa">
-                          <i data-lucide="pencil"></i>
-                      </button>
-                      <button class="btn-icon btn-icon--black" title="Duplicar tarifa">
-                          <i data-lucide="copy"></i>
-                      </button>
-                      <button class="btn-icon btn-icon--red" title="Borrar tarifa">
-                          <i data-lucide="trash-2"></i>
-                      </button>
-                  </div>
-              </div>
-          </div>
-      </div>
-
-      <div class="table-card table-card--tariffs">
-          <div class="table-card__header">
-              <span>Nombre</span>
-          </div>
-          <div class="table-card__body">
-              <div class="table-card__content">
-                <span><span class="badge badge--incomplete">Incompleta</span>
-                  Tarifa Premium</span>
-                  <span class="cell-line--secondary">5/7/2025 - Servicios premium avanzados</span>
-              </div>
-
-              <div class="table-card__section">
-                  <span>Presupuestos</span>
-                  <span>Acceso</span>
-              </div>
-
-              <div class="table-card__content">
-                  <div class="budget-actions">
-                      <button class="btn-icon btn-icon--black" title="Generar presupuesto a partir de esta tarifa">
-                          <i data-lucide="file-input"></i>
-                      </button>
-                      <div class="budget-count">
-                          <button class="btn-icon btn-icon--black" title="Ver presupuestos generados con esta tarifa">
-                              <i data-lucide="list"></i>
-                          </button>
-                          <span class="count-number">89</span>
-                      </div>
-                  </div>
-                  <div class="table-cell">
-                      <select class="badge-select badge--danger">
-                          <option value="public">Público</option>
-                          <option value="private" selected>Privado</option>
-                      </select>
-                  </div>
-              </div>
-
-              <div class="table-card__section">
-                  <span>Estado</span>
-                  <span>Autor</span>
-              </div>
-
-              <div class="table-card__content">
-                  <div class="table-cell">
-                      <select class="badge-select badge--danger">
-                          <option value="active">Activa</option>
-                          <option value="inactive" selected>Inactiva</option>
-                      </select>
-                  </div>
-                  <span class="cell-line cell-line--primary">María</span>
-              </div>
-
-              <div class="table-card__section">
-                  <span>Acciones</span>
-              </div>
-
-              <div class="table-card__content">
-                  <div class="action-buttons">
-                      <button class="btn-icon btn-icon--black" title="Editar tarifa">
-                          <i data-lucide="pencil"></i>
-                      </button>
-                      <button class="btn-icon btn-icon--black" title="Duplicar tarifa">
-                          <i data-lucide="copy"></i>
-                      </button>
-                      <button class="btn-icon btn-icon--red" title="Borrar tarifa">
-                          <i data-lucide="trash-2"></i>
-                      </button>
-                  </div>
-              </div>
-          </div>
-      </div>
-
-      <div class="table-card table-card--tariffs">
-          <div class="table-card__header">
-              <span>Nombre</span>
-          </div>
-          <div class="table-card__body">
-              <div class="table-card__content">
-                  <span>Tarifa Estándar</span>
-                  <span class="cell-line--secondary">10/7/2025 - Paquete estándar con extras</span>
-              </div>
-
-              <div class="table-card__section">
-                  <span>Presupuestos</span>
-                  <span>Acceso</span>
-              </div>
-
-              <div class="table-card__content">
-                  <div class="budget-actions">
-                      <button class="btn-icon btn-icon--black" title="Generar presupuesto a partir de esta tarifa">
-                          <i data-lucide="file-input"></i>
-                      </button>
-                      <div class="budget-count">
-                          <button class="btn-icon btn-icon--black" title="Ver presupuestos generados con esta tarifa">
-                              <i data-lucide="list"></i>
-                          </button>
-                          <span class="count-number">320</span>
-                      </div>
-                  </div>
-                  <div class="table-cell">
-                      <select class="badge-select badge--success">
-                          <option value="public" selected>Público</option>
-                          <option value="private">Privado</option>
-                      </select>
-                  </div>
-              </div>
-
-              <div class="table-card__section">
-                  <span>Estado</span>
-                  <span>Autor</span>
-              </div>
-
-              <div class="table-card__content">
-                  <div class="table-cell">
-                      <select class="badge-select badge--success">
-                          <option value="active" selected>Activa</option>
-                          <option value="inactive">Inactiva</option>
-                      </select>
-                  </div>
-                  <span class="cell-line cell-line--primary">Pedro</span>
-              </div>
-
-              <div class="table-card__section">
-                  <span>Acciones</span>
-              </div>
-
-              <div class="table-card__content">
-                  <div class="action-buttons">
-                      <button class="btn-icon btn-icon--black" title="Editar tarifa">
-                          <i data-lucide="pencil"></i>
-                      </button>
-                      <button class="btn-icon btn-icon--black" title="Duplicar tarifa">
-                          <i data-lucide="copy"></i>
-                      </button>
-                      <button class="btn-icon btn-icon--red" title="Borrar tarifa">
-                          <i data-lucide="trash-2"></i>
-                      </button>
-                  </div>
-              </div>
-          </div>
-      </div>
-
-      <div class="table-card table-card--tariffs">
-          <div class="table-card__header">
-              <span>Nombre</span>
-          </div>
-          <div class="table-card__body">
-              <div class="table-card__content">
-                <span><span class="badge badge--incomplete">Incompleta</span>
-                  Tarifa Especial</span>
-                  <span class="cell-line--secondary">15/7/2025 - Oferta temporal limitada</span>
-              </div>
-
-              <div class="table-card__section">
-                  <span>Presupuestos</span>
-                  <span>Acceso</span>
-              </div>
-
-              <div class="table-card__content">
-                  <div class="budget-actions">
-                      <button class="btn-icon btn-icon--black" title="Generar presupuesto a partir de esta tarifa">
-                          <i data-lucide="file-input"></i>
-                      </button>
-                      <div class="budget-count">
-                          <button class="btn-icon btn-icon--black" title="Ver presupuestos generados con esta tarifa">
-                              <i data-lucide="list"></i>
-                          </button>
-                          <span class="count-number">45</span>
-                      </div>
-                  </div>
-                  <div class="table-cell">
-                      <select class="badge-select badge--danger">
-                          <option value="public">Público</option>
-                          <option value="private" selected>Privado</option>
-                      </select>
-                  </div>
-              </div>
-
-              <div class="table-card__section">
-                  <span>Estado</span>
-                  <span>Autor</span>
-              </div>
-
-              <div class="table-card__content">
-              <div class="table-cell">
-                  <select class="badge-select badge--success">
-                      <option value="active">Activa</option>
-                      <option value="inactive" selected>Inactiva</option>
-                  </select>
-              </div>
-              <span class="cell-line cell-line--primary">Sofía</span>
-          </div>
-
-          <div class="table-card__section">
-              <span>Acciones</span>
-          </div>
-
-          <div class="table-card__content">
-              <div class="action-buttons">
-                  <button class="btn-icon btn-icon--black" title="Editar tarifa">
-                      <i data-lucide="pencil"></i>
-                  </button>
-                  <button class="btn-icon btn-icon--black" title="Duplicar tarifa">
-                      <i data-lucide="copy"></i>
-                  </button>
-                  <button class="btn-icon btn-icon--red" title="Borrar tarifa">
-                      <i data-lucide="trash-2"></i>
-                  </button>
-              </div>
-          </div>
-      </div>
-  </div>
-
-  <div class="table-card table-card--tariffs">
-      <div class="table-card__header">
-          <span>Nombre</span>
-      </div>
-      <div class="table-card__body">
-          <div class="table-card__content">
-              <span>Tarifa Avanzada</span>
-              <span class="cell-line--secondary">20/7/2025 - Soluciones personalizadas</span>
-          </div>
-
-          <div class="table-card__section">
-              <span>Presupuestos</span>
-              <span>Acceso</span>
-          </div>
-
-          <div class="table-card__content">
-              <div class="budget-actions">
-                  <button class="btn-icon btn-icon--black" title="Generar presupuesto a partir de esta tarifa">
-                      <i data-lucide="file-input"></i>
-                  </button>
-                  <div class="budget-count">
-                      <button class="btn-icon btn-icon--black" title="Ver presupuestos generados con esta tarifa">
-                          <i data-lucide="list"></i>
-                      </button>
-                      <span class="count-number">178</span>
-                  </div>
-              </div>
-              <div class="table-cell">
-                  <select class="badge-select badge--success">
-                      <option value="public" selected>Público</option>
-                      <option value="private">Privado</option>
-                  </select>
-              </div>
-          </div>
-
-          <div class="table-card__section">
-              <span>Estado</span>
-              <span>Autor</span>
-          </div>
-
-          <div class="table-card__content">
-              <div class="table-cell">
-                  <select class="badge-select badge--danger">
-                      <option value="active">Activa</option>
-                      <option value="inactive" selected>Inactiva</option>
-                  </select>
-              </div>
-              <span class="cell-line cell-line--primary">Elena</span>
-          </div>
-
-          <div class="table-card__section">
-              <span>Acciones</span>
-          </div>
-
-          <div class="table-card__content">
-              <div class="action-buttons">
-                  <button class="btn-icon btn-icon--black" title="Editar tarifa">
-                      <i data-lucide="pencil"></i>
-                  </button>
-                  <button class="btn-icon btn-icon--black" title="Duplicar tarifa">
-                      <i data-lucide="copy"></i>
-                  </button>
-                  <button class="btn-icon btn-icon--red" title="Borrar tarifa">
-                      <i data-lucide="trash-2"></i>
-                  </button>
-              </div>
-          </div>
-      </div>
-  </div>
-</div>
-
-
-
+            <!-- Vista móvil - Cards simplificadas para tarifas -->
+            <div class="mobile-cards">
+                <!-- Card 1 -->
+                <div class="tariff-card-simple">
+                    <!-- Línea 1: Datos de la tarifa -->
+                    <div class="tariff-card__row-1">
+                        <div class="tariff-card__content">
+                            <h3 class="tariff-card__name"><span class="badge badge--incomplete">Incompleta</span> Nombre de Tarifa</h3>
+                            <span class="tariff-card__dates">30/6/2025 - Descripción de la Tarifa</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Línea 2: Presupuestos y Acceso -->
+                    <div class="tariff-card__row-2">
+                        <div class="tariff-card__presupuestos">
+                            <span class="tariff-card__label">Presupuestos</span>
+                            <div class="budget-actions">
+                                <button class="btn-icon btn-icon--black" title="Generar presupuesto a partir de esta tarifa">
+                                    <i data-lucide="file-input"></i>
+                                </button>
+                                <div class="budget-count">
+                                    <button class="btn-icon btn-icon--black" title="Ver presupuestos generados con esta tarifa">
+                                        <i data-lucide="list"></i>
+                                    </button>
+                                    <span class="count-number">234</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tariff-card__acceso">
+                            <span class="tariff-card__label">Acceso</span>
+                            <select class="badge-select badge--danger">
+                                <option value="public">Público</option>
+                                <option value="private" selected>Privado</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Línea 3: Estado y Usuario -->
+                    <div class="tariff-card__row-3">
+                        <div class="tariff-card__estado">
+                            <span class="tariff-card__label">Estado</span>
+                            <select class="badge-select badge--success">
+                                <option value="active" selected>Activa</option>
+                                <option value="inactive">Inactiva</option>
+                            </select>
+                        </div>
+                        <div class="tariff-card__user">
+                            <i data-lucide="user" class="tariff-card__user-icon"></i>
+                            <span class="tariff-card__value">Carlos</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Línea 4: Acciones -->
+                    <div class="tariff-card__actions">
+                        <button class="btn-icon btn-icon--black" title="Editar Tarifa">
+                            <i data-lucide="pencil"></i>
+                        </button>
+                        <button class="btn-icon btn-icon--black" title="Duplicar Tarifa">
+                            <i data-lucide="copy"></i>
+                        </button>
+                        <button class="btn-icon btn-icon--red" title="Borrar Tarifa">
+                            <i data-lucide="trash-2"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Card 2 -->
+                <div class="tariff-card-simple">
+                    <!-- Línea 1: Datos de la tarifa -->
+                    <div class="tariff-card__row-1">
+                        <div class="tariff-card__content">
+                            <h3 class="tariff-card__name">Tarifa Básica</h3>
+                            <span class="tariff-card__dates">1/7/2025 - Servicios básicos incluidos</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Línea 2: Presupuestos y Acceso -->
+                    <div class="tariff-card__row-2">
+                        <div class="tariff-card__presupuestos">
+                            <span class="tariff-card__label">Presupuestos</span>
+                            <div class="budget-actions">
+                                <button class="btn-icon btn-icon--black" title="Generar presupuesto a partir de esta tarifa">
+                                    <i data-lucide="file-input"></i>
+                                </button>
+                                <div class="budget-count">
+                                    <button class="btn-icon btn-icon--black" title="Ver presupuestos generados con esta tarifa">
+                                        <i data-lucide="list"></i>
+                                    </button>
+                                    <span class="count-number">150</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tariff-card__acceso">
+                            <span class="tariff-card__label">Acceso</span>
+                            <select class="badge-select badge--success">
+                                <option value="public" selected>Público</option>
+                                <option value="private">Privado</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Línea 3: Estado y Usuario -->
+                    <div class="tariff-card__row-3">
+                        <div class="tariff-card__estado">
+                            <span class="tariff-card__label">Estado</span>
+                            <select class="badge-select badge--success">
+                                <option value="active" selected>Activa</option>
+                                <option value="inactive">Inactiva</option>
+                            </select>
+                        </div>
+                        <div class="tariff-card__user">
+                            <i data-lucide="user" class="tariff-card__user-icon"></i>
+                            <span class="tariff-card__value">Ana</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Línea 4: Acciones -->
+                    <div class="tariff-card__actions">
+                        <button class="btn-icon btn-icon--black" title="Editar Tarifa">
+                            <i data-lucide="pencil"></i>
+                        </button>
+                        <button class="btn-icon btn-icon--black" title="Duplicar Tarifa">
+                            <i data-lucide="copy"></i>
+                        </button>
+                        <button class="btn-icon btn-icon--red" title="Borrar Tarifa">
+                            <i data-lucide="trash-2"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Card 3 -->
+                <div class="tariff-card-simple">
+                    <!-- Línea 1: Datos de la tarifa -->
+                    <div class="tariff-card__row-1">
+                        <div class="tariff-card__content">
+                            <h3 class="tariff-card__name"><span class="badge badge--incomplete">Incompleta</span> Tarifa Premium</h3>
+                            <span class="tariff-card__dates">5/7/2025 - Servicios premium avanzados</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Línea 2: Presupuestos y Acceso -->
+                    <div class="tariff-card__row-2">
+                        <div class="tariff-card__presupuestos">
+                            <span class="tariff-card__label">Presupuestos</span>
+                            <div class="budget-actions">
+                                <button class="btn-icon btn-icon--black" title="Generar presupuesto a partir de esta tarifa">
+                                    <i data-lucide="file-input"></i>
+                                </button>
+                                <div class="budget-count">
+                                    <button class="btn-icon btn-icon--black" title="Ver presupuestos generados con esta tarifa">
+                                        <i data-lucide="list"></i>
+                                    </button>
+                                    <span class="count-number">89</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tariff-card__acceso">
+                            <span class="tariff-card__label">Acceso</span>
+                            <select class="badge-select badge--danger">
+                                <option value="public">Público</option>
+                                <option value="private" selected>Privado</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Línea 3: Estado y Usuario -->
+                    <div class="tariff-card__row-3">
+                        <div class="tariff-card__estado">
+                            <span class="tariff-card__label">Estado</span>
+                            <select class="badge-select badge--danger">
+                                <option value="active">Activa</option>
+                                <option value="inactive" selected>Inactiva</option>
+                            </select>
+                        </div>
+                        <div class="tariff-card__user">
+                            <i data-lucide="user" class="tariff-card__user-icon"></i>
+                            <span class="tariff-card__value">María</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Línea 4: Acciones -->
+                    <div class="tariff-card__actions">
+                        <button class="btn-icon btn-icon--black" title="Editar Tarifa">
+                            <i data-lucide="pencil"></i>
+                        </button>
+                        <button class="btn-icon btn-icon--black" title="Duplicar Tarifa">
+                            <i data-lucide="copy"></i>
+                        </button>
+                        <button class="btn-icon btn-icon--red" title="Borrar Tarifa">
+                            <i data-lucide="trash-2"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -808,5 +428,4 @@
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script src="script.js"></script>
 </body>
-
 </html>

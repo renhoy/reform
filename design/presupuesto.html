@@ -1,6 +1,11 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <!-- {"_META_file_path_": "design/index.html"} -->
 <!-- Design System - Estructura Simplificada con Custom Select -->
+=======
+<!-- {"_META_file_path_": "design/presupuesto.html"} -->
+<!-- Página de Presupuestos - Diseño Simplificado y Profesional -->
+>>>>>>> 5322550 (Página Tarifa)
 <html lang="es">
 
 <head>
@@ -108,8 +113,8 @@
                 <!-- Registro 1 -->
                 <div class="table-row--budgets">
                     <div class="table-cell">
-                        <span class="cell-line cell-line--primary">Nombre Apellidos (12345678Z)</span>
-                        <span class="cell-line cell-line--secondary">30/6/2025 - 30/7/2025 (15 días restantes)</span>
+                        <span class="cell-line cell-line--primary">Nombre Apellidos <span style="font-weight: normal; font-size: 0.875rem; color: #666;">(12345678Z)</span></span>
+                        <span class="cell-line cell-line--secondary">30/6/2025 - 30/7/2025 (15)</span>
                     </div>
                     <div class="table-cell">
                         <button class="btn-icon btn-icon--black notes-icon has-notes"
@@ -118,8 +123,7 @@
                         </button>
                     </div>
                     <div class="table-cell">
-                        <span class="total-amount" title="Base: 1.020,30€ | IVA: 214,26€ | Total: 1.234,56€">1.234,56
-                            €</span>
+                        <span class="total-amount" title="Base: 1.020,30€ | IVA: 214,26€ | Total: 1.234,56€">1.234,56 €</span>
                     </div>
                     <div class="table-cell">
                         <button class="btn-icon btn-icon--black" title="Ver tarifa del presupuesto">
@@ -163,8 +167,13 @@
                 <!-- Registro 2 -->
                 <div class="table-row--budgets">
                     <div class="table-cell">
+<<<<<<< HEAD
                         <span class="cell-line cell-line--primary">Laura Martínez (34567890P)</span>
                         <span class="cell-line cell-line--secondary">1/7/2025 - 15/7/2025 (12 días restantes)</span>
+=======
+                        <span class="cell-line cell-line--primary">Laura Martínez <span style="font-weight: normal; font-size: 0.875rem; color: #666;">(34567890P)</span></span>
+                        <span class="cell-line cell-line--secondary">1/7/2025 - 15/7/2025 (12)</span>
+>>>>>>> 5322550 (Página Tarifa)
                     </div>
                     <div class="table-cell">
                         <button class="btn-icon btn-icon--black notes-icon has-notes"
@@ -173,8 +182,12 @@
                         </button>
                     </div>
                     <div class="table-cell">
+<<<<<<< HEAD
                         <span class="total-amount" title="Base: 1.020,30€ | IVA: 214,26€ | Total: 1.234,56€">2.234,41
                             €</span>
+=======
+                        <span class="total-amount" title="Base: 1.020,30€ | IVA: 214,26€ | Total: 1.234,56€">2.234,41 €</span>
+>>>>>>> 5322550 (Página Tarifa)
                     </div>
                     <div class="table-cell">
                         <button class="btn-icon btn-icon--black" title="Ver tarifa del presupuesto">
@@ -214,7 +227,9 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
+<<<<<<< HEAD
 
 
 
@@ -277,11 +292,26 @@
                                 </span>
                             </div>
                             <button class="btn-icon btn-icon--black notes-icon budget-note-btn" title="Notas">
+=======
+            <!-- Vista móvil - Cards simplificadas -->
+            <div class="mobile-cards">
+                <!-- Card 1 -->
+                <div class="budget-card-simple">
+                    <!-- Línea 1: Datos del cliente y nota -->
+                    <div class="budget-card__row-1">
+                        <div class="budget-card__client">
+                            <h3 class="budget-card__name">Nombre Apellidos <span style="font-weight: normal; font-size: 0.875rem; color: #666;">(12345678Z)</span></h3>
+                            <span class="budget-card__dates">30/6/2025 - 30/7/2025 (15)</span>
+                        </div>
+                        <div class="budget-card__note">
+                            <button class="btn-icon btn-icon--black notes-icon has-notes" title="Ver apuntes del presupuesto">
+>>>>>>> 5322550 (Página Tarifa)
                                 <i data-lucide="notebook-pen"></i>
                             </button>
                         </div>
                     </div>
                     
+<<<<<<< HEAD
                     <!-- Tarjeta 2 -->
                     <div class="budget-card budget-card--success">
                         <div class="budget-card__header">
@@ -335,15 +365,134 @@
                                 </span>
                             </div>
                             <button class="btn-icon btn-icon--black notes-icon budget-note-btn" title="Notas">
+=======
+                    <!-- Línea 2: Tarifa y Total -->
+                    <div class="budget-card__row-2">
+                        <div class="budget-card__tariff">
+                            <span class="budget-card__tariff-label">Tarifa</span>
+                            <button class="btn-icon btn-icon--black" title="Ver tarifa del presupuesto">
+                                <i data-lucide="eye"></i>
+                            </button>
+                        </div>
+                        <div class="budget-card__amount-section">
+                            <span class="budget-card__amount-label">Total</span>
+                            <span class="budget-card__amount">1.234,56 €</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Línea 3: Estado y Usuario -->
+                    <div class="budget-card__row-3">
+                        <div class="budget-card__state">
+                            <span class="budget-card__state-label">Estado</span>
+                            <select class="badge-select badge--danger">
+                                <option value="pending" selected>Pendiente</option>
+                                <option value="sent">Enviado</option>
+                                <option value="approved">Aprobado</option>
+                                <option value="rejected">Rechazado</option>
+                                <option value="expired">Expirado</option>
+                            </select>
+                        </div>
+                        <div class="budget-card__user">
+                            <i data-lucide="user" class="budget-card__user-icon"></i>
+                            <span class="budget-card__value">Carlos</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Línea 4: Acciones -->
+                    <div class="budget-card__actions">
+                        <button class="btn-icon btn-icon--black" title="Ver PDF">
+                            <i data-lucide="file-check"></i>
+                        </button>
+                        <button class="btn-icon btn-icon--black" title="Crear PDF" disabled>
+                            <i data-lucide="file-stack"></i>
+                        </button>
+                        <button class="btn-icon btn-icon--black" title="Editar">
+                            <i data-lucide="pencil"></i>
+                        </button>
+                        <button class="btn-icon btn-icon--black" title="Duplicar">
+                            <i data-lucide="copy"></i>
+                        </button>
+                        <button class="btn-icon btn-icon--red" title="Eliminar">
+                            <i data-lucide="trash-2"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Card 2 -->
+                <div class="budget-card-simple">
+                    <!-- Línea 1: Datos del cliente y nota -->
+                    <div class="budget-card__row-1">
+                        <div class="budget-card__client">
+                            <h3 class="budget-card__name">Laura Martínez <span style="font-weight: normal; font-size: 0.875rem; color: #666;">(34567890P)</span></h3>
+                            <span class="budget-card__dates">1/7/2025 - 15/7/2025 (12)</span>
+                        </div>
+                        <div class="budget-card__note">
+                            <button class="btn-icon btn-icon--black notes-icon has-notes" title="Ver apuntes del presupuesto">
+>>>>>>> 5322550 (Página Tarifa)
                                 <i data-lucide="notebook-pen"></i>
                             </button>
                         </div>
                     </div>
+<<<<<<< HEAD
                 </div>
 
 
 
 
+=======
+                    
+                    <!-- Línea 2: Tarifa y Total -->
+                    <div class="budget-card__row-2">
+                        <div class="budget-card__tariff">
+                            <span class="budget-card__tariff-label">Tarifa</span>
+                            <button class="btn-icon btn-icon--black" title="Ver tarifa del presupuesto">
+                                <i data-lucide="eye"></i>
+                            </button>
+                        </div>
+                        <div class="budget-card__amount-section">
+                            <span class="budget-card__amount-label">Total</span>
+                            <span class="budget-card__amount">2.234,41 €</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Línea 3: Estado y Usuario -->
+                    <div class="budget-card__row-3">
+                        <div class="budget-card__state">
+                            <span class="budget-card__state-label">Estado</span>
+                            <select class="badge-select badge--success">
+                                <option value="pending">Pendiente</option>
+                                <option value="sent">Enviado</option>
+                                <option value="approved" selected>Aprobado</option>
+                                <option value="rejected">Rechazado</option>
+                                <option value="expired">Expirado</option>
+                            </select>
+                        </div>
+                        <div class="budget-card__user">
+                            <i data-lucide="user" class="budget-card__user-icon"></i>
+                            <span class="budget-card__value">Ana</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Línea 4: Acciones -->
+                    <div class="budget-card__actions">
+                        <button class="btn-icon btn-icon--black" title="Ver PDF">
+                            <i data-lucide="file-check"></i>
+                        </button>
+                        <button class="btn-icon btn-icon--black" title="Crear PDF">
+                            <i data-lucide="file-stack"></i>
+                        </button>
+                        <button class="btn-icon btn-icon--black" title="Editar">
+                            <i data-lucide="pencil"></i>
+                        </button>
+                        <button class="btn-icon btn-icon--black" title="Duplicar">
+                            <i data-lucide="copy"></i>
+                        </button>
+                        <button class="btn-icon btn-icon--red" title="Eliminar">
+                            <i data-lucide="trash-2"></i>
+                        </button>
+                    </div>
+                </div>
+>>>>>>> 5322550 (Página Tarifa)
             </div>
         </div>
     </div>
