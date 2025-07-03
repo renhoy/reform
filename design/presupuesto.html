@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- {"_META_file_path_": "design/index2.html"} -->
+<!-- {"_META_file_path_": "design/index.html"} -->
 <!-- Design System - Estructura Simplificada con Custom Select -->
 <html lang="es">
 
@@ -7,32 +7,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Design System - Generador de Presupuestos</title>
-    <link rel="stylesheet" href="/refor/assets/css/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-        <div class="container">
-            <div class="header">
-                <div class="header-content">
-                    <div class="logo">Generador de Presupuestos</div>
-                    <nav class="main-nav">
-                        <a href="#" class="nav-item">Dashboard</a>
-                        <a href="#" class="nav-item">Tarifas</a>
-                        <a href="#" class="nav-item active">Presupuestos</a>
-                    </nav>
-                    <div class="user-menu">
-                        <button class="log-out btn-icon btn-icon--black" title="Cerrar Sesión">
-                            <i data-lucide="log-out"></i>
-                        </button>
-                    </div>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="logo">Generador de Presupuestos</div>
+                <nav class="main-nav">
+                    <a href="#" class="nav-item">Dashboard</a>
+                    <a href="#" class="nav-item">Tarifas</a>
+                    <a href="#" class="nav-item active">Presupuestos</a>
+                </nav>
+                <div class="user-menu">
+                    <button class="log-out btn-icon btn-icon--black" title="Cerrar Sesión">
+                        <i data-lucide="log-out"></i>
+                    </button>
                 </div>
             </div>
-        
-
-        <br>
-        </br>
-
+        </div>
+  
         <div class="spacing">
             <div class="page-header">
                 <h1>Presupuestos</h1>
@@ -42,51 +38,63 @@
             </div>
         </div>
 
- 
         <div class="spacing">
-            <div class="stats-bar">
-                <div class="stats-text">
-                    <strong>47 Presupuestos: </strong>
-                    <span class="stats-number badge--success">9</span>
-                    <span class="stats-label">Aprobados</span>
-                    <span class="stats-number badge--danger">14</span>
-                    <span class="stats-label">Rechazados</span>
-                    <span class="stats-number badge--info">12</span>
-                    <span class="stats-label">Enviados</span>
-                    <span class="stats-number badge--black">5</span>
-                    <span class="stats-label">Expirados</span>
-                    <span class="stats-number badge--warning">2</span>
-                    <span class="stats-label">Pendientes</span>
-                    <span class="stats-number badge--secondary">8</span>
-                    <span class="stats-label">Borradores</span>
+            <div class="stats-grid">
+                <div class="stat-card stat-card--budgets">
+                    <div class="stat-card__number">42</div>
+                    <div class="stat-card__label">Total Presupuestos</div>
+                </div>
+                <div class="stat-card stat-card--success">
+                    <div class="stat-card__number">9</div>
+                    <div class="stat-card__label">Aprobados</div>
+                </div>
+                <div class="stat-card stat-card--danger">
+                    <div class="stat-card__number">14</div>
+                    <div class="stat-card__label">Rechazados</div>
+                </div>
+                <div class="stat-card stat-card--info">
+                    <div class="stat-card__number">12</div>
+                    <div class="stat-card__label">Enviados</div>
+                </div>
+                <div class="stat-card stat-card--black">
+                    <div class="stat-card__number">5</div>
+                    <div class="stat-card__label">Expirados</div>
+                </div>
+                <div class="stat-card stat-card--warning">
+                    <div class="stat-card__number">2</div>
+                    <div class="stat-card__label">Pendientes</div>
                 </div>
             </div>
         </div>
 
-
         <div class="spacing">
-            <div class="filters-bar">
-                <input type="text" class="search-input" placeholder="Buscar por cliente...">
-                <select class="filter-select">
-                    <option>Todos los estados</option>
-                    <option>Borrador</option>
-                    <option>Pendiente</option>
-                    <option>Enviado</option>
-                    <option>Aprobado</option>
-                    <option>Rechazado</option>
-                    <option>Expirado</option>
-                </select>
-                <input type="date" class="date-input">
-                <input type="date" class="date-input">
-                <div class="filter-buttons">
-                    <button class="btn--filter">Filtrar</button>
-                    <button class="btn--clear">Limpiar</button>
+            <div class="filters-container">
+                <!-- Buscador -->
+                <div class="search-row">
+                    <input type="text" class="search-input" placeholder="Buscar...">
+                </div>
+                
+                <!-- Filtros -->
+                <div class="filters-group budgets">
+                    <input type="date" class="date-input" placeholder="Fecha inicio">
+                    <input type="date" class="date-input" placeholder="Fecha fin">
+                    <select class="filter-select">
+                        <option value="">Estados</option>
+                        <option>Pendiente</option>
+                        <option>Enviado</option>
+                        <option>Aprobado</option>
+                        <option>Rechazado</option>
+                        <option>Expirado</option>
+                    </select>
+                    <div class="filter-buttons">
+                        <button type="button" class="btn--filter">Filtrar</button>
+                        <button type="button" class="btn--clear">Limpiar</button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Tabla Presupuestos -->
+            <!-- Vista de escritorio - Tabla de Presupuestos -->
             <div class="table-responsive">
-                <!-- Desktop Tabla Presupuestos -->
                 <div class="table-header--budgets">
                     <div>Cliente (NIF/NIE)</div>
                     <div></div>
@@ -96,7 +104,8 @@
                     <div>Usuario</div>
                     <div>Acciones</div>
                 </div>
-
+                
+                <!-- Registro 1 -->
                 <div class="table-row--budgets">
                     <div class="table-cell">
                         <span class="cell-line cell-line--primary">Nombre Apellidos (12345678Z)</span>
@@ -119,7 +128,6 @@
                     </div>
                     <div class="table-cell">
                         <select class="badge-select badge--danger">
-                            <option value="draft">Borrador</option>
                             <option value="pending" selected>Pendiente</option>
                             <option value="sent">Enviado</option>
                             <option value="approved">Aprobado</option>
@@ -132,10 +140,10 @@
                     </div>
                     <div class="table-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-icon--black" title="Ver PDF del presupuesto">
+                            <button class="btn-icon btn-icon--black disabled" title="Ver PDF del presupuesto">
                                 <i data-lucide="file-check"></i>
                             </button>
-                            <button class="btn-icon btn-icon--black disabled" title="Crear PDF a partir de presupuesto"
+                            <button class="btn-icon btn-icon--black" title="Crear PDF a partir de presupuesto"
                                 disabled>
                                 <i data-lucide="file-stack"></i>
                             </button>
@@ -152,62 +160,11 @@
                     </div>
                 </div>
 
+                <!-- Registro 2 -->
                 <div class="table-row--budgets">
                     <div class="table-cell">
-                        <span class="cell-line cell-line--primary">Ana García (87654321X)</span>
-                        <span class="cell-line cell-line--secondary">1/7/2025 - 31/7/2025 (20 días restantes)</span>
-                    </div>
-                    <div class="table-cell">
-                        <button class="btn-icon btn-icon--black notes-icon" title="Ver apuntes del presupuesto">
-                            <i data-lucide="notebook-pen"></i>
-                        </button>
-                    </div>
-                    <div class="table-cell">
-                        <span class="total-amount" title="Base: 850,00€ | IVA: 178,50€ | Total: 1.028,50€">1.028,50 €</span>
-                    </div>
-                    <div class="table-cell">
-                        <button class="btn-icon btn-icon--black" title="Ver tarifa del presupuesto">
-                            <i data-lucide="eye"></i>
-                        </button>
-                    </div>
-                    <div class="table-cell">
-                        <select class="badge-select badge--success">
-                            <option value="draft">Borrador</option>
-                            <option value="pending">Pendiente</option>
-                            <option value="sent">Enviado</option>
-                            <option value="approved" selected>Aprobado</option>
-                            <option value="rejected">Rechazado</option>
-                            <option value="expired">Expirado</option>
-                        </select>
-                    </div>
-                    <div class="table-cell">
-                        <span class="cell-line cell-line--primary">María</span>
-                    </div>
-                    <div class="table-cell">
-                        <div class="action-buttons">
-                            <button class="btn-icon btn-icon--black" title="Ver PDF del presupuesto">
-                                <i data-lucide="file-check"></i>
-                            </button>
-                            <button class="btn-icon btn-icon--black" title="Crear PDF a partir de presupuesto">
-                                <i data-lucide="file-stack"></i>
-                            </button>
-                            <button class="btn-icon btn-icon--black" title="Editar Presupuesto">
-                                <i data-lucide="pencil"></i>
-                            </button>
-                            <button class="btn-icon btn-icon--black" title="Duplicar Presupuesto">
-                                <i data-lucide="copy"></i>
-                            </button>
-                            <button class="btn-icon btn-icon--red" title="Borrar Presupuesto">
-                                <i data-lucide="trash-2"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="table-row--budgets">
-                    <div class="table-cell">
-                        <span class="cell-line cell-line--primary">Juan López (45678912Y)</span>
-                        <span class="cell-line cell-line--secondary">5/7/2025 - 4/8/2025 (25 días restantes)</span>
+                        <span class="cell-line cell-line--primary">Laura Martínez (34567890P)</span>
+                        <span class="cell-line cell-line--secondary">1/7/2025 - 15/7/2025 (12 días restantes)</span>
                     </div>
                     <div class="table-cell">
                         <button class="btn-icon btn-icon--black notes-icon has-notes"
@@ -216,7 +173,8 @@
                         </button>
                     </div>
                     <div class="table-cell">
-                        <span class="total-amount" title="Base: 1.500,00€ | IVA: 315,00€ | Total: 1.815,00€">1.815,00 €</span>
+                        <span class="total-amount" title="Base: 1.020,30€ | IVA: 214,26€ | Total: 1.234,56€">2.234,41
+                            €</span>
                     </div>
                     <div class="table-cell">
                         <button class="btn-icon btn-icon--black" title="Ver tarifa del presupuesto">
@@ -224,24 +182,24 @@
                         </button>
                     </div>
                     <div class="table-cell">
-                        <select class="badge-select badge--info">
-                            <option value="draft">Borrador</option>
+                        <select class="badge-select badge--success">
                             <option value="pending">Pendiente</option>
-                            <option value="sent" selected>Enviado</option>
-                            <option value="approved">Aprobado</option>
+                            <option value="sent">Enviado</option>
+                            <option value="approved" selected>Aprobado</option>
                             <option value="rejected">Rechazado</option>
                             <option value="expired">Expirado</option>
                         </select>
                     </div>
                     <div class="table-cell">
-                        <span class="cell-line cell-line--primary">Pedro</span>
+                        <span class="cell-line cell-line--primary">Ana</span>
                     </div>
                     <div class="table-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-icon--black" title="Ver PDF del presupuesto">
+                            <button class="btn-icon btn-icon--black disabled" title="Ver PDF del presupuesto">
                                 <i data-lucide="file-check"></i>
                             </button>
-                            <button class="btn-icon btn-icon--black" title="Crear PDF a partir de presupuesto">
+                            <button class="btn-icon btn-icon--black" title="Crear PDF a partir de presupuesto"
+                                disabled>
                                 <i data-lucide="file-stack"></i>
                             </button>
                             <button class="btn-icon btn-icon--black" title="Editar Presupuesto">
@@ -257,7 +215,132 @@
                     </div>
                 </div>
 
- 
+
+
+
+
+
+            </div>
+
+            <!-- Vista móvil - Tarjetas de Presupuestos -->
+            <div class="mobile-cards">
+                    <!-- Tarjeta 1 -->
+                    <div class="budget-card budget-card--danger">
+                        <div class="budget-card__header">
+                            <h3 class="budget-card__title">Nombre Apellidos <span class="budget-card__nif">(12345678Z)</span></h3>
+                            <span class="budget-card__dates">30/6/2025 - 30/7/2025 <span class="budget-card__days">(15 días restantes)</span></span>
+                        </div>
+                        
+                        <div class="budget-card__content">
+                            <div class="budget-card__row">
+                                <div class="budget-card__info">
+                                    <span class="budget-card__label">Total</span>
+                                    <span class="budget-card__amount">1.234,56 €</span>
+                                </div>
+                                <div class="budget-card__info">
+                                    <span class="budget-card__label">Estado</span>
+                                    <select class="badge-select badge--danger">
+                                        <option value="pending" selected>Pendiente</option>
+                                        <option value="sent">Enviado</option>
+                                        <option value="approved">Aprobado</option>
+                                        <option value="rejected">Rechazado</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="budget-card__actions">
+                                <button class="btn-icon btn-icon--black" title="Ver PDF">
+                                    <i data-lucide="file-check"></i>
+                                </button>
+                                <button class="btn-icon btn-icon--black" title="Crear PDF" disabled>
+                                    <i data-lucide="file-stack"></i>
+                                </button>
+                                <button class="btn-icon btn-icon--black" title="Editar">
+                                    <i data-lucide="pencil"></i>
+                                </button>
+                                <button class="btn-icon btn-icon--black" title="Duplicar">
+                                    <i data-lucide="copy"></i>
+                                </button>
+                                <button class="btn-icon btn-icon--red" title="Eliminar">
+                                    <i data-lucide="trash-2"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="budget-card__footer">
+                                <span class="budget-card__meta">
+                                    <i data-lucide="user" width="14" height="14"></i>
+                                    Carlos
+                                </span>
+                                <span class="budget-card__meta">
+                                    <i data-lucide="clock" width="14" height="14"></i>
+                                    Hace 2 días
+                                </span>
+                            </div>
+                            <button class="btn-icon btn-icon--black notes-icon budget-note-btn" title="Notas">
+                                <i data-lucide="notebook-pen"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Tarjeta 2 -->
+                    <div class="budget-card budget-card--success">
+                        <div class="budget-card__header">
+                            <h3 class="budget-card__title">Laura Martínez <span class="budget-card__nif">(34567890P)</span></h3>
+                            <span class="budget-card__dates">1/7/2025 - 15/7/2025 <span class="budget-card__days">(12 días restantes)</span></span>
+                        </div>
+                        
+                        <div class="budget-card__content">
+                            <div class="budget-card__row">
+                                <div class="budget-card__info">
+                                    <span class="budget-card__label">Total</span>
+                                    <span class="budget-card__amount">2.239,41 €</span>
+                                </div>
+                                <div class="budget-card__info">
+                                    <span class="budget-card__label">Estado</span>
+                                    <select class="badge-select badge--success">
+                                        <option value="approved" selected>Aprobado</option>
+                                        <option value="pending">Pendiente</option>
+                                        <option value="sent">Enviado</option>
+                                        <option value="rejected">Rechazado</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="budget-card__actions">
+                                <button class="btn-icon btn-icon--black" title="Ver PDF">
+                                    <i data-lucide="file-check"></i>
+                                </button>
+                                <button class="btn-icon btn-icon--black" title="Crear PDF">
+                                    <i data-lucide="file-stack"></i>
+                                </button>
+                                <button class="btn-icon btn-icon--black" title="Editar">
+                                    <i data-lucide="pencil"></i>
+                                </button>
+                                <button class="btn-icon btn-icon--black" title="Duplicar">
+                                    <i data-lucide="copy"></i>
+                                </button>
+                                <button class="btn-icon btn-icon--red" title="Eliminar">
+                                    <i data-lucide="trash-2"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="budget-card__footer">
+                                <span class="budget-card__meta">
+                                    <i data-lucide="user" width="14" height="14"></i>
+                                    Ana
+                                </span>
+                                <span class="budget-card__meta">
+                                    <i data-lucide="clock" width="14" height="14"></i>
+                                    Hace 5 días
+                                </span>
+                            </div>
+                            <button class="btn-icon btn-icon--black notes-icon budget-note-btn" title="Notas">
+                                <i data-lucide="notebook-pen"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
 
 
 
@@ -268,5 +351,4 @@
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script src="script.js"></script>
 </body>
-
 </html>
