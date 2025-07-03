@@ -1,65 +1,40 @@
 <?php
 // {"_META_file_path_": "refor/includes/config.php"}
-// Configuración principal de la aplicación
+// Configuración base del sistema refactorizado
 
-// Configuración de errores para desarrollo
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-ini_set('log_errors', 1);
+session_start();
 
 // Configuración de base de datos
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'budget_form_service');
 define('DB_USER', 'root');
 define('DB_PASS', 'root');
-define('DB_PORT', 8889); // Puerto MAMP
+define('DB_PORT', '8889');
 
-// Rutas de la aplicación
-$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-$host = $_SERVER['HTTP_HOST'];
-$basePath = dirname($_SERVER['SCRIPT_NAME']);
+// Configuración de rutas
+define('BASE_URL', '/refor/');
+define('ASSETS_URL', BASE_URL . 'assets/');
 
-define('BASE_URL', $protocol . '://' . $host . $basePath);
-define('ASSETS_URL', BASE_URL . '/assets');
-
-// Configuración de sesión
-if (session_status() === PHP_SESSION_NONE) {
-    ini_set('session.cookie_httponly', 1);
-    session_start();
+try {
+    $pdo = new PDO(
+        "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8mb4",
+        DB_USER,
+        DB_PASS,
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false
+        ]
+    );
+} catch (PDOException $e) {
+    die("Error de conexión: " . $e->getMessage());
 }
 
-/**
- * Obtiene la conexión a la base de datos
- */
 function getConnection() {
-    static $pdo = null;
-    
-    if ($pdo === null) {
-        try {
-            $dsn = "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8mb4";
-            $pdo = new PDO(
-                $dsn,
-                DB_USER,
-                DB_PASS,
-                [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                    PDO::ATTR_EMULATE_PREPARES => false,
-                    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
-                ]
-            );
-        } catch (PDOException $e) {
-            error_log("Database connection error: " . $e->getMessage());
-            die("Error de conexión a la base de datos. Verifica que MAMP esté ejecutándose y la base de datos exista.");
-        }
-    }
-    
+    global $pdo;
     return $pdo;
 }
 
-/**
- * Requiere autenticación de usuario
- */
 function requireAuth() {
     if (!isset($_SESSION['user_id'])) {
         header('Location: login.php');
@@ -67,9 +42,51 @@ function requireAuth() {
     }
 }
 
-/**
- * Genera un UUID único
- */
+function asset($path) {
+    return ASSETS_URL . $path;
+}
+
+function url($path = '') {
+    return BASE_URL . $path;
+}
+
+function redirect($path) {
+    header('Location: ' . url($path));
+    exit;
+}
+
+function flash($message, $type = 'info') {
+    $_SESSION['flash'] = [
+        'message' => $message,
+        'type' => $type
+    ];
+}
+
+function getFlash() {
+    if (isset($_SESSION['flash'])) {
+        $flash = $_SESSION['flash'];
+        unset($_SESSION['flash']);
+        return $flash;
+    }
+    return null;
+}
+
+function formatCurrency($amount, $decimals = 2) {
+    return number_format($amount, $decimals, ',', '.') . ' €';
+}
+
+function formatPercentage($percentage, $decimals = 2) {
+    return number_format($percentage, $decimals, ',', '.') . '%';
+}
+
+function sanitizeInput($input) {
+    return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
+}
+
+function validateEmail($email) {
+    return filter_var($email, FILTER_VALIDATE_EMAIL);
+}
+
 function generateUUID() {
     return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
         mt_rand(0, 0xffff), mt_rand(0, 0xffff),
@@ -80,162 +97,100 @@ function generateUUID() {
     );
 }
 
-/**
- * Genera URL para assets
- */
-function asset($path) {
-    return ASSETS_URL . '/' . ltrim($path, '/');
-}
-
-/**
- * Formatea un número para mostrar
- */
-function formatNumber($number, $decimals = 2) {
-    return number_format($number, $decimals, ',', '.');
-}
-
-/**
- * Formatea una fecha para mostrar
- */
-function formatDate($date) {
-    if (!$date) return '';
-    
-    $dateObj = is_string($date) ? new DateTime($date) : $date;
-    return $dateObj->format('d/m/Y');
-}
-
-/**
- * Redirige a una página con parámetros opcionales
- */
-function redirect($page, $params = []) {
-    $url = $page;
-    
-    if (!empty($params)) {
-        $url .= '?' . http_build_query($params);
+function logError($message, $context = []) {
+    $log = date('Y-m-d H:i:s') . " - " . $message;
+    if (!empty($context)) {
+        $log .= " - Context: " . json_encode($context);
     }
     
-    header('Location: ' . $url);
-    exit;
-}
-
-/**
- * Sanitiza una cadena para HTML
- */
-function sanitize($string) {
-    return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
-}
-
-/**
- * Valida un email
- */
-function isValidEmail($email) {
-    return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
-}
-
-/**
- * Valida un NIF español
- */
-function isValidNIF($nif) {
-    $nif = strtoupper(trim($nif));
-    
-    if (!preg_match('/^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKE]$/', $nif)) {
-        return false;
+    // Crear directorio logs si no existe
+    $logDir = __DIR__ . '/../logs';
+    if (!is_dir($logDir)) {
+        mkdir($logDir, 0755, true);
     }
     
-    $letters = 'TRWAGMYFPDXBNJZSQVHLCKE';
-    $number = intval(substr($nif, 0, 8));
-    $letter = substr($nif, 8, 1);
-    
-    return $letters[$number % 23] === $letter;
+    error_log($log . PHP_EOL, 3, $logDir . '/app.log');
 }
 
-/**
- * Obtiene el usuario actual
- */
+function isAdmin() {
+    return isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
+}
+
 function getCurrentUser() {
     if (!isset($_SESSION['user_id'])) {
         return null;
     }
     
-    static $user = null;
-    
-    if ($user === null) {
-        $pdo = getConnection();
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
-        $stmt->execute([$_SESSION['user_id']]);
-        $user = $stmt->fetch();
-    }
-    
-    return $user;
+    $pdo = getConnection();
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+    $stmt->execute([$_SESSION['user_id']]);
+    return $stmt->fetch();
 }
 
-/**
- * Registra una acción en el log
- */
-function logAction($action, $details = '') {
-    $user = getCurrentUser();
-    $userId = $user ? $user['id'] : null;
-    $userName = $user ? $user['name'] : 'Sistema';
-    
-    $logEntry = date('Y-m-d H:i:s') . " - Usuario: {$userName} ({$userId}) - Acción: {$action}";
-    if ($details) {
-        $logEntry .= " - Detalles: {$details}";
-    }
-    
-    error_log($logEntry);
+function updateUserLastAccess($user_id) {
+    $pdo = getConnection();
+    $stmt = $pdo->prepare("UPDATE users SET last_access = NOW() WHERE id = ?");
+    $stmt->execute([$user_id]);
 }
 
-/**
- * Envía respuesta JSON y termina ejecución
- */
-function jsonResponse($data, $statusCode = 200) {
-    http_response_code($statusCode);
-    header('Content-Type: application/json');
-    echo json_encode($data);
+// Función para manejar errores de forma consistente
+function handleError($message, $code = 500) {
+    http_response_code($code);
+    
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && 
+        isset($_SERVER['HTTP_CONTENT_TYPE']) && 
+        strpos($_SERVER['HTTP_CONTENT_TYPE'], 'application/json') !== false) {
+        
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => $message]);
+    } else {
+        // Mostrar página de error
+        include __DIR__ . '/../pages/error.php';
+    }
     exit;
 }
 
-/**
- * Obtiene valor de configuración del sistema
- */
-function getConfigValue($key, $default = null) {
-    static $config = null;
-    
-    if ($config === null) {
-        $pdo = getConnection();
-        $stmt = $pdo->query("SELECT config_key, config_value FROM system_config");
-        $config = [];
-        while ($row = $stmt->fetch()) {
-            $config[$row['config_key']] = $row['config_value'];
-        }
+// Configurar manejo de errores
+set_error_handler(function($severity, $message, $file, $line) {
+    if (!(error_reporting() & $severity)) {
+        return false;
     }
     
-    return $config[$key] ?? $default;
-}
-
-/**
- * Calcula días hábiles entre dos fechas
- */
-function getBusinessDays($startDate, $endDate) {
-    $start = new DateTime($startDate);
-    $end = new DateTime($endDate);
-    $days = 0;
+    logError("PHP Error: $message in $file:$line", [
+        'severity' => $severity,
+        'file' => $file,
+        'line' => $line
+    ]);
     
-    while ($start <= $end) {
-        $dayOfWeek = $start->format('N');
-        if ($dayOfWeek < 6) { // Lunes a Viernes
-            $days++;
-        }
-        $start->add(new DateInterval('P1D'));
+    if ($severity === E_ERROR || $severity === E_USER_ERROR) {
+        handleError('Ha ocurrido un error interno del servidor');
     }
     
-    return $days;
-}
+    return true;
+});
 
-// Verificar conexión al inicializar
-try {
-    $testConnection = getConnection();
-    $testConnection->query("SELECT 1");
-} catch (Exception $e) {
-    die("Error: Base de datos no disponible. Asegúrate de:\n1. MAMP está ejecutándose\n2. Base de datos 'budget_form_service' existe\n3. Configuración de conexión es correcta");
+set_exception_handler(function($exception) {
+    logError("Uncaught Exception: " . $exception->getMessage(), [
+        'file' => $exception->getFile(),
+        'line' => $exception->getLine(),
+        'trace' => $exception->getTraceAsString()
+    ]);
+    
+    handleError('Ha ocurrido un error inesperado');
+});
+
+// Configuración de zona horaria
+date_default_timezone_set('Europe/Madrid');
+
+// Configuración de sesión más segura
+ini_set('session.cookie_httponly', 1);
+ini_set('session.use_only_cookies', 1);
+ini_set('session.cookie_secure', isset($_SERVER['HTTPS']));
+
+// Regenerar ID de sesión periódicamente para mayor seguridad
+if (!isset($_SESSION['last_regeneration'])) {
+    $_SESSION['last_regeneration'] = time();
+} elseif (time() - $_SESSION['last_regeneration'] > 300) { // 5 minutos
+    session_regenerate_id(true);
+    $_SESSION['last_regeneration'] = time();
 }

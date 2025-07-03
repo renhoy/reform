@@ -26,7 +26,7 @@ $tariffs = getTariffsWithData();
             <div class="page-header">
                 <h1>Tarifa</h1>
                 <div class="header-title__buttons">
-                    <a href="tariff-form.php?template_id=1" class="btn btn--tariffs">Nueva Tarifa</a>
+                    <a href="tariff-form.php" class="btn btn--tariffs">Nueva Tarifa</a>
                 </div>
             </div>
         </div>
