@@ -26,37 +26,41 @@ $tariffs = getTariffsWithData();
             <div class="page-header">
                 <h1>Tarifa</h1>
                 <div class="header-title__buttons">
-                    <a href="create-tariff.php" class="btn btn--tariffs">Nueva Tarifa</a>
+                    <a href="tariff-form.php?template_id=1" class="btn btn--tariffs">Nueva Tarifa</a>
                 </div>
             </div>
         </div>
 
         <!-- Filters -->
         <div class="spacing">
-            <div class="filters-bar tariffs">
-                <input type="text" class="search-input" placeholder="Buscar por nombre...">
-                <select class="filter-select">
-                    <option>Acciones</option>
-                    <option>Público</option>
-                    <option>Privado</option>
-                </select>
-                <select class="filter-select">
-                    <option>Estados</option>
-                    <option>Borrador</option>
-                    <option>Pendiente</option>
-                    <option>Enviado</option>
-                    <option>Aprobado</option>
-                    <option>Rechazado</option>
-                    <option>Expirado</option>
-                </select>
-                <input type="text" class="search-input" placeholder="Buscar por autores...">
-                <input type="date" class="date-input">
-                <input type="date" class="date-input">
-                <div class="filter-buttons">
-                    <button class="btn--filter">Filtrar</button>
-                    <button class="btn--clear">Limpiar</button>
+            <div class="filters-bar tariffs" style="display: flex; flex-direction: column; gap: 10px;">
+                <!-- Contenedor flexible para inputs -->
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+                    <input type="text" class="search-input" placeholder="Buscar por nombre..." style="flex: 1 1 200px;">
+                    <select class="filter-select" style="flex: 1 1 150px;" onchange="filterByVisibility(this.value)">
+                        <option value="">Acceso</option>
+                        <option value="public">Público</option>
+                        <option value="private">Privado</option>
+                    </select>
+                    <select class="filter-select" style="flex: 1 1 150px;" onchange="filterByStatus(this.value)">
+                        <option value="">Estado</option>
+                        <option value="active">Activo</option>
+                        <option value="inactive">Inactivo</option>
+                    </select>
+                    <input type="text" class="search-input" placeholder="Buscar por autor..." style="flex: 1 1 200px;">
+                    <div style="display: flex; gap: 10px; flex: 2 1 300px;">
+                        <input type="date" class="date-input" style="flex: 1;">
+                        <input type="date" class="date-input" style="flex: 1;">
+                    </div>
+                </div>
+                
+                <!-- Línea de botones -->
+                <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                    <button class="btn--filter" onclick="applyFilters()">Filtrar</button>
+                    <button class="btn--clear" onclick="resetFilters()">Limpiar</button>
                 </div>
             </div>
+        </div>
 
         <!-- Notificaciones -->
         <?php if (isset($_GET['success'])): ?>
@@ -128,13 +132,15 @@ $tariffs = getTariffsWithData();
                         <div class="table-cell">
                             <div class="budget-actions">
                                 <button class="btn-icon btn-icon--black"
-                                    title="Generar presupuesto a partir de esta tarifa">
+                                    title="Generar presupuesto a partir de esta tarifa"
+                                    onclick="window.location.href='budget-form.php?tariff_uuid=<?= $tariff['uuid'] ?>'">
                                     <i data-lucide="file-input"></i>
                                 </button>
                                 <?php if ($tariff['budgets_count'] > 0): ?>
                                 <div class="budget-count">
                                     <button class="btn-icon btn-icon--black"
-                                        title="Ver presupuestos generados con esta tarifa">
+                                        title="Ver presupuestos de esta tarifa"
+                                        onclick="window.location.href='budgets.php?filter_tariff_id=<?= $tariff['id'] ?>'">
                                         <i data-lucide="list"></i>
                                     </button>
                                     <span class="count-number"><?= $tariff['budgets_count'] ?></span>
@@ -173,32 +179,19 @@ $tariffs = getTariffsWithData();
                             <div class="action-buttons">
                                 <button class="btn-icon btn-icon--black" 
                                         title="Editar Tarifa"
-                                        onclick="window.location.href='edit-tariff.php?id=<?= $tariff['id'] ?>'">
+                                        onclick="window.location.href='tariff-form.php?id=<?= $tariff['id'] ?>'">
                                     <i data-lucide="pencil"></i>
                                 </button>
                                 <button class="btn-icon btn-icon--black" 
                                         title="Duplicar Tarifa"
-                                        data-action="duplicate-tariff"
-                                        data-tariff-id="<?= $tariff['id'] ?>">
+                                        onclick="if(confirm('¿Duplicar tarifa?')) window.location.href='process/duplicate-tariff.php?id=<?= $tariff['id'] ?>'">
                                     <i data-lucide="copy"></i>
                                 </button>
-                                <?php if ($tariff['budgets_count'] == 0): ?>
                                 <button class="btn-icon btn-icon--red" 
-                                        title="Borrar Tarifa"
-                                        data-action="delete-tariff"
-                                        data-tariff-id="<?= $tariff['id'] ?>"
-                                        data-tariff-name="<?= htmlspecialchars($tariff['title']) ?>">
+                                        title="Eliminar Tarifa"
+                                        onclick="if(confirm('¿Eliminar tarifa?')) window.location.href='process/delete-tariff.php?id=<?= $tariff['id'] ?>'">
                                     <i data-lucide="trash-2"></i>
                                 </button>
-                                <?php else: ?>
-                                    <button class="btn-icon disabled btn-icon--red" 
-                                            title="Borrar Tarifa"
-                                            data-action="delete-tariff"
-                                            data-tariff-id="<?= $tariff['id'] ?>"
-                                            data-tariff-name="<?= htmlspecialchars($tariff['title']) ?>">
-                                        <i data-lucide="trash-2"></i>
-                                    </button>
-                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -231,13 +224,15 @@ $tariffs = getTariffsWithData();
                                 <div class="table-card__content">
                                     <div class="budget-actions">
                                         <button class="btn-icon btn-icon--black"
-                                            title="Generar presupuesto a partir de esta tarifa">
+                                            title="Generar presupuesto a partir de esta tarifa"
+                                            onclick="window.location.href='budget-form.php?tariff_uuid=<?= $tariff['uuid'] ?>'">
                                             <i data-lucide="file-input"></i>
                                         </button>
                                         <?php if ($tariff['budgets_count'] > 0): ?>
                                         <div class="budget-count">
                                             <button class="btn-icon btn-icon--black"
-                                                title="Ver presupuestos generados con esta tarifa">
+                                                title="Ver presupuestos de esta tarifa"
+                                                onclick="window.location.href='budgets.php?filter_tariff_id=<?= $tariff['id'] ?>'">
                                                 <i data-lucide="list"></i>
                                             </button>
                                             <span class="count-number"><?= $tariff['budgets_count'] ?></span>
@@ -281,24 +276,19 @@ $tariffs = getTariffsWithData();
                                     <div class="action-buttons">
                                         <button class="btn-icon btn-icon--black" 
                                                 title="Editar tarifa"
-                                                onclick="window.location.href='edit-tariff.php?id=<?= $tariff['id'] ?>'">
+                                                onclick="window.location.href='tariff-form.php?id=<?= $tariff['id'] ?>'">
                                             <i data-lucide="pencil"></i>
                                         </button>
                                         <button class="btn-icon btn-icon--black" 
                                                 title="Duplicar tarifa"
-                                                data-action="duplicate-tariff"
-                                                data-tariff-id="<?= $tariff['id'] ?>">
+                                                onclick="if(confirm('¿Duplicar tarifa?')) window.location.href='process/duplicate-tariff.php?id=<?= $tariff['id'] ?>'">
                                             <i data-lucide="copy"></i>
                                         </button>
-                                        <?php if ($tariff['budgets_count'] == 0): ?>
                                         <button class="btn-icon btn-icon--red" 
-                                                title="Borrar tarifa"
-                                                data-action="delete-tariff"
-                                                data-tariff-id="<?= $tariff['id'] ?>"
-                                                data-tariff-name="<?= htmlspecialchars($tariff['title']) ?>">
+                                                title="Eliminar tarifa"
+                                                onclick="if(confirm('¿Eliminar tarifa?')) window.location.href='process/delete-tariff.php?id=<?= $tariff['id'] ?>'">
                                             <i data-lucide="trash-2"></i>
                                         </button>
-                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
@@ -309,33 +299,7 @@ $tariffs = getTariffsWithData();
         <?php endif; ?>
     </div>
 
-    <!-- Modales -->
-    <div id="tariffModal" class="modal">
-        <div class="modal__content">
-            <div class="modal__header">
-                <h3>Detalles de la Tarifa</h3>
-                <button class="btn-icon btn-icon--black" data-action="close-modal">
-                    <i data-lucide="x"></i>
-                </button>
-            </div>
-            <div class="modal__body" id="tariffContent"></div>
-        </div>
-    </div>
-
-    <div id="confirmModal" class="modal">
-        <div class="modal__content modal__content--small">
-            <div class="modal__header">
-                <h3 id="confirmTitle">Confirmar acción</h3>
-            </div>
-            <div class="modal__body">
-                <p id="confirmMessage">¿Estás seguro de realizar esta acción?</p>
-            </div>
-            <div class="modal__footer">
-                <button class="btn btn--secondary" data-action="close-modal">Cancelar</button>
-                <button class="btn btn--danger" id="confirmButton">Confirmar</button>
-            </div>
-        </div>
-    </div>
+    <!-- Modales eliminados según solicitud -->
 
     <script src="assets/js/badge-select.js"></script>
     <script src="assets/js/tariffs.js"></script>

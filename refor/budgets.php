@@ -101,24 +101,33 @@ function formatPrice($amount) {
             </div>
 
         <div class="spacing">
-            <div class="filters-bar--budgets">
-                <input type="text" class="search-input" placeholder="Buscar por cliente...">
-                <select class="filter-select">
-                    <option>Estados</option>
-                    <option value="draft">Borrador</option>
-                    <option value="pending">Pendiente</option>
-                    <option value="sent">Enviado</option>
-                    <option value="approved">Aprobado</option>
-                    <option value="rejected">Rechazado</option>
-                    <option value="expired">Expirado</option>
-                </select>
-                <input type="text" class="search-input" placeholder="Buscar por usuario...">
-                <input type="date" class="date-input">
-                <input type="date" class="date-input">
-                <div class="filter-buttons">
-                    <button class="btn--filter">Filtrar</button>
-                    <button class="btn--clear">Limpiar</button>
+            <!-- Filters -->
+            <div class="filters-bar budgets" style="display: flex; flex-direction: column; gap: 10px;">
+                <!-- Contenedor flexible para inputs -->
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+                    <input type="text" class="search-input" placeholder="Buscar por nombre..." style="flex: 1 1 150px;">
+                    <select class="filter-select" style="flex: 0.5 1 100px;" onchange="filterByStatus(this.value)">
+                        <option value="">Estado</option>
+                        <option value="draft">Borrador</option>
+                        <option value="pending">Pendiente</option>
+                        <option value="sent">Enviado</option>
+                        <option value="approved">Aprobado</option>
+                        <option value="rejected">Rechazado</option>
+                        <option value="expired">Expirado</option>
+                    </select>
+                    <input type="text" class="search-input" placeholder="Buscar por cliente..." style="flex: 1 1 150px;">
+                    <div style="display: flex; gap: 10px; flex: 1 1 200px;">
+                        <input type="date" class="date-input" style="flex: 1;">
+                        <input type="date" class="date-input" style="flex: 1;">
+                    </div>
+                    <div style="display: flex; gap: 10px; flex: 0 0 auto;">
+                        <button class="btn--filter" onclick="applyFilters()">Filtrar</button>
+                        <button class="btn--clear" onclick="resetFilters()">Limpiar</button>
+                    </div>
                 </div>
+                
+                <!-- Línea de botones -->
+                
             </div>
 
             <!-- Tabla Presupuestos -->
