@@ -1,0 +1,133 @@
+/* Estilos adicionales para nueva-tarifa.html */
+
+/* Layout de dos columnas */
+.two-column-layout {
+  display: flex;
+  gap: 2rem;
+  align-items: start;
+  width: 100%;
+}
+
+/* Columna del formulario */
+.form-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.form-section {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.form-section h2 {
+  color: var(--primary-green);
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  border-bottom: 2px solid var(--light-gray);
+  padding-bottom: 0.5rem;
+}
+
+/* Columna de vista previa */
+.preview-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.preview-section {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.preview-section h2 {
+  color: var(--primary-green);
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  border-bottom: 2px solid var(--light-gray);
+  padding-bottom: 0.5rem;
+}
+
+/* Área de subida de archivos */
+.file-upload-area {
+  border: 2px dashed var(--medium-gray);
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  text-align: center;
+  background: var(--light-gray);
+  transition: border-color 0.3s;
+}
+
+.file-upload-area:hover {
+  border-color: var(--primary-green);
+}
+
+.file-upload-text {
+  color: #666;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+/* Input de color */
+.color-input {
+  width: 60px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--medium-gray);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+}
+
+/* Formato CSV */
+.csv-format {
+  background: var(--light-gray);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.csv-example {
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  color: var(--dark-gray);
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+/* Cabecera de página con botones */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.header-title__buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* Jerarquía de tarifas */
+.hierarchy-container {
+  margin-top: 1rem;
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid var(--medium-gray);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+}
+
+/* Acciones de tarifa */
+.tariff-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Columnas</title>
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .two-column-layout {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .form-column {
+            flex: 1;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        
+        .preview-column {
+            flex: 1;
+            background-color: #e0e0e0;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test de Dos Columnas</h1>
+        
+        <div class="two-column-layout">
+            <div class="form-column">
+                <h2>Columna Izquierda</h2>
+                <p>Contenido de la columna izquierda</p>
+            </div>
+            
+            <div class="preview-column">
+                <h2>Columna Derecha</h2>
+                <p>Contenido de la columna derecha</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -207,6 +207,89 @@ function duplicateTariff($id) {
     }
 }
 
+/**
+ * Obtiene los datos por defecto para una nueva tarifa basada en una plantilla
+ * 
+ * @param int $template_id ID de la plantilla a utilizar (por defecto 1)
+ * @return array Datos de la tarifa por defecto
+ */
+function getDefaultTariffData($template_id = 1) {
+    $pdo = getConnection();
+    
+    try {
+        // Obtener datos de la plantilla
+        $stmt = $pdo->prepare("SELECT * FROM templates WHERE id = ?");
+        $stmt->execute([$template_id]);
+        $template = $stmt->fetch();
+        
+        if (!$template) {
+            // Si no se encuentra la plantilla, usar valores por defecto
+            return [
+                'title' => 'Nueva Tarifa',
+                'description' => '',
+                'logo_url' => '',
+                'name' => '',
+                'nif' => '',
+                'address' => '',
+                'contact' => '',
+                'template' => '41200-00001',
+                'primary_color' => '#e8951c',
+                'secondary_color' => '#109c61',
+                'summary_note' => '',
+                'conditions_note' => '',
+                'access' => 'private',
+                'status' => 'active',
+                'legal_note' => '',
+                'json_tariff_data' => '[]'
+            ];
+        }
+        
+        // Convertir los datos de la plantilla a un array asociativo
+        $template_data = json_decode($template['template_data'], true);
+        
+        // Crear estructura de tarifa basada en la plantilla
+        return [
+            'title' => $template_data['title'] ?? 'Nueva Tarifa',
+            'description' => $template_data['description'] ?? '',
+            'logo_url' => $template_data['logo_url'] ?? '',
+            'name' => $template_data['name'] ?? '',
+            'nif' => $template_data['nif'] ?? '',
+            'address' => $template_data['address'] ?? '',
+            'contact' => $template_data['contact'] ?? '',
+            'template' => $template_data['template'] ?? '41200-00001',
+            'primary_color' => $template_data['primary_color'] ?? '#e8951c',
+            'secondary_color' => $template_data['secondary_color'] ?? '#109c61',
+            'summary_note' => $template_data['summary_note'] ?? '',
+            'conditions_note' => $template_data['conditions_note'] ?? '',
+            'access' => 'private',
+            'status' => 'active',
+            'legal_note' => $template_data['legal_note'] ?? '',
+            'json_tariff_data' => $template_data['json_tariff_data'] ?? '[]'
+        ];
+        
+    } catch (Exception $e) {
+        // En caso de error, devolver valores por defecto
+        return [
+            'title' => 'Nueva Tarifa',
+            'description' => '',
+            'logo_url' => '',
+            'name' => '',
+            'nif' => '',
+            'address' => '',
+            'contact' => '',
+            'template' => '41200-00001',
+            'primary_color' => '#e8951c',
+            'secondary_color' => '#109c61',
+            'summary_note' => '',
+            'conditions_note' => '',
+            'access' => 'private',
+            'status' => 'active',
+            'legal_note' => '',
+            'json_tariff_data' => '[]'
+        ];
+    }
+}
+
 function validateTariffData($data) {
     $errors = [];
     

@@ -10,7 +10,7 @@ class TariffFormHandler {
 
     initialize() {
         this.initializeEventListeners();
-        this.initializeColorPickers();
+        this.initializeLucideIcons();
         
         // Si hay datos existentes, mostrar sección de tarifa
         const csvData = document.getElementById('csv_data').value;
@@ -20,10 +20,17 @@ class TariffFormHandler {
         }
     }
 
+    initializeLucideIcons() {
+        // Inicializar iconos de Lucide
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    }
+
     initializeEventListeners() {
         // Archivo CSV
         const fileInput = document.getElementById('csv_file');
-        const uploadArea = document.querySelector('.upload-area');
+        const uploadArea = document.querySelector('.file-upload-area');
 
         if (fileInput && uploadArea) {
             // Drag and drop
@@ -52,39 +59,12 @@ class TariffFormHandler {
         }
 
         // Botones de acción
-        document.getElementById('clearAll')?.addEventListener('click', () => this.clearAll());
-        document.getElementById('downloadTemplate')?.addEventListener('click', () => this.downloadTemplate());
         document.getElementById('exportCsv')?.addEventListener('click', () => this.exportCsv());
         document.getElementById('showJson')?.addEventListener('click', () => this.showJson());
         document.getElementById('deleteTariff')?.addEventListener('click', () => this.deleteTariff());
     }
 
-    initializeColorPickers() {
-        const primaryPreview = document.getElementById('primaryColorPreview');
-        const secondaryPreview = document.getElementById('secondaryColorPreview');
-        const primaryInput = document.getElementById('primary_color');
-        const secondaryInput = document.getElementById('secondary_color');
-
-        if (primaryPreview && primaryInput) {
-            primaryPreview.addEventListener('click', () => {
-                primaryInput.click();
-            });
-
-            primaryInput.addEventListener('change', (e) => {
-                primaryPreview.style.background = e.target.value;
-            });
-        }
-
-        if (secondaryPreview && secondaryInput) {
-            secondaryPreview.addEventListener('click', () => {
-                secondaryInput.click();
-            });
-
-            secondaryInput.addEventListener('change', (e) => {
-                secondaryPreview.style.background = e.target.value;
-            });
-        }
-    }
+    // Los inputs de color ahora son nativos en el nuevo diseño
 
     clearAll() {
         if (confirm('Se van a eliminar todos los datos. ¿Continuar?\n\nEsta acción no se puede deshacer.')) {
